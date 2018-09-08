@@ -53,7 +53,7 @@
 		</style>
 	</head>
 	<body>
-		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "raw_Table_String.js" draggable = "false"><button onclick = "convert_Table_To_Raw_String()">Save to computer</button></a><button onclick = "toggle_Filters_Section_Visibility()" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
+		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "raw_Table_String.js" draggable = "false"><button onclick = "convert_Table_To_Raw_String()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
 		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "filter_Table()">
 			<br>
 			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "32"></input><br>
@@ -65,7 +65,37 @@
 			<span class = "filter_Title">Favor Weight: </span><input type = "number" class = "filter_Number_Input" id = "favor_Weight_Input_Box" value = 1000></input><br>
 			<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" class = "filter_Number_Input" id = "weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box" value = 0></input><br>
 			<br>
-			<span class = "filter_Title">Hide Completed: </span><input type = "checkbox" id = "filter_Completed_Checkbox"><br>
+			<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" id = "filter_Completed_Checkbox"><br>
+			<br>
+			<span class = "filter_Title"><button onclick = "toggle_Visibility(this, 'adventure_Packs_Selection_Section', 'Adventure Packs')">Show Adventure Packs</button></span><br>
+			<div id = "adventure_Packs_Selection_Section" style = "display: none">
+				<span class = "filter_Title">Against the Slave Lords: </span><input type = "checkbox" id = "against_The_Slave_Lords_Checkbox"><br>
+				<span class = "filter_Title">Attack on Stormreach: </span><input type = "checkbox" id = "attack_On_Stormreach_Checkbox"><br>
+				<span class = "filter_Title">Delera's Tomb: </span><input type = "checkbox" id = "deleras_Tomb_Checkbox"><br>
+				<span class = "filter_Title">Demon Sands: </span><input type = "checkbox" id = "demon_Sands_Checkbox"><br>
+				<span class = "filter_Title">Menace of the Underdark: </span><input type = "checkbox" id = "menace_Of_The_Underdark_Checkbox"><br>
+				<span class = "filter_Title">Phiarlan Carnival: </span><input type = "checkbox" id = "phiarlan_Carnival_Checkbox"><br>
+				<span class = "filter_Title">Ruins of Gianthold: </span><input type = "checkbox" id = "ruins_Of_Gianthold_Checkbox"><br>
+				<span class = "filter_Title">Shadowfell Conspiracy: </span><input type = "checkbox" id = "shadowfell_Conspiracy_Checkbox"><br>
+				<span class = "filter_Title">Sorrowdusk Isle: </span><input type = "checkbox" id = "sorrowdusk_Isle_Checkbox"><br>
+				<span class = "filter_Title">Tangleroot Gorge: </span><input type = "checkbox" id = "tangleroot_Gorge_Checkbox"><br>
+				<span class = "filter_Title">The Catacombs: </span><input type = "checkbox" id = "the_Catacombs_Checkbox"><br>
+				<span class = "filter_Title">The Devils of Shavarath: </span><input type = "checkbox" id = "the_Devils_Of_Shavarath_Checkbox"><br>
+				<span class = "filter_Title">The Dreaming Dark: </span><input type = "checkbox" id = "the_Dreaming_Dark_Checkbox"><br>
+				<span class = "filter_Title">The Mines of Tethyamar: </span><input type = "checkbox" id = "the_Mines_Of_Tethyamar_Checkbox"><br>
+				<span class = "filter_Title">The Necropolis, Part 1: </span><input type = "checkbox" id = "the_Necropolis_Part_1_Checkbox"><br>
+				<span class = "filter_Title">The Necropolis, Part 2: </span><input type = "checkbox" id = "the_Necropolis_Part_2_Checkbox"><br>
+				<span class = "filter_Title">The Necropolis, Part 3: </span><input type = "checkbox" id = "the_Necropolis_Part_3_Checkbox"><br>
+				<span class = "filter_Title">The Necropolis, Part 4: </span><input type = "checkbox" id = "the_Necropolis_Part_4_Checkbox"><br>
+				<span class = "filter_Title">The Path of Inspiration: </span><input type = "checkbox" id = "the_Path_Of_Inspiration_Checkbox"><br>
+				<span class = "filter_Title">The Reaver's Reach: </span><input type = "checkbox" id = "the_Reavers_Reach_Checkbox"><br>
+				<span class = "filter_Title">The Ruins of Threnal: </span><input type = "checkbox" id = "the_Ruins_Of_Threnal_Checkbox"><br>
+				<span class = "filter_Title">The Seal of Shan-To-Kor: </span><input type = "checkbox" id = "the_Seal_Of_Shan_To_Kor_Checkbox"><br>
+				<span class = "filter_Title">The Sharn Syndicate: </span><input type = "checkbox" id = "the_Sharn_Syndicate_Checkbox"><br>
+				<span class = "filter_Title">The Vale of Twilight: </span><input type = "checkbox" id = "the_Vale_Of_Twilight_Checkbox"><br>
+				<span class = "filter_Title">The Vault of Night: </span><input type = "checkbox" id = "the_Vault_Of_Night_Checkbox"><br>
+				<span class = "filter_Title">Three-Barrel Cove: </span><input type = "checkbox" id = "three_Barrel_Cove_Checkbox"><br>
+			</div>
 			<br>
 			<span class = "filter_Title">Contains phrases: </span><input type = "text" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
 			<span class = "filter_Title">Does not contain phrases: </span><input type = "text" class = "filter_Text_Input" id = "does_Not_Contain_Phrases_Input_Box"><br>
@@ -106,23 +136,55 @@
 			var table_Body_Element = document.getElementById("table_Body");
 			var download_Raw_String_Link_Element = document.getElementById("download_Raw_String_Link");
 
-			var filters_Section_Toggle_Button_Element = document.getElementById("filters_Section_Toggle_Button");
-			var filters_Section_Element = document.getElementById("filters_Section");
 			var level_Lower_Limit_Input_Box_Element = document.getElementById("level_Lower_Limit_Input_Box");
 			var level_Upper_Limit_Input_Box_Element = document.getElementById("level_Upper_Limit_Input_Box");
+
 			var experience_Lower_Limit_Input_Box_Element = document.getElementById("experience_Lower_Limit_Input_Box");
 			var experience_Upper_Limit_Input_Box_Element = document.getElementById("experience_Upper_Limit_Input_Box");
+
 			var time_Lower_Limit_Input_Box_Element = document.getElementById("estimated_Time_Lower_Limit_Input_Box");
 			var time_Upper_Limit_Input_Box_Element = document.getElementById("estimated_Time_Upper_Limit_Input_Box");
+
 			var favor_Lower_Limit_Input_Box_Element = document.getElementById("favor_Lower_Limit_Input_Box");
 			var favor_Upper_Limit_Input_Box_Element = document.getElementById("favor_Upper_Limit_Input_Box");
+
 			var experience_Weight_Input_Box_Element = document.getElementById("experience_Weight_Input_Box");
 			var favor_Weight_Input_Box_Element = document.getElementById("favor_Weight_Input_Box");
 			var weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element = document.getElementById("weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box");
+
 			var filter_Completed_Checkbox_Element = document.getElementById("filter_Completed_Checkbox");
+
+			var against_The_Slave_Lords_Checkbox_Element = document.getElementById("against_The_Slave_Lords_Checkbox");
+			var attack_On_Stormreach_Checkbox_Element = document.getElementById("attack_On_Stormreach_Checkbox");
+			var deleras_Tomb_Checkbox_Element = document.getElementById("deleras_Tomb_Checkbox");
+			var demon_Sands_Checkbox_Element = document.getElementById("demon_Sands_Checkbox");
+			var menace_Of_The_Underdark_Checkbox_Element = document.getElementById("menace_Of_The_Underdark_Checkbox");
+			var phiarlan_Carnival_Checkbox_Element = document.getElementById("phiarlan_Carnival_Checkbox");
+			var ruins_Of_Gianthold_Checkbox_Element = document.getElementById("ruins_Of_Gianthold_Checkbox");
+			var shadowfell_Conspiracy_Checkbox_Element = document.getElementById("shadowfell_Conspiracy_Checkbox");
+			var sorrowdusk_Isle_Checkbox_Element = document.getElementById("sorrowdusk_Isle_Checkbox");
+			var tangleroot_Gorge_Checkbox_Element = document.getElementById("tangleroot_Gorge_Checkbox");
+			var the_Catacombs_Checkbox_Element = document.getElementById("the_Catacombs_Checkbox");
+			var the_Devils_Of_Shavarath_Checkbox_Element = document.getElementById("the_Devils_Of_Shavarath_Checkbox");
+			var the_Dreaming_Dark_Checkbox_Element = document.getElementById("the_Dreaming_Dark_Checkbox");
+			var the_Mines_Of_Tethyamar_Checkbox_Element = document.getElementById("the_Mines_Of_Tethyamar_Checkbox");
+			var the_Necropolis_Part_1_Checkbox_Element = document.getElementById("the_Necropolis_Part_1_Checkbox");
+			var the_Necropolis_Part_2_Checkbox_Element = document.getElementById("the_Necropolis_Part_2_Checkbox");
+			var the_Necropolis_Part_3_Checkbox_Element = document.getElementById("the_Necropolis_Part_3_Checkbox");
+			var the_Necropolis_Part_4_Checkbox_Element = document.getElementById("the_Necropolis_Part_4_Checkbox");
+			var the_Path_Of_Inspiration_Checkbox_Element = document.getElementById("the_Path_Of_Inspiration_Checkbox");
+			var the_Reavers_Reach_Checkbox_Element = document.getElementById("the_Reavers_Reach_Checkbox");
+			var the_Ruins_Of_Threnal_Checkbox_Element = document.getElementById("the_Ruins_Of_Threnal_Checkbox");
+			var the_Seal_Of_Shan_To_Kor_Checkbox_Element = document.getElementById("the_Seal_Of_Shan_To_Kor_Checkbox");
+			var the_Sharn_Syndicate_Checkbox_Element = document.getElementById("the_Sharn_Syndicate_Checkbox");
+			var the_Vale_Of_Twilight_Checkbox_Element = document.getElementById("the_Vale_Of_Twilight_Checkbox");
+			var the_Vault_Of_Night_Checkbox_Element = document.getElementById("the_Vault_Of_Night_Checkbox");
+			var three_Barrel_Cove_Checkbox_Element = document.getElementById("three_Barrel_Cove_Checkbox");
+			
 			var contains_Phrases_Input_Box_Element = document.getElementById("contains_Phrases_Input_Box");
 			var does_Not_Contain_Phrases_Input_Box_Element = document.getElementById("does_Not_Contain_Phrases_Input_Box");
 			var number_Of_Items_Sorted_Element = document.getElementById("number_Of_Items_Sorted");
+
 
 			var table_Body_Array = [];		//Stores the table rows, which are themselves arrays of strings
 			var table_Data_Array_Copy = [];	//A copy of the array used to stablize the sort in Chrome. Data order will often be intentionally one update behind
@@ -174,7 +236,6 @@
 
 					if(filter_Completed_Checkbox_Element.checked === true)
 					{
-						console.log(table_Body_Array[i][9]);
 						if(table_Body_Array[i][9] === "<input type=\"checkbox\" checked=\"\">")
 						{
 							table_Body_Element.children[i].style.display = "none";
@@ -182,6 +243,220 @@
 							continue;
 						}
 					}
+
+					switch(table_Body_Array[i][6])
+					{
+						case "Against the Slave Lords":
+							if(against_The_Slave_Lords_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Attack on Stormreach":
+							if(attack_On_Stormreach_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Delera's Tomb":
+							if(deleras_Tomb_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Demon Sands":
+							if(demon_Sands_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Menace of the Underdark":
+							if(menace_Of_The_Underdark_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Phiarlan Carnival":
+							if(phiarlan_Carnival_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Ruins of Gianthold":
+							if(ruins_Of_Gianthold_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Shadowfell Conspiracy":
+							if(shadowfell_Conspiracy_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Sorrowdusk Isle":
+							if(sorrowdusk_Isle_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Tangleroot Gorge":
+							if(tangleroot_Gorge_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Catacombs":
+							if(the_Catacombs_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Devils of Shavarath":
+							if(the_Devils_Of_Shavarath_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Dreaming Dark":
+							if(the_Dreaming_Dark_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Mines of Tethyamar":
+							if(the_Mines_Of_Tethyamar_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Necropolis, Part 1":
+							if(the_Necropolis_Part_1_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Necropolis, Part 2":
+							if(the_Necropolis_Part_2_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Necropolis, Part 3":
+							if(the_Necropolis_Part_3_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Necropolis, Part 4":
+							if(the_Necropolis_Part_4_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Path of Inspiration":
+							if(the_Path_Of_Inspiration_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Reaver's Reach":
+							if(the_Reavers_Reach_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Ruins of Threnal":
+							if(the_Ruins_Of_Threnal_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Seal of Shan-To-Kor":
+							if(the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Sharn Syndicate":
+							if(the_Sharn_Syndicate_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Vale of Twilight":
+							if(the_Vale_Of_Twilight_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Vault of Night":
+							if(the_Vault_Of_Night_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Three-Barrel Cove":
+							if(three_Barrel_Cove_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						default:
+					}
+
 
 					for(j = 0; j < contains_Phrases_Array.length; j++)
 					{
@@ -364,20 +639,55 @@
 			function save_To_Local_Storage()
 			{
 				window.localStorage.setItem("table_Body_Data", JSON.stringify(table_Body_Array));
+
 				window.localStorage.setItem("table_Filter_Level_Lower_Limit", level_Lower_Limit_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Level_Upper_Limit", level_Upper_Limit_Input_Box_Element.value);
+
 				window.localStorage.setItem("table_Filter_Experience_Lower_Limit", experience_Lower_Limit_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Experience_Upper_Limit", experience_Upper_Limit_Input_Box_Element.value);
+
 				window.localStorage.setItem("table_Filter_Time_Lower_Limit", time_Lower_Limit_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Time_Upper_Limit", time_Upper_Limit_Input_Box_Element.value);
+
 				window.localStorage.setItem("table_Filter_Favor_Lower_Limit", favor_Lower_Limit_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Favor_Upper_Limit", favor_Upper_Limit_Input_Box_Element.value);
+
 				window.localStorage.setItem("table_Filter_Experience_Weight", experience_Weight_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Favor_Weight", favor_Weight_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box", weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value);
+
 				window.localStorage.setItem("filter_Completed_Checkbox", filter_Completed_Checkbox_Element.checked);
+
+				window.localStorage.setItem("against_The_Slave_Lords_Checkbox", against_The_Slave_Lords_Checkbox_Element.checked);
+				window.localStorage.setItem("attack_On_Stormreach_Checkbox", attack_On_Stormreach_Checkbox_Element.checked);
+				window.localStorage.setItem("deleras_Tomb_Checkbox", deleras_Tomb_Checkbox_Element.checked);
+				window.localStorage.setItem("demon_Sands_Checkbox", demon_Sands_Checkbox_Element.checked);
+				window.localStorage.setItem("menace_Of_The_Underdark_Checkbox", menace_Of_The_Underdark_Checkbox_Element.checked);
+				window.localStorage.setItem("phiarlan_Carnival_Checkbox", phiarlan_Carnival_Checkbox_Element.checked);
+				window.localStorage.setItem("ruins_Of_Gianthold_Checkbox", ruins_Of_Gianthold_Checkbox_Element.checked);
+				window.localStorage.setItem("shadowfell_Conspiracy_Checkbox", shadowfell_Conspiracy_Checkbox_Element.checked);
+				window.localStorage.setItem("sorrowdusk_Isle_Checkbox", sorrowdusk_Isle_Checkbox_Element.checked);
+				window.localStorage.setItem("tangleroot_Gorge_Checkbox", tangleroot_Gorge_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Catacombs_Checkbox", the_Catacombs_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Devils_Of_Shavarath_Checkbox", the_Devils_Of_Shavarath_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Dreaming_Dark_Checkbox", the_Dreaming_Dark_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Mines_Of_Tethyamar_Checkbox", the_Mines_Of_Tethyamar_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Necropolis_Part_1_Checkbox", the_Necropolis_Part_1_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Necropolis_Part_2_Checkbox", the_Necropolis_Part_2_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Necropolis_Part_3_Checkbox", the_Necropolis_Part_3_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Necropolis_Part_4_Checkbox", the_Necropolis_Part_4_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Path_Of_Inspiration_Checkbox", the_Path_Of_Inspiration_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Reavers_Reach_Checkbox", the_Reavers_Reach_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Ruins_Of_Threnal_Checkbox", the_Ruins_Of_Threnal_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Seal_Of_Shan_To_Kor_Checkbox", the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Sharn_Syndicate_Checkbox", the_Sharn_Syndicate_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Vale_Of_Twilight_Checkbox", the_Vale_Of_Twilight_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Vault_Of_Night_Checkbox", the_Vault_Of_Night_Checkbox_Element.checked);
+				window.localStorage.setItem("three_Barrel_Cove_Checkbox", three_Barrel_Cove_Checkbox_Element.checked);
+
 				window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Does_Not_Contain_Phrases_Input_Box", does_Not_Contain_Phrases_Input_Box_Element.value);
+
 				window.onbeforeunload = null;
 			}
 
@@ -489,17 +799,17 @@
 				window.onbeforeunload = exit_Warning_Function;	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
 			}
 
-			function toggle_Filters_Section_Visibility()
+			function toggle_Visibility(triggering_Button, toggled_Element_ID_String, button_String)
 			{
-				if(filters_Section_Element.style.display === "block")
+				if(document.getElementById(toggled_Element_ID_String).style.display === "block")
 				{
-					filters_Section_Toggle_Button_Element.textContent = "Show Filters";
-					filters_Section_Element.style.display = "none";
+					triggering_Button.textContent = "Show " + button_String;
+					document.getElementById(toggled_Element_ID_String).style.display = "none";
 				}
 				else
 				{
-					filters_Section_Toggle_Button_Element.textContent = "Hide Filters";
-					filters_Section_Element.style.display = "block";
+					triggering_Button.textContent = "Hide " + button_String;
+					document.getElementById(toggled_Element_ID_String).style.display = "block";
 				}
 			}
 
@@ -517,6 +827,32 @@
 				favor_Weight_Input_Box_Element.value = favor_Weight_Input_Box_Element.getAttribute("value");
 				weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value = weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.getAttribute("value");
 				filter_Completed_Checkbox_Element.checked = false;
+				against_The_Slave_Lords_Checkbox_Element.checked = false;
+				attack_On_Stormreach_Checkbox_Element.checked = false;
+				deleras_Tomb_Checkbox_Element.checked = false;
+				demon_Sands_Checkbox_Element.checked = false;
+				menace_Of_The_Underdark_Checkbox_Element.checked = false;
+				phiarlan_Carnival_Checkbox_Element.checked = false;
+				ruins_Of_Gianthold_Checkbox_Element.checked = false;
+				shadowfell_Conspiracy_Checkbox_Element.checked = false;
+				sorrowdusk_Isle_Checkbox_Element.checked = false;
+				tangleroot_Gorge_Checkbox_Element.checked = false;
+				the_Catacombs_Checkbox_Element.checked = false;
+				the_Devils_Of_Shavarath_Checkbox_Element.checked = false;
+				the_Dreaming_Dark_Checkbox_Element.checked = false;
+				the_Mines_Of_Tethyamar_Checkbox_Element.checked = false;
+				the_Necropolis_Part_1_Checkbox_Element.checked = false;
+				the_Necropolis_Part_2_Checkbox_Element.checked = false;
+				the_Necropolis_Part_3_Checkbox_Element.checked = false;
+				the_Necropolis_Part_4_Checkbox_Element.checked = false;
+				the_Path_Of_Inspiration_Checkbox_Element.checked = false;
+				the_Reavers_Reach_Checkbox_Element.checked = false;
+				the_Ruins_Of_Threnal_Checkbox_Element.checked = false;
+				the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked = false;
+				the_Sharn_Syndicate_Checkbox_Element.checked = false;
+				the_Vale_Of_Twilight_Checkbox_Element.checked = false;
+				the_Vault_Of_Night_Checkbox_Element.checked = false;
+				three_Barrel_Cove_Checkbox_Element.checked = false;
 				contains_Phrases_Input_Box_Element.value = contains_Phrases_Input_Box_Element.getAttribute("value");
 				does_Not_Contain_Phrases_Input_Box_Element.value = does_Not_Contain_Phrases_Input_Box_Element.getAttribute("value");
 				filter_Table();
@@ -530,21 +866,133 @@
 			else
 			{
 				table_Body_Array = JSON.parse(window.localStorage.getItem("table_Body_Data"));
+
 				level_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Level_Lower_Limit");
 				level_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Level_Upper_Limit");
+
 				experience_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Experience_Lower_Limit");
 				experience_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Experience_Upper_Limit");
+
 				time_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Time_Lower_Limit");
 				time_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Time_Upper_Limit");
+
 				favor_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Favor_Lower_Limit");
 				favor_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Favor_Upper_Limit");
+
 				experience_Weight_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Experience_Weight");
 				favor_Weight_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Favor_Weight");
 				weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box");
-				if(window.localStorage.getItem("filter_Completed_Checkbox") === "true")	//Stored as text. Default is false
+
+				if(window.localStorage.getItem("filter_Completed_Checkbox") === "true")	//Booleans are stored as text- default for all is false
 				{
 					filter_Completed_Checkbox_Element.checked = true;
 				}
+
+				if(window.localStorage.getItem("against_The_Slave_Lords_Checkbox") === "true")
+				{
+					against_The_Slave_Lords_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("attack_On_Stormreach_Checkbox") === "true")
+				{
+					attack_On_Stormreach_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("deleras_Tomb_Checkbox") === "true")
+				{
+					deleras_Tomb_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("demon_Sands_Checkbox") === "true")
+				{
+					demon_Sands_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("menace_Of_The_Underdark_Checkbox") === "true")
+				{
+					menace_Of_The_Underdark_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("phiarlan_Carnival_Checkbox") === "true")
+				{
+					phiarlan_Carnival_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("ruins_Of_Gianthold_Checkbox") === "true")
+				{
+					ruins_Of_Gianthold_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("shadowfell_Conspiracy_Checkbox") === "true")
+				{
+					shadowfell_Conspiracy_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("sorrowdusk_Isle_Checkbox") === "true")
+				{
+					sorrowdusk_Isle_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("tangleroot_Gorge_Checkbox") === "true")
+				{
+					tangleroot_Gorge_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Catacombs_Checkbox") === "true")
+				{
+					the_Catacombs_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Devils_Of_Shavarath_Checkbox") === "true")
+				{
+					the_Devils_Of_Shavarath_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Dreaming_Dark_Checkbox") === "true")
+				{
+					the_Dreaming_Dark_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Mines_Of_Tethyamar_Checkbox") === "true")
+				{
+					the_Mines_Of_Tethyamar_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Necropolis_Part_1_Checkbox") === "true")
+				{
+					the_Necropolis_Part_1_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Necropolis_Part_2_Checkbox") === "true")
+				{
+					the_Necropolis_Part_2_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Necropolis_Part_3_Checkbox") === "true")
+				{
+					the_Necropolis_Part_3_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Necropolis_Part_4_Checkbox") === "true")
+				{
+					the_Necropolis_Part_4_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Path_Of_Inspiration_Checkbox") === "true")
+				{
+					the_Path_Of_Inspiration_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Reavers_Reach_Checkbox") === "true")
+				{
+					the_Reavers_Reach_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Ruins_Of_Threnal_Checkbox") === "true")
+				{
+					the_Ruins_Of_Threnal_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Seal_Of_Shan_To_Kor_Checkbox") === "true")
+				{
+					the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Sharn_Syndicate_Checkbox") === "true")
+				{
+					the_Sharn_Syndicate_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Vale_Of_Twilight_Checkbox") === "true")
+				{
+					the_Vale_Of_Twilight_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Vault_Of_Night_Checkbox") === "true")
+				{
+					the_Vault_Of_Night_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("three_Barrel_Cove_Checkbox") === "true")
+				{
+					three_Barrel_Cove_Checkbox_Element.checked = true;
+				}
+
 				contains_Phrases_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Contains_Phrases_Input_Box");
 				does_Not_Contain_Phrases_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Does_Not_Contain_Phrases_Input_Box");
 			}
