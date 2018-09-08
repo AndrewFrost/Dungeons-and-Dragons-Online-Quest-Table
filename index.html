@@ -134,8 +134,21 @@
 
 			function filter_Table()
 			{
-				table_Body_Element.style.display = "none";	//Avoid unnecessary redrawing of Table
+				table_Body_Element.style.display = "none";	//Avoids unnecessary redrawing of Table
 				number_Of_Items_Filtered = 0;
+
+				var contains_Phrases_Array = contains_Phrases_Input_Box_Element.value.split("  ");	//Used in phrase filters
+				if(contains_Phrases_Array.length === 1 && contains_Phrases_Array[0] === "")
+				{
+					contains_Phrases_Array = [];
+				}
+
+				var does_Not_Contain_Phrases_Array = does_Not_Contain_Phrases_Input_Box_Element.value.split("  ");	//Used in phrase filters
+				if(does_Not_Contain_Phrases_Array.length === 1 && does_Not_Contain_Phrases_Array[0] === "")
+				{
+					does_Not_Contain_Phrases_Array = [];
+				}
+
 				for(i = 0; i < table_Body_Element.children.length; i++)
 				{
 					table_Body_Element.children[i].style.display = "table-row";
@@ -170,11 +183,6 @@
 						}
 					}
 
-					var contains_Phrases_Array = contains_Phrases_Input_Box_Element.value.split("  ");	//Inefficient, move outside of loop
-					if(contains_Phrases_Array.length === 1 && contains_Phrases_Array[0] === "")
-					{
-						contains_Phrases_Array = [];
-					}
 					for(j = 0; j < contains_Phrases_Array.length; j++)
 					{
 						if
@@ -196,11 +204,6 @@
 						continue;
 					}
 
-					var does_Not_Contain_Phrases_Array = does_Not_Contain_Phrases_Input_Box_Element.value.split("  ");
-					if(does_Not_Contain_Phrases_Array.length === 1 && does_Not_Contain_Phrases_Array[0] === "")
-					{
-						does_Not_Contain_Phrases_Array = [];
-					}
 					for(j = 0; j < does_Not_Contain_Phrases_Array.length; j++)
 					{
 						if
