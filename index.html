@@ -76,6 +76,7 @@
 				<span class = "filter_Title">Menace of the Underdark: </span><input type = "checkbox" id = "menace_Of_The_Underdark_Checkbox"><br>
 				<span class = "filter_Title">Phiarlan Carnival: </span><input type = "checkbox" id = "phiarlan_Carnival_Checkbox"><br>
 				<span class = "filter_Title">Ruins of Gianthold: </span><input type = "checkbox" id = "ruins_Of_Gianthold_Checkbox"><br>
+				<span class = "filter_Title">Secrets of the Artificers: </span><input type = "checkbox" id = "secrets_Of_The_Artificers_Checkbox"><br>
 				<span class = "filter_Title">Shadowfell Conspiracy: </span><input type = "checkbox" id = "shadowfell_Conspiracy_Checkbox"><br>
 				<span class = "filter_Title">Sorrowdusk Isle: </span><input type = "checkbox" id = "sorrowdusk_Isle_Checkbox"><br>
 				<span class = "filter_Title">Tangleroot Gorge: </span><input type = "checkbox" id = "tangleroot_Gorge_Checkbox"><br>
@@ -95,6 +96,7 @@
 				<span class = "filter_Title">The Vale of Twilight: </span><input type = "checkbox" id = "the_Vale_Of_Twilight_Checkbox"><br>
 				<span class = "filter_Title">The Vault of Night: </span><input type = "checkbox" id = "the_Vault_Of_Night_Checkbox"><br>
 				<span class = "filter_Title">Three-Barrel Cove: </span><input type = "checkbox" id = "three_Barrel_Cove_Checkbox"><br>
+				<span class = "filter_Title">Trials of the Archons: </span><input type = "checkbox" id = "trials_Of_The_Archons_Checkbox"><br>
 			</div>
 			<br>
 			<span class = "filter_Title">Contains phrases: </span><input type = "text" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
@@ -161,6 +163,7 @@
 			var menace_Of_The_Underdark_Checkbox_Element = document.getElementById("menace_Of_The_Underdark_Checkbox");
 			var phiarlan_Carnival_Checkbox_Element = document.getElementById("phiarlan_Carnival_Checkbox");
 			var ruins_Of_Gianthold_Checkbox_Element = document.getElementById("ruins_Of_Gianthold_Checkbox");
+			var secrets_Of_The_Artificers_Checkbox_Element = document.getElementById("secrets_Of_The_Artificers_Checkbox");
 			var shadowfell_Conspiracy_Checkbox_Element = document.getElementById("shadowfell_Conspiracy_Checkbox");
 			var sorrowdusk_Isle_Checkbox_Element = document.getElementById("sorrowdusk_Isle_Checkbox");
 			var tangleroot_Gorge_Checkbox_Element = document.getElementById("tangleroot_Gorge_Checkbox");
@@ -180,6 +183,7 @@
 			var the_Vale_Of_Twilight_Checkbox_Element = document.getElementById("the_Vale_Of_Twilight_Checkbox");
 			var the_Vault_Of_Night_Checkbox_Element = document.getElementById("the_Vault_Of_Night_Checkbox");
 			var three_Barrel_Cove_Checkbox_Element = document.getElementById("three_Barrel_Cove_Checkbox");
+			var trials_Of_The_Archons_Checkbox_Element = document.getElementById("trials_Of_The_Archons_Checkbox");
 			
 			var contains_Phrases_Input_Box_Element = document.getElementById("contains_Phrases_Input_Box");
 			var does_Not_Contain_Phrases_Input_Box_Element = document.getElementById("does_Not_Contain_Phrases_Input_Box");
@@ -296,6 +300,14 @@
 							break;
 						case "Ruins of Gianthold":
 							if(ruins_Of_Gianthold_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Secrets of the Artificers":
+							if(secrets_Of_The_Artificers_Checkbox.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -448,6 +460,14 @@
 							break;
 						case "Three-Barrel Cove":
 							if(three_Barrel_Cove_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Trials of the Archons":
+							if(trials_Of_The_Archons_Checkbox.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -665,6 +685,7 @@
 				window.localStorage.setItem("menace_Of_The_Underdark_Checkbox", menace_Of_The_Underdark_Checkbox_Element.checked);
 				window.localStorage.setItem("phiarlan_Carnival_Checkbox", phiarlan_Carnival_Checkbox_Element.checked);
 				window.localStorage.setItem("ruins_Of_Gianthold_Checkbox", ruins_Of_Gianthold_Checkbox_Element.checked);
+				window.localStorage.setItem("secrets_Of_The_Artificers_Checkbox", secrets_Of_The_Artificers_Checkbox_Element.checked);
 				window.localStorage.setItem("shadowfell_Conspiracy_Checkbox", shadowfell_Conspiracy_Checkbox_Element.checked);
 				window.localStorage.setItem("sorrowdusk_Isle_Checkbox", sorrowdusk_Isle_Checkbox_Element.checked);
 				window.localStorage.setItem("tangleroot_Gorge_Checkbox", tangleroot_Gorge_Checkbox_Element.checked);
@@ -684,6 +705,7 @@
 				window.localStorage.setItem("the_Vale_Of_Twilight_Checkbox", the_Vale_Of_Twilight_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Vault_Of_Night_Checkbox", the_Vault_Of_Night_Checkbox_Element.checked);
 				window.localStorage.setItem("three_Barrel_Cove_Checkbox", three_Barrel_Cove_Checkbox_Element.checked);
+				window.localStorage.setItem("trials_Of_The_Archons_Checkbox", trials_Of_The_Archons_Checkbox_Element.checked);
 
 				window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Does_Not_Contain_Phrases_Input_Box", does_Not_Contain_Phrases_Input_Box_Element.value);
@@ -834,6 +856,7 @@
 				menace_Of_The_Underdark_Checkbox_Element.checked = false;
 				phiarlan_Carnival_Checkbox_Element.checked = false;
 				ruins_Of_Gianthold_Checkbox_Element.checked = false;
+				secrets_Of_The_Artificers_Checkbox_Element.checked = false;
 				shadowfell_Conspiracy_Checkbox_Element.checked = false;
 				sorrowdusk_Isle_Checkbox_Element.checked = false;
 				tangleroot_Gorge_Checkbox_Element.checked = false;
@@ -853,6 +876,7 @@
 				the_Vale_Of_Twilight_Checkbox_Element.checked = false;
 				the_Vault_Of_Night_Checkbox_Element.checked = false;
 				three_Barrel_Cove_Checkbox_Element.checked = false;
+				trials_Of_The_Archons_Checkbox_Element.checked = false;
 				contains_Phrases_Input_Box_Element.value = contains_Phrases_Input_Box_Element.getAttribute("value");
 				does_Not_Contain_Phrases_Input_Box_Element.value = does_Not_Contain_Phrases_Input_Box_Element.getAttribute("value");
 				filter_Table();
@@ -915,6 +939,10 @@
 				if(window.localStorage.getItem("ruins_Of_Gianthold_Checkbox") === "true")
 				{
 					ruins_Of_Gianthold_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("secrets_Of_The_Artificers_Checkbox") === "true")
+				{
+					secrets_Of_The_Artificers_Checkbox_Element.checked = true;
 				}
 				if(window.localStorage.getItem("shadowfell_Conspiracy_Checkbox") === "true")
 				{
@@ -991,6 +1019,10 @@
 				if(window.localStorage.getItem("three_Barrel_Cove_Checkbox") === "true")
 				{
 					three_Barrel_Cove_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("trials_Of_The_Archons_Checkbox") === "true")
+				{
+					trials_Of_The_Archons_Checkbox_Element.checked = true;
 				}
 
 				contains_Phrases_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Contains_Phrases_Input_Box");
