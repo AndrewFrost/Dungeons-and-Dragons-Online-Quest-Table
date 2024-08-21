@@ -84,7 +84,7 @@
 		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "raw_Table_String.js" draggable = "false"><button onclick = "convert_Table_To_Raw_String()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
 		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "filter_Table()">
 			<br>
-			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "32"></input><br>
+			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37"></input><br>
 			<span class = "filter_Title">Experience: </span><input type = "number" class = "filter_Number_Input" id = "experience_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "experience_Upper_Limit_Input_Box" value = "1000000"></input><br>
 			<span class = "filter_Title">Time: </span><input type = "number" class = "filter_Number_Input" id = "estimated_Time_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "estimated_Time_Upper_Limit_Input_Box" value = "120"></input><br>
 			<span class = "filter_Title">Favor: </span><input type = "number" class = "filter_Number_Input" id = "favor_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "favor_Upper_Limit_Input_Box" value = "42"></input><br>
@@ -105,10 +105,17 @@
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Disciples_of_Rage">Disciples of Rage</a>: </span><input type = "checkbox" id = "disciples_Of_Rage_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Dragonblood_Prophecy">Dragonblood Prophecy</a>: </span><input type = "checkbox" id = "dragonblood_Prophecy_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Eveningstar_Challenge_Pack">Eveningstar Challenge Pack</a>: </span><input type = "checkbox" id = "eveningstar_Challenge_Pack_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Fables_of_the_Feywild">Fables of the Feywild</a>: </span><input type = "checkbox" id = "fables_Of_The_Feywild_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Grip_of_the_Hidden_Hand">Grip of the Hidden Hand</a>: </span><input type = "checkbox" id = "grip_Of_The_Hidden_Hand_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Harbinger_of_Madness">Harbinger of Madness</a>: </span><input type = "checkbox" id = "harbinger_Of_Madness_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Heart_of_Madness">Heart of Madness</a>: </span><input type = "checkbox" id = "heart_Of_Madness_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Hunter_and_Hunted">Hunter and Hunted</a>: </span><input type = "checkbox" id = "hunter_And_Hunted_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Keep_on_the_Borderlands">Keep on the Borderlands</a>: </span><input type = "checkbox" id = "keep_On_The_Borderlands_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Magic_of_Myth_Drannor">Magic of Myth Drannor</a>: </span><input type = "checkbox" id = "magic_Of_Myth_Drannor_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Masterminds_of_Sharn">Masterminds of Sharn</a>: </span><input type = "checkbox" id = "masterminds_Of_Sharn_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Menace_of_the_Underdark_(adventure_pack)">Menace of the Underdark</a>: </span><input type = "checkbox" id = "menace_Of_The_Underdark_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Mists_of_Ravenloft">Mists of Ravenloft</a>: </span><input type = "checkbox" id = "mists_Of_Ravenloft_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Peril_of_the_Planar_Eyes">Peril of the Planar Eyes</a>: </span><input type = "checkbox" id = "peril_Of_The_Planar_Eyes_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Phiarlan_Carnival">Phiarlan Carnival</a>: </span><input type = "checkbox" id = "phiarlan_Carnival_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Reign_of_Madness">Reign of Madness</a>: </span><input type = "checkbox" id = "reign_Of_Madness_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Ruins_of_Gianthold_(heroic)">Ruins of Gianthold</a>: </span><input type = "checkbox" id = "ruins_Of_Gianthold_Checkbox"><br>
@@ -116,6 +123,8 @@
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Sentinels_of_Stormreach">Sentinels of Stormreach</a>: </span><input type = "checkbox" id = "sentinels_Of_Stormreach_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Shadow_Under_Thunderholme">Shadow Under Thunderholme</a>: </span><input type = "checkbox" id = "shadow_Under_Thunderholme_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Shadowfell_Conspiracy">Shadowfell Conspiracy</a>: </span><input type = "checkbox" id = "shadowfell_Conspiracy_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Sinister_Secret_of_Saltmarsh">Sinister Secret of Saltmarsh</a>: </span><input type = "checkbox" id = "sinister_Secret_Of_Saltmarsh_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Slice_of_Life">Slice of Life</a>: </span><input type = "checkbox" id = "slice_Of_Life_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Sorrowdusk_Isle">Sorrowdusk Isle</a>: </span><input type = "checkbox" id = "sorrowdusk_Isle_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Tangleroot_Gorge">Tangleroot Gorge</a>: </span><input type = "checkbox" id = "tangleroot_Gorge_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Catacombs">The Catacombs</a>: </span><input type = "checkbox" id = "the_Catacombs_Checkbox"><br>
@@ -125,6 +134,8 @@
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Druid%27s_Deep">The Druid's Deep</a>: </span><input type = "checkbox" id = "the_Druids_Deep_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Haunted_Halls_of_Eveningstar">The Haunted Halls of Eveningstar</a>: </span><input type = "checkbox" id = "the_Haunted_Halls_Of_Eveningstar_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_High_Road_of_Shadows">The High Road of Shadows</a>: </span><input type = "checkbox" id = "the_High_Road_Of_Shadows_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Isle_of_Dread">The Isle of Dread</a>: </span><input type = "checkbox" id = "the_Isle_Of_Dread_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Lost_Gatekeepers">The Lost Gatekeepers</a>: </span><input type = "checkbox" id = "the_Lost_Gatekeepers_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Mines_of_Tethyamar">The Mines of Tethyamar</a>: </span><input type = "checkbox" id = "the_Mines_Of_Tethyamar_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Litany_of_the_Dead_Part_1">The Necropolis, Part 1</a>: </span><input type = "checkbox" id = "the_Necropolis_Part_1_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Litany_of_the_Dead_Part_2">The Necropolis, Part 2</a>: </span><input type = "checkbox" id = "the_Necropolis_Part_2_Checkbox"><br>
@@ -137,12 +148,14 @@
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Ruins_of_Threnal">The Ruins of Threnal</a>: </span><input type = "checkbox" id = "the_Ruins_Of_Threnal_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Seal_of_Shan-To-Kor">The Seal of Shan-To-Kor</a>: </span><input type = "checkbox" id = "the_Seal_Of_Shan_To_Kor_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Sharn_Syndicate">The Sharn Syndicate</a>: </span><input type = "checkbox" id = "the_Sharn_Syndicate_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Soul_Splitter">The Soul Splitter</a>: </span><input type = "checkbox" id = "the_Soul_Splitter_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Temple_of_Elemental_Evil">The Temple of Elemental Evil</a>: </span><input type = "checkbox" id = "the_Temple_Of_Elemental_Evil_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Vale_of_Twilight">The Vale of Twilight</a>: </span><input type = "checkbox" id = "the_Vale_Of_Twilight_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Vault_of_Night">The Vault of Night</a>: </span><input type = "checkbox" id = "the_Vault_Of_Night_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Three-Barrel_Cove">Three-Barrel Cove</a>: </span><input type = "checkbox" id = "three_Barrel_Cove_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Trials_of_the_Archons">Trials of the Archons</a>: </span><input type = "checkbox" id = "trials_Of_The_Archons_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Vaults_of_the_Artificers">Vaults of the Artificers</a>: </span><input type = "checkbox" id = "vaults_Of_The_Artificers_Checkbox"><br>
+				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Vecna_Unleashed">Vecna Unleashed</a>: </span><input type = "checkbox" id = "vecna_Unleashed_Checkbox"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/White_Plume_Mountain_and_Other_Tales">White Plume Mountain and Other Tales</a>: </span><input type = "checkbox" id = "white_Plume_Mountain_And_Other_Tales_Checkbox"><br>
 			</div>
 			<br>
@@ -211,10 +224,17 @@
 			var disciples_Of_Rage_Checkbox_Element = document.getElementById("disciples_Of_Rage_Checkbox");
 			var dragonblood_Prophecy_Checkbox_Element = document.getElementById("dragonblood_Prophecy_Checkbox");
 			var eveningstar_Challenge_Pack_Checkbox_Element = document.getElementById("eveningstar_Challenge_Pack_Checkbox");
+			var fables_Of_The_Feywild_Checkbox_Element = document.getElementById("fables_Of_The_Feywild_Checkbox");
+			var grip_Of_The_Hidden_Hand_Checkbox_Element = document.getElementById("grip_Of_The_Hidden_Hand_Checkbox");
 			var harbinger_Of_Madness_Checkbox_Element = document.getElementById("harbinger_Of_Madness_Checkbox");
 			var heart_Of_Madness_Checkbox_Element = document.getElementById("heart_Of_Madness_Checkbox");
+			var hunter_And_Hunted_Checkbox_Element = document.getElementById("hunter_And_Hunted_Checkbox");
+			var keep_On_The_Borderlands_Checkbox_Element = document.getElementById("keep_On_The_Borderlands_Checkbox");
+			var magic_Of_Myth_Drannor_Checkbox_Element = document.getElementById("magic_Of_Myth_Drannor_Checkbox");
+			var masterminds_Of_Sharn_Checkbox_Element = document.getElementById("masterminds_Of_Sharn_Checkbox");
 			var menace_Of_The_Underdark_Checkbox_Element = document.getElementById("menace_Of_The_Underdark_Checkbox");
 			var mists_Of_Ravenloft_Checkbox_Element = document.getElementById("mists_Of_Ravenloft_Checkbox");
+			var peril_Of_The_Planar_Eyes_Checkbox_Element = document.getElementById("peril_Of_The_Planar_Eyes_Checkbox");
 			var phiarlan_Carnival_Checkbox_Element = document.getElementById("phiarlan_Carnival_Checkbox");
 			var reign_Of_Madness_Checkbox_Element = document.getElementById("reign_Of_Madness_Checkbox");
 			var ruins_Of_Gianthold_Checkbox_Element = document.getElementById("ruins_Of_Gianthold_Checkbox");
@@ -222,6 +242,8 @@
 			var sentinels_Of_Stormreach_Checkbox_Element = document.getElementById("sentinels_Of_Stormreach_Checkbox");
 			var shadow_Under_Thunderholme_Checkbox_Element = document.getElementById("shadow_Under_Thunderholme_Checkbox");
 			var shadowfell_Conspiracy_Checkbox_Element = document.getElementById("shadowfell_Conspiracy_Checkbox");
+			var sinister_Secret_Of_Saltmarsh_Checkbox_Element = document.getElementById("sinister_Secret_Of_Saltmarsh_Checkbox");
+			var slice_Of_Life_Checkbox_Element = document.getElementById("slice_Of_Life_Checkbox");
 			var sorrowdusk_Isle_Checkbox_Element = document.getElementById("sorrowdusk_Isle_Checkbox");
 			var tangleroot_Gorge_Checkbox_Element = document.getElementById("tangleroot_Gorge_Checkbox");
 			var the_Catacombs_Checkbox_Element = document.getElementById("the_Catacombs_Checkbox");
@@ -231,6 +253,8 @@
 			var the_Druids_Deep_Checkbox_Element = document.getElementById("the_Druids_Deep_Checkbox");
 			var the_Haunted_Halls_Of_Eveningstar_Checkbox_Element = document.getElementById("the_Haunted_Halls_Of_Eveningstar_Checkbox");
 			var the_High_Road_Of_Shadows_Checkbox_Element = document.getElementById("the_High_Road_Of_Shadows_Checkbox");
+			var the_Isle_Of_Dread_Checkbox_Element = document.getElementById("the_Isle_Of_Dread_Checkbox");
+			var the_Lost_Gatekeepers_Checkbox_Element = document.getElementById("the_Lost_Gatekeepers_Checkbox");
 			var the_Mines_Of_Tethyamar_Checkbox_Element = document.getElementById("the_Mines_Of_Tethyamar_Checkbox");
 			var the_Necropolis_Part_1_Checkbox_Element = document.getElementById("the_Necropolis_Part_1_Checkbox");
 			var the_Necropolis_Part_2_Checkbox_Element = document.getElementById("the_Necropolis_Part_2_Checkbox");
@@ -243,12 +267,14 @@
 			var the_Ruins_Of_Threnal_Checkbox_Element = document.getElementById("the_Ruins_Of_Threnal_Checkbox");
 			var the_Seal_Of_Shan_To_Kor_Checkbox_Element = document.getElementById("the_Seal_Of_Shan_To_Kor_Checkbox");
 			var the_Sharn_Syndicate_Checkbox_Element = document.getElementById("the_Sharn_Syndicate_Checkbox");
+			var the_Soul_Splitter_Checkbox_Element = document.getElementById("the_Soul_Splitter_Checkbox");
 			var the_Temple_Of_Elemental_Evil_Checkbox_Element = document.getElementById("the_Temple_Of_Elemental_Evil_Checkbox");
 			var the_Vale_Of_Twilight_Checkbox_Element = document.getElementById("the_Vale_Of_Twilight_Checkbox");
 			var the_Vault_Of_Night_Checkbox_Element = document.getElementById("the_Vault_Of_Night_Checkbox");
 			var three_Barrel_Cove_Checkbox_Element = document.getElementById("three_Barrel_Cove_Checkbox");
 			var trials_Of_The_Archons_Checkbox_Element = document.getElementById("trials_Of_The_Archons_Checkbox");
 			var vaults_Of_The_Artificers_Checkbox_Element = document.getElementById("vaults_Of_The_Artificers_Checkbox");
+			var vecna_Unleashed_Checkbox_Element = document.getElementById("vecna_Unleashed_Checkbox");
 			var white_Plume_Mountain_And_Other_Tales_Checkbox_Element = document.getElementById("white_Plume_Mountain_And_Other_Tales_Checkbox");
 			
 			var contains_Phrases_Input_Box_Element = document.getElementById("contains_Phrases_Input_Box");
@@ -381,6 +407,22 @@
 								continue;
 							}
 							break;
+						case "Fables of the Feywild":
+							if(fables_Of_The_Feywild_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Grip of the Hidden Hand":
+							if(grip_Of_The_Hidden_Hand_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
 						case "Harbinger of Madness":
 							if(harbinger_Of_Madness_Checkbox_Element.checked === true)
 							{
@@ -397,6 +439,38 @@
 								continue;
 							}
 							break;
+						case "Hunter and Hunted":
+							if(hunter_And_Hunted_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Keep on the Borderlands":
+							if(keep_On_The_Borderlands_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Magic of Myth Drannor":
+							if(magic_Of_Myth_Drannor_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Masterminds of Sharn":
+							if(masterminds_Of_Sharn_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
 						case "Menace of the Underdark":
 							if(menace_Of_The_Underdark_Checkbox_Element.checked === true)
 							{
@@ -407,6 +481,14 @@
 							break;
 						case "Mists of Ravenloft":
 							if(mists_Of_Ravenloft_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Peril of the Planar Eyes":
+							if(peril_Of_The_Planar_Eyes_Checkbox_Element.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -463,6 +545,22 @@
 							break;
 						case "Shadowfell Conspiracy":
 							if(shadowfell_Conspiracy_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Sinister Secret of Saltmarsh":
+							if(sinister_Secret_Of_Saltmarsh_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Slice of Life":
+							if(slice_Of_Life_Checkbox_Element.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -535,6 +633,22 @@
 							break;
 						case "The High Road of Shadows":
 							if(the_High_Road_Of_Shadows_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Isle of Dread":
+							if(the_Isle_Of_Dread_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "The Lost Gatekeepers":
+							if(the_Lost_Gatekeepers_Checkbox_Element.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -637,6 +751,14 @@
 								continue;
 							}
 							break;
+						case "The Soul Splitter":
+							if(the_Soul_Splitter_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
 						case "The Temple of Elemental Evil":
 							if(the_Temple_Of_Elemental_Evil_Checkbox_Element.checked === true)
 							{
@@ -679,6 +801,14 @@
 							break;
 						case "Vaults of the Artificers":
 							if(vaults_Of_The_Artificers_Checkbox_Element.checked === true)
+							{
+								table_Body_Element.children[i].style.display = "none";
+								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+								continue;
+							}
+							break;
+						case "Vecna Unleashed":
+							if(vecna_Unleashed_Checkbox_Element.checked === true)
 							{
 								table_Body_Element.children[i].style.display = "none";
 								number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -905,10 +1035,17 @@
 				window.localStorage.setItem("disciples_Of_Rage_Checkbox", disciples_Of_Rage_Checkbox_Element.checked);
 				window.localStorage.setItem("dragonblood_Prophecy_Checkbox", dragonblood_Prophecy_Checkbox_Element.checked);
 				window.localStorage.setItem("eveningstar_Challenge_Pack_Checkbox", eveningstar_Challenge_Pack_Checkbox_Element.checked);
+				window.localStorage.setItem("fables_Of_The_Feywild_Checkbox", fables_Of_The_Feywild_Checkbox_Element.checked);
+				window.localStorage.setItem("grip_Of_The_Hidden_Hand_Checkbox", grip_Of_The_Hidden_Hand_Checkbox_Element.checked);
 				window.localStorage.setItem("harbinger_Of_Madness_Checkbox", harbinger_Of_Madness_Checkbox_Element.checked);
 				window.localStorage.setItem("heart_Of_Madness_Checkbox", heart_Of_Madness_Checkbox_Element.checked);
+				window.localStorage.setItem("hunter_And_Hunted_Checkbox", hunter_And_Hunted_Checkbox_Element.checked);
+				window.localStorage.setItem("keep_On_The_Borderlands_Checkbox", keep_On_The_Borderlands_Checkbox_Element.checked);
+				window.localStorage.setItem("magic_Of_Myth_Drannor_Checkbox", magic_Of_Myth_Drannor_Checkbox_Element.checked);
+				window.localStorage.setItem("masterminds_Of_Sharn_Checkbox", masterminds_Of_Sharn_Checkbox_Element.checked);
 				window.localStorage.setItem("menace_Of_The_Underdark_Checkbox", menace_Of_The_Underdark_Checkbox_Element.checked);
 				window.localStorage.setItem("mists_Of_Ravenloft_Checkbox", mists_Of_Ravenloft_Checkbox_Element.checked);
+				window.localStorage.setItem("peril_Of_The_Planar_Eyes_Checkbox", peril_Of_The_Planar_Eyes_Checkbox_Element.checked);
 				window.localStorage.setItem("phiarlan_Carnival_Checkbox", phiarlan_Carnival_Checkbox_Element.checked);
 				window.localStorage.setItem("reign_Of_Madness_Checkbox", reign_Of_Madness_Checkbox_Element.checked);
 				window.localStorage.setItem("ruins_Of_Gianthold_Checkbox", ruins_Of_Gianthold_Checkbox_Element.checked);
@@ -916,6 +1053,8 @@
 				window.localStorage.setItem("sentinels_Of_Stormreach_Checkbox", sentinels_Of_Stormreach_Checkbox_Element.checked);
 				window.localStorage.setItem("shadow_Under_Thunderholme_Checkbox", shadow_Under_Thunderholme_Checkbox_Element.checked);
 				window.localStorage.setItem("shadowfell_Conspiracy_Checkbox", shadowfell_Conspiracy_Checkbox_Element.checked);
+				window.localStorage.setItem("sinister_Secret_Of_Saltmarsh_Checkbox", sinister_Secret_Of_Saltmarsh_Checkbox_Element.checked);
+				window.localStorage.setItem("slice_Of_Life_Checkbox", slice_Of_Life_Checkbox_Element.checked);
 				window.localStorage.setItem("sorrowdusk_Isle_Checkbox", sorrowdusk_Isle_Checkbox_Element.checked);
 				window.localStorage.setItem("tangleroot_Gorge_Checkbox", tangleroot_Gorge_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Catacombs_Checkbox", the_Catacombs_Checkbox_Element.checked);
@@ -925,6 +1064,8 @@
 				window.localStorage.setItem("the_Druids_Deep_Checkbox", the_Druids_Deep_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Haunted_Halls_Of_Eveningstar_Checkbox", the_Haunted_Halls_Of_Eveningstar_Checkbox_Element.checked);
 				window.localStorage.setItem("the_High_Road_Of_Shadows_Checkbox", the_High_Road_Of_Shadows_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Isle_Of_Dread_Checkbox", the_Isle_Of_Dread_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Lost_Gatekeepers_Checkbox", the_Lost_Gatekeepers_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Mines_Of_Tethyamar_Checkbox", the_Mines_Of_Tethyamar_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Necropolis_Part_1_Checkbox", the_Necropolis_Part_1_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Necropolis_Part_2_Checkbox", the_Necropolis_Part_2_Checkbox_Element.checked);
@@ -937,12 +1078,14 @@
 				window.localStorage.setItem("the_Ruins_Of_Threnal_Checkbox", the_Ruins_Of_Threnal_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Seal_Of_Shan_To_Kor_Checkbox", the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Sharn_Syndicate_Checkbox", the_Sharn_Syndicate_Checkbox_Element.checked);
+				window.localStorage.setItem("the_Soul_Splitter_Checkbox", the_Soul_Splitter_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Temple_Of_Elemental_Evil_Checkbox", the_Temple_Of_Elemental_Evil_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Vale_Of_Twilight_Checkbox", the_Vale_Of_Twilight_Checkbox_Element.checked);
 				window.localStorage.setItem("the_Vault_Of_Night_Checkbox", the_Vault_Of_Night_Checkbox_Element.checked);
 				window.localStorage.setItem("three_Barrel_Cove_Checkbox", three_Barrel_Cove_Checkbox_Element.checked);
 				window.localStorage.setItem("trials_Of_The_Archons_Checkbox", trials_Of_The_Archons_Checkbox_Element.checked);
 				window.localStorage.setItem("vaults_Of_The_Artificers_Checkbox", vaults_Of_The_Artificers_Checkbox_Element.checked);
+				window.localStorage.setItem("vecna_Unleashed_Checkbox", vecna_Unleashed_Checkbox_Element.checked);
 				window.localStorage.setItem("white_Plume_Mountain_And_Other_Tales_Checkbox", white_Plume_Mountain_And_Other_Tales_Checkbox_Element.checked);
 
 				window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
@@ -1095,10 +1238,17 @@
 				disciples_Of_Rage_Checkbox_Element.checked = false;
 				dragonblood_Prophecy_Checkbox_Element.checked = false;
 				eveningstar_Challenge_Pack_Checkbox_Element.checked = false;
+				fables_Of_The_Feywild_Checkbox_Element.checked = false;
+				grip_Of_The_Hidden_Hand_Checkbox_Element.checked = false;
 				harbinger_Of_Madness_Checkbox_Element.checked = false;
 				heart_Of_Madness_Checkbox_Element.checked = false;
+				hunter_And_Hunted_Checkbox_Element.checked = false;
+				keep_On_The_Borderlands_Checkbox_Element.checked = false;
+				magic_Of_Myth_Drannor_Checkbox_Element.checked = false;
+				masterminds_Of_Sharn_Checkbox_Element.checked = false;
 				menace_Of_The_Underdark_Checkbox_Element.checked = false;
 				mists_Of_Ravenloft_Checkbox_Element.checked = false;
+				peril_Of_The_Planar_Eyes_Checkbox_Element.checked = false;
 				phiarlan_Carnival_Checkbox_Element.checked = false;
 				reign_Of_Madness_Checkbox_Element.checked = false;
 				ruins_Of_Gianthold_Checkbox_Element.checked = false;
@@ -1106,6 +1256,8 @@
 				sentinels_Of_Stormreach_Checkbox_Element.checked = false;
 				shadow_Under_Thunderholme_Checkbox_Element.checked = false;
 				shadowfell_Conspiracy_Checkbox_Element.checked = false;
+				sinister_Secret_Of_Saltmarsh_Checkbox_Element.checked = false;
+				slice_Of_Life_Checkbox_Element.checked = false;
 				sorrowdusk_Isle_Checkbox_Element.checked = false;
 				tangleroot_Gorge_Checkbox_Element.checked = false;
 				the_Catacombs_Checkbox_Element.checked = false;
@@ -1115,6 +1267,8 @@
 				the_Druids_Deep_Checkbox_Element.checked = false;
 				the_Haunted_Halls_Of_Eveningstar_Checkbox_Element.checked = false;
 				the_High_Road_Of_Shadows_Checkbox_Element.checked = false;
+				the_Isle_Of_Dread_Checkbox_Element.checked = false;
+				the_Lost_Gatekeepers_Checkbox_Element.checked = false;
 				the_Mines_Of_Tethyamar_Checkbox_Element.checked = false;
 				the_Necropolis_Part_1_Checkbox_Element.checked = false;
 				the_Necropolis_Part_2_Checkbox_Element.checked = false;
@@ -1127,12 +1281,14 @@
 				the_Ruins_Of_Threnal_Checkbox_Element.checked = false;
 				the_Seal_Of_Shan_To_Kor_Checkbox_Element.checked = false;
 				the_Sharn_Syndicate_Checkbox_Element.checked = false;
+				the_Soul_Splitter_Checkbox_Element.checked = false;
 				the_Temple_Of_Elemental_Evil_Checkbox_Element.checked = false;
 				the_Vale_Of_Twilight_Checkbox_Element.checked = false;
 				the_Vault_Of_Night_Checkbox_Element.checked = false;
 				three_Barrel_Cove_Checkbox_Element.checked = false;
 				trials_Of_The_Archons_Checkbox_Element.checked = false;
 				vaults_Of_The_Artificers_Checkbox_Element.checked = false;
+				vecna_Unleashed_Checkbox_Element.checked = false;
 				white_Plume_Mountain_And_Other_Tales_Checkbox_Element.checked = false;
 				contains_Phrases_Input_Box_Element.value = contains_Phrases_Input_Box_Element.getAttribute("value");
 				does_Not_Contain_Phrases_Input_Box_Element.value = does_Not_Contain_Phrases_Input_Box_Element.getAttribute("value");
@@ -1201,6 +1357,14 @@
 				{
 					eveningstar_Challenge_Pack_Checkbox_Element.checked = true;
 				}
+				if(window.localStorage.getItem("fables_Of_The_Feywild_Checkbox") === "true")
+				{
+					fables_Of_The_Feywild_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("grip_Of_The_Hidden_Hand_Checkbox") === "true")
+				{
+					grip_Of_The_Hidden_Hand_Checkbox_Element.checked = true;
+				}
 				if(window.localStorage.getItem("harbinger_Of_Madness_Checkbox") === "true")
 				{
 					harbinger_Of_Madness_Checkbox_Element.checked = true;
@@ -1209,6 +1373,22 @@
 				{
 					heart_Of_Madness_Checkbox_Element.checked = true;
 				}
+				if(window.localStorage.getItem("hunter_And_Hunted_Checkbox") === "true")
+				{
+					hunter_And_Hunted_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("keep_On_The_Borderlands_Checkbox") === "true")
+				{
+					keep_On_The_Borderlands_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("magic_Of_Myth_Drannor_Checkbox") === "true")
+				{
+					magic_Of_Myth_Drannor_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("masterminds_Of_Sharn_Checkbox") === "true")
+				{
+					masterminds_Of_Sharn_Checkbox_Element.checked = true;
+				}
 				if(window.localStorage.getItem("menace_Of_The_Underdark_Checkbox") === "true")
 				{
 					menace_Of_The_Underdark_Checkbox_Element.checked = true;
@@ -1216,6 +1396,10 @@
 				if(window.localStorage.getItem("mists_Of_Ravenloft_Checkbox") === "true")
 				{
 					mists_Of_Ravenloft_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("peril_Of_The_Planar_Eyes_Checkbox") === "true")
+				{
+					peril_Of_The_Planar_Eyes_Checkbox_Element.checked = true;
 				}
 				if(window.localStorage.getItem("phiarlan_Carnival_Checkbox") === "true")
 				{
@@ -1244,6 +1428,14 @@
 				if(window.localStorage.getItem("shadowfell_Conspiracy_Checkbox") === "true")
 				{
 					shadowfell_Conspiracy_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("sinister_Secret_Of_Saltmarsh_Checkbox") === "true")
+				{
+					sinister_Secret_Of_Saltmarsh_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("slice_Of_Life_Checkbox") === "true")
+				{
+					slice_Of_Life_Checkbox_Element.checked = true;
 				}
 				if(window.localStorage.getItem("sorrowdusk_Isle_Checkbox") === "true")
 				{
@@ -1280,6 +1472,14 @@
 				if(window.localStorage.getItem("the_High_Road_Of_Shadows_Checkbox") === "true")
 				{
 					the_High_Road_Of_Shadows_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Isle_Of_Dread_Checkbox") === "true")
+				{
+					the_Isle_Of_Dread_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("the_Lost_Gatekeepers_Checkbox") === "true")
+				{
+					the_Lost_Gatekeepers_Checkbox_Element.checked = true;
 				}
 				if(window.localStorage.getItem("the_Mines_Of_Tethyamar_Checkbox") === "true")
 				{
@@ -1329,6 +1529,10 @@
 				{
 					the_Sharn_Syndicate_Checkbox_Element.checked = true;
 				}
+				if(window.localStorage.getItem("the_Soul_Splitter_Checkbox") === "true")
+				{
+					the_Soul_Splitter_Checkbox_Element.checked = true;
+				}
 				if(window.localStorage.getItem("the_Temple_Of_Elemental_Evil_Checkbox") === "true")
 				{
 					the_Temple_Of_Elemental_Evil_Checkbox_Element.checked = true;
@@ -1352,6 +1556,10 @@
 				if(window.localStorage.getItem("vaults_Of_The_Artificers_Checkbox") === "true")
 				{
 					vaults_Of_The_Artificers_Checkbox_Element.checked = true;
+				}
+				if(window.localStorage.getItem("vecna_Unleashed_Checkbox") === "true")
+				{
+					vecna_Unleashed_Checkbox_Element.checked = true;
 				}
 				if(window.localStorage.getItem("white_Plume_Mountain_And_Other_Tales_Checkbox") === "true")
 				{
