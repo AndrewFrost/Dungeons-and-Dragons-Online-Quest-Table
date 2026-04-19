@@ -399,7 +399,7 @@
 				}
 			}
 
-			function quest_Name_Sort(item_1, item_2)	//Quest names should not contain the > character side from the the ones present in <a>Name</a> and should always be closed properly if it has a hidden URL
+			function quest_Name_Sort(item_1, item_2)	//Quest names should not contain the > character aside from the the ones present in <a>Name</a> and should always be closed properly if it has a hidden URL
 			{
 				var item_1_Quest_Name = item_1[current_Sort_Selection][item_1[current_Sort_Selection].length - 1] === ">" ? item_1[current_Sort_Selection].split(">")[1].split("<")[0] : item_1[current_Sort_Selection];
 				var item_2_Quest_Name = item_2[current_Sort_Selection][item_2[current_Sort_Selection].length - 1] === ">" ? item_2[current_Sort_Selection].split(">")[1].split("<")[0] : item_2[current_Sort_Selection];
@@ -521,9 +521,9 @@
 			function convert_Table_To_Raw_String()
 			{
 				var raw_Text_Tab_Length = 4;
-				var raw_Text_Table_Column_Tab_Lengths_Array = [11, 2, 35, 3, 2, 2, 9, 8, 46, 0];
+				var raw_Text_Table_Column_Tab_Lengths_Array = [11, 2, 35, 3, 2, 2, 18, 10, 46, 0];
 				var number_Of_Extra_Characters_In_Row = 0;
-				var table_String = "//Completed,								Level,	Name,																																		Experience,	Time,	Favor,	Location,							Adventure Pack,					Damage Reduction Types,																																									Notes\r\nvar raw_Table_String = \r\n\"";
+				var table_String = "//Completed,								Level,	Name,																																		Experience,	Time,	Favor,	Location,																Adventure Pack,							Damage Reduction Types,																																									Notes\r\nvar raw_Table_String = \r\n\"";
 				for(i = 0; i < table_Body_Element.children.length; i++)
 				{
 					for(j = 0; j < sort_Selection_Type_Array.length; j++)
