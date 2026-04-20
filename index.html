@@ -786,6 +786,7 @@
 						}
 						else if(retrieve_Character_Location_Error_Counter >= 3)
 						{
+							retrieve_Character_Location_Error_Counter = 0;
 							disable_Location_Retrieval("An error was encountered repeatedly, location retrieval stopped. DDO Audit may be down and real-time character tracking may be offline.");
 						}
 					}
