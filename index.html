@@ -682,6 +682,7 @@
 			var last_Quest_Time_Entered_String = "";
 			var last_Quest_Time_In_Minutes = 0;
 			var current_Character_Level = 0;
+			var quest_Completion_Order = 1;
 			var retrieve_Character_Location_Error_Counter = 0;
 			async function retrieve_Character_Location()
 			{
@@ -719,6 +720,9 @@
 									table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.time].textContent = last_Quest_Time_In_Minutes;
 									table_Data_Changed(row_Index, column_Name_To_Array_Index.time);
 								}
+								table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent = table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent + " Quest order was " + quest_Completion_Order + " of the session.";
+								table_Data_Changed(row_Index, column_Name_To_Array_Index.notes);
+								quest_Completion_Order = quest_Completion_Order + 1;
 								last_Quest_Time_Entered_String = "";
 								last_Quest_Entered_String = "";
 							}
