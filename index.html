@@ -212,14 +212,6 @@
 		<script type = "text/javascript" src = "DDO_Audit_Location_ID_To_Area_Name_Map.js"><!--Creates a global variable DDO_Audit_Location_ID_To_Area_Name_Map for converting DDO Audit's Location ID into a location name-->
 		</script>
 		<script type = "text/javascript">
-			window.addEventListener	//Listens for navigation away from the page
-			(
-				"beforeunload", function(event)
-				{
-					event.preventDefault();
-				}
-			);
-
 			var table_Body_Element = document.getElementById("table_Body");
 			var download_Raw_String_Link_Element = document.getElementById("download_Raw_String_Link");
 
@@ -257,6 +249,11 @@
 			var character_Name_Input_Box_Element = document.getElementById("character_Name_Input_Box");
 			var server_Dropdown_Menu_Element = document.getElementById("server_Dropdown_Menu");
 			var autocomplete_Quests_On_Exit_Checkbox_Element = document.getElementById("autocomplete_Quests_On_Exit_Checkbox");
+			var autocomplete_Quests_Error_Message_Element = document.getElementById("autocomplete_Quests_Error_Message");
+			var current_Quest_Element = document.getElementById("current_Quest");
+			var current_Location_Element = document.getElementById("current_Location");
+			var last_Completed_Quest_Name_Element = document.getElementById("last_Completed_Quest_Name");
+			var last_Completed_Quest_Duration_Element = document.getElementById("last_Completed_Quest_Duration");
 
 			var table_Body_Array = [];		//Stores the table rows, which are themselves arrays of strings
 			var table_Data_Array_Copy = [];	//A copy of the array used to stablize the sort in Chrome. Data order will often be intentionally one update behind
@@ -540,9 +537,10 @@
 
 			function delete_Local_Storage()
 			{
-				if(window.confirm("Click 'OK' to delete local storage. It is recommended to do so after updates and to save the text file to your device periodically."))
+				if(window.confirm("If local storage is empty, the program will use raw_Table_String.js to build the table the next time the page is loaded, and may be necessary for updates. It is recommended to keep your own copy of raw_Table_String.js as a back-up. Click 'OK' to delete local storage."))
 				{
 					window.localStorage.clear();
+					window.onbeforeunload = null;
 				}
 			}
 
@@ -622,7 +620,6 @@
 				}
 			}
 
-			var exit_Warning_Function = function() {return true;};	//Simple function to trigger the page navigation confirmation event
 			function table_Data_Changed(table_Row, table_Column)
 			{
 				if(table_Column === column_Name_To_Array_Index.completed)	//The HTML of Checkboxes doesn't update when checked, so this will force them to do so with the new value for both the array and displayed table
@@ -643,7 +640,7 @@
 					table_Body_Array[table_Row][table_Column] = table_Body_Element.children[table_Row].children[table_Column].textContent;
 				}
 				filter_Table();
-				window.onbeforeunload = exit_Warning_Function;	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
+				window.onbeforeunload = function(){return true};	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
 			}
 
 			function toggle_Visibility(triggering_Button, toggled_Element_ID_String, button_String)
@@ -690,7 +687,7 @@
 			function disable_Location_Retrieval(error_Message)
 			{
 				autocomplete_Quests_On_Exit_Checkbox_Element.checked = false;
-				document.getElementById("autocomplete_Quests_Error_Message").innerHTML = error_Message;
+				autocomplete_Quests_Error_Message_Element.innerHTML = error_Message;
 				clearInterval(location_Retrieval_Interval_ID);
 				location_Retrieval_Interval_ID = "";
 			}
@@ -699,7 +696,7 @@
 			{
 				if(location_Retrieval_Interval_ID === "")
 				{
-					document.getElementById("autocomplete_Quests_Error_Message").innerHTML = "";
+					autocomplete_Quests_Error_Message_Element.innerHTML = "";
 					location_Retrieval_Interval_ID = setInterval(retrieve_Character_Location, 4000);
 					retrieve_Character_Location();
 				}
@@ -735,9 +732,9 @@
 						{
 							if(last_Quest_Time_Entered_String !== "" && last_Quest_Entered_String !== "")
 							{
-								document.getElementById("last_Completed_Quest_Name").innerHTML = last_Quest_Entered_String;
+								last_Completed_Quest_Name_Element.innerHTML = last_Quest_Entered_String;
 								last_Quest_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Quest_Time_Entered_String)) / 60000).toFixed(3);
-								document.getElementById("last_Completed_Quest_Duration").innerHTML = last_Quest_Time_In_Minutes;
+								last_Completed_Quest_Duration_Element.innerHTML = last_Quest_Time_In_Minutes;
 								for(var i = 0; i < table_Body_Array.length; i++)
 								{
 									if(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent === last_Quest_Entered_String)
@@ -760,17 +757,17 @@
 							if(DDO_Audit_Location_ID_To_Quest_Name_Map.get(result.data.location_id) !== undefined)
 							{
 								last_Quest_Entered_String = DDO_Audit_Location_ID_To_Quest_Name_Map.get(result.data.location_id);
-								document.getElementById("current_Quest").innerHTML = last_Quest_Entered_String;
+								current_Quest_Element.innerHTML = last_Quest_Entered_String;
 								last_Quest_Time_Entered_String = result.data.last_update;
 							}
 							else
 							{
-								document.getElementById("current_Quest").innerHTML = "None";
+								current_Quest_Element.innerHTML = "None";
 							}
-							document.getElementById("current_Location").innerHTML = DDO_Audit_Location_ID_To_Area_Name_Map.get(result.data.location_id);
+							current_Location_Element.innerHTML = DDO_Audit_Location_ID_To_Area_Name_Map.get(result.data.location_id);
 						}
 						last_Location_ID_Entered = result.data.location_id;
-						document.getElementById("autocomplete_Quests_Error_Message").innerHTML = "";
+						autocomplete_Quests_Error_Message_Element.innerHTML = "";
 						retrieve_Character_Location_Error_Counter = 0;
 						if(result.data.is_online === false)
 						{

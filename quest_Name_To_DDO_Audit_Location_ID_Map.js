@@ -659,7 +659,7 @@ var quest_Name_To_DDO_Audit_Location_ID_Map = new Map([
 var map_Array_String = "";	//Use when updating quest name mapping
 for(var i = 0; i < table_Body_Array.length; i++)
 {
-	console.log(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent);
+//	console.log(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent);
 	if(quest_Name_To_DDO_Audit_Location_ID_Map.get(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent) !== undefined)
 	{
 		map_Array_String = map_Array_String + "[" + quest_Name_To_DDO_Audit_Location_ID_Map.get(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent) + ", \"" + table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent + "\"],\n";
