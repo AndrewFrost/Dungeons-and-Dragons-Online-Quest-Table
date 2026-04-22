@@ -27,7 +27,6 @@
 				border-bottom: 1px solid black;
 			}
 
-
 			th
 			{
 				border: 1px solid black;
@@ -114,7 +113,7 @@
 		</style>
 	</head>
 	<body>
-		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "raw_Table_String.js" draggable = "false"><button onclick = "convert_Table_To_Raw_String()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
+		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "convert_Table_To_JSON()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
 		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "filter_Table()">
 			<br>
 			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37"></input><br>
@@ -239,13 +238,11 @@
 			<tbody id = "table_Body">
 			</tbody>
 		</table>
-		<script type = "text/javascript" src = "raw_Table_String.js"><!--Creates a global variable raw_Table_String which is the starting point for the table if no local changes have been saved-->
+		<script type = "text/javascript" src = "JSON_Table.js"><!--Creates a global variable table_Body_Array which is the starting point for the table if no local changes have been saved-->
 		</script>
 		<script type = "text/javascript" src = "DDO_Audit_Location_ID_To_Quest_Name_Map.js"><!--Creates a global variable DDO_Audit_Location_ID_To_Quest_Name_Map for converting DDO Audit's Location ID into properly tracked Quests-->
 		</script>
 		<script type = "text/javascript" src = "DDO_Audit_Location_ID_To_Area_Name_Map.js"><!--Creates a global variable DDO_Audit_Location_ID_To_Area_Name_Map for converting DDO Audit's Location ID into a location name-->
-		</script>
-		<script type = "text/javascript" src = "JSON_Table.js">
 		</script>
 		<script type = "text/javascript">
 			let table_Body_Element = document.getElementById("table_Body");
@@ -292,11 +289,10 @@
 			let last_Completed_Quest_Name_Element = document.getElementById("last_Completed_Quest_Name");
 			let last_Completed_Quest_Duration_Element = document.getElementById("last_Completed_Quest_Duration");
 
-			let table_Body_Array = [];		//Stores the table rows, which are themselves arrays of strings
 			let quest_Name_To_Table_Index_Map = new Map();
-
-			let column_Name_To_Array_Index = {	completed: 0,	level: 1,		quest_Name: 2,	experience: 3,	time: 4,		favor: 5,		location: 6,	adventure_Pack: 7,	damage_Reduction_Information: 8,	notes: 9};	//Update type as well if any changes are made
-			let sort_Selection_Type_Array = [	"Checkbox",		"Numerical",	"Quest Name",	"Numerical",	"Numerical",	"Numerical",	"Alphabetical",	"Alphabetical",		"Alphabetical",						"Alphabetical"];	//The type of sort to use on each selection
+			let column_Name_To_Array_Index =		{	completed: 0,	level: 1,		quest_Name: 2,	experience: 3,	time: 4,		favor: 5,		location: 6,	adventure_Pack: 7,	damage_Reduction_Information: 8,	notes: 9};	//Update type as well if any changes are made
+			let index_To_Column_Name_Array =		[	"completed",	"level",		"quest_Name",	"experience",	"time",			"favor",		"location",		"adventure_Pack",	"damage_Reduction_Information",		"notes"];
+			let sort_Selection_Type_Array =			[	"Checkbox",		"Numerical",	"Quest Name",	"Numerical",	"Numerical",	"Numerical",	"Alphabetical",	"Alphabetical",		"Alphabetical",						"Alphabetical"];	//The type of sort to use on each selection
 			let sort_Selection_Ascending_State_Array = [1, 1, 1, -1, 1, -1, 1, 1, 1, 1];	//1 represents that the values for a selection type are ascending as the rows go down, -1 represents values are descending as the rows go down
 			let current_Sort_Selection = 1;
 /*			for(let i = 0; i < sort_Selection_Ascending_State_Array.length; i++)	//If switching to more dynamically set initialization, this works but causes a noticable flashing at the start, similar to when loading from local storage
@@ -423,20 +419,20 @@
 				for(let i = 0; i < table_Body_Array.length; i++)	//Fills the table with rows and data
 				{
 					let new_Table_Row = document.createElement("TR");
-					for(let j = 0; j < sort_Selection_Type_Array.length; j++)
+					for(const property in table_Body_Array[i])
 					{
 						let new_Table_Data = document.createElement("TD");
-						new_Table_Data.innerHTML = table_Body_Array[i][j];
-						if(j === column_Name_To_Array_Index.experience || j === column_Name_To_Array_Index.time || j === column_Name_To_Array_Index.damage_Reduction_Information || j === column_Name_To_Array_Index.notes)
+						new_Table_Data.innerHTML = table_Body_Array[i][property];
+						if(property === "experience" || property === "time" || property === "damage_Reduction_Information" || property === "notes")
 						{
 							new_Table_Data.setAttribute("contenteditable", "true");
 						}
-						else if(j === column_Name_To_Array_Index.quest_Name)
+						else if(property === "quest_Name")
 						{
-							let quest_Name_Without_Hyperlink = table_Body_Array[i][j][table_Body_Array[i][j].length - 1] === ">" ? table_Body_Array[i][j].split(">")[1].split("<")[0] : table_Body_Array[i][j];
+							let quest_Name_Without_Hyperlink = table_Body_Array[i][property][table_Body_Array[i][property].length - 1] === ">" ? table_Body_Array[i][property].split(">")[1].split("<")[0] : table_Body_Array[i][property];
 							quest_Name_To_Table_Index_Map.set(quest_Name_Without_Hyperlink, i);
 						}
-						new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + j + ")");
+						new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
 						new_Table_Row.appendChild(new_Table_Data);
 					}
 					table_Body_Element.appendChild(new_Table_Row);
@@ -446,7 +442,7 @@
 
 			function numerical_Sort(item_1, item_2)
 			{
-				if(Number(item_1[current_Sort_Selection]) < Number(item_2[current_Sort_Selection]))
+				if(Number(item_1[index_To_Column_Name_Array[current_Sort_Selection]]) < Number(item_2[index_To_Column_Name_Array[current_Sort_Selection]]))
 				{
 					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
 				}
@@ -458,8 +454,8 @@
 
 			function quest_Name_Sort(item_1, item_2)	//Quest names should not contain the > character aside from the the ones present in <a>Name</a> and should always be closed properly if it has a hidden URL
 			{
-				let item_1_Quest_Name = item_1[current_Sort_Selection][item_1[current_Sort_Selection].length - 1] === ">" ? item_1[current_Sort_Selection].split(">")[1].split("<")[0] : item_1[current_Sort_Selection];
-				let item_2_Quest_Name = item_2[current_Sort_Selection][item_2[current_Sort_Selection].length - 1] === ">" ? item_2[current_Sort_Selection].split(">")[1].split("<")[0] : item_2[current_Sort_Selection];
+				let item_1_Quest_Name = item_1.quest_Name[item_1.quest_Name.length - 1] === ">" ? item_1.quest_Name.split(">")[1].split("<")[0] : item_1.quest_Name;
+				let item_2_Quest_Name = item_2.quest_Name[item_2.quest_Name.length - 1] === ">" ? item_2.quest_Name.split(">")[1].split("<")[0] : item_2.quest_Name;
 				if(item_1_Quest_Name < item_2_Quest_Name)
 				{
 					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
@@ -472,7 +468,7 @@
 
 			function alphabetical_Sort(item_1, item_2)
 			{
-				if(item_1[current_Sort_Selection] < item_2[current_Sort_Selection])
+				if(item_1[index_To_Column_Name_Array[current_Sort_Selection]] < item_2[index_To_Column_Name_Array[current_Sort_Selection]])
 				{
 					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
 				}
@@ -571,100 +567,84 @@
 				}
 			}
 
-			function convert_Table_To_Raw_String()
+			function convert_Table_To_JSON()
 			{
-				let raw_Text_Tab_Length = 4;
-				let raw_Text_Table_Column_Tab_Lengths_Array = [11, 2, 35, 3, 2, 2, 18, 10, 46, 0];
-				let number_Of_Extra_Characters_In_Row = 0;
-				let table_String = "//Completed,								Level,	Name,																																		Experience,	Time,	Favor,	Location,																Adventure Pack,							Damage Reduction Types,																																									Notes\r\nlet raw_Table_String = \r\n\"";
+				let JSON_Table_String = "let JSON_Table = [\n";
 				for(let i = 0; i < table_Body_Element.children.length; i++)
 				{
+					JSON_Table_String = JSON_Table_String + "{\n";
 					for(let j = 0; j < sort_Selection_Type_Array.length; j++)
 					{
-						number_Of_Extra_Characters_In_Row = 0;
-						for(k = 0; k < table_Body_Element.children[i].children[j].innerHTML.length; k++)
+						JSON_Table_String = JSON_Table_String + index_To_Column_Name_Array[j] + ": ";
+						if(sort_Selection_Type_Array[j] === "Alphabetical" || sort_Selection_Type_Array[j] === "Quest Name" || sort_Selection_Type_Array[j] === "Checkbox")
 						{
-							if(table_Body_Element.children[i].children[j].innerHTML[k] === '\'' || table_Body_Element.children[i].children[j].innerHTML[k] === '\"')
+							JSON_Table_String = JSON_Table_String + "\"";
+							for(k = 0; k < table_Body_Element.children[i].children[j].innerHTML.length; k++)
 							{
-								table_String = table_String + '\\';
-								number_Of_Extra_Characters_In_Row = number_Of_Extra_Characters_In_Row + 1;
+								if(table_Body_Element.children[i].children[j].innerHTML[k] === '\'' || table_Body_Element.children[i].children[j].innerHTML[k] === '\"')
+								{
+									JSON_Table_String = JSON_Table_String + '\\';
+								}
+								JSON_Table_String = JSON_Table_String + table_Body_Element.children[i].children[j].innerHTML[k];
 							}
-							table_String = table_String + table_Body_Element.children[i].children[j].innerHTML[k];
+							JSON_Table_String = JSON_Table_String + "\"";
 						}
-						for(k = 0; k < Math.max(raw_Text_Table_Column_Tab_Lengths_Array[j] - ((table_Body_Element.children[i].children[j].innerHTML.length + number_Of_Extra_Characters_In_Row) / raw_Text_Tab_Length), raw_Text_Table_Column_Tab_Lengths_Array[j] === 0 ? 0 : 1); k++)
+						else if(sort_Selection_Type_Array[j] === "Numerical")
 						{
-							table_String = table_String + "\t";
+							for(k = 0; k < table_Body_Element.children[i].children[j].innerHTML.length; k++)
+							{
+								JSON_Table_String = JSON_Table_String + table_Body_Element.children[i].children[j].innerHTML[k];
+							}
+						}
+						if(j !== sort_Selection_Type_Array.length - 1)
+						{
+							JSON_Table_String = JSON_Table_String + ",\n";
+						}
+						else
+						{
+							JSON_Table_String = JSON_Table_String + "\n";
 						}
 					}
-					table_String = table_String + "\\n\\\r\n";
+					if(i !== table_Body_Element.children.length - 1)
+					{
+						JSON_Table_String = JSON_Table_String + "},\n";
+					}
+					else
+					{
+						JSON_Table_String = JSON_Table_String + "}\n";
+					}
 				}
-				table_String = table_String + "\";\r\n"
+				JSON_Table_String = JSON_Table_String + "];";
 
 				window.URL.revokeObjectURL(download_Raw_String_Link_Element.href);
 				let table_Blob = new Blob
 				(
-					[table_String],
+					[JSON_Table_String],
 					{
-						type: 'text/plain'
+						type: 'text/javascript'
 					}
 				);
 				download_Raw_String_Link_Element.href = window.URL.createObjectURL(table_Blob);
-			}
-
-			function convert_Raw_String_To_Table()
-			{
-				//raw_Table_String is a global string available from raw_String_Table.js
-				let temporary_Table_Data_String = "";
-				let temporary_Table_Row_Array = [];
-				for(let i = 0; i < raw_Table_String.length; i++)
-				{
-					if(raw_Table_String[i] !== "\t" && raw_Table_String[i] !== "\n")
-					{
-						temporary_Table_Data_String = temporary_Table_Data_String + raw_Table_String[i];
-					}
-					else if(raw_Table_String[i] === "\t")
-					{
-						if(temporary_Table_Data_String.length != 0)
-						{
-							temporary_Table_Row_Array.push(temporary_Table_Data_String);
-						}
-						temporary_Table_Data_String = "";
-					}
-					else
-					{
-						if(temporary_Table_Data_String.length != 0)
-						{
-							temporary_Table_Row_Array.push(temporary_Table_Data_String);
-						}
-						while(temporary_Table_Row_Array.length < sort_Selection_Type_Array.length)
-						{
-							temporary_Table_Row_Array.push("");
-						}
-						table_Body_Array.push(temporary_Table_Row_Array);
-						temporary_Table_Row_Array = [];
-						temporary_Table_Data_String = "";
-					}
-				}
 			}
 
 			function table_Data_Changed(table_Row, table_Column)
 			{
 				if(table_Column === column_Name_To_Array_Index.completed)	//The HTML of Checkboxes doesn't update when checked, so this will force them to do so with the new value for both the array and displayed table
 				{
-					if(table_Body_Array[table_Row][table_Column] === "<input type=\"checkbox\" checked=\"\">")
+					if(table_Body_Array[table_Row].completed === "<input type=\"checkbox\" checked=\"\">")
 					{
-						table_Body_Array[table_Row][table_Column] = "<input type=\"checkbox\">";
+						table_Body_Array[table_Row].completed = "<input type=\"checkbox\">";
 						table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.completed].innerHTML = "<input type=\"checkbox\">";
 					}
 					else
 					{
-						table_Body_Array[table_Row][table_Column] = "<input type=\"checkbox\" checked=\"\">";
+						table_Body_Array[table_Row].completed = "<input type=\"checkbox\" checked=\"\">";
 						table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.completed].innerHTML = "<input type=\"checkbox\" checked=\"\">";
 					}
 				}
 				else
 				{
-					table_Body_Array[table_Row][table_Column] = table_Body_Element.children[table_Row].children[table_Column].textContent;
+					table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = table_Body_Element.children[table_Row].children[table_Column].textContent;
 				}
 				filter_Table();
 				window.onbeforeunload = function(){return true};	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
@@ -765,11 +745,11 @@
 								last_Quest_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Quest_Time_Entered_String)) / 60000).toFixed(3);
 								last_Completed_Quest_Duration_Element.innerHTML = last_Quest_Time_In_Minutes;
 								let row_Index = quest_Name_To_Table_Index_Map.get(last_Quest_Entered_String);
-								if(table_Body_Array[row_Index][column_Name_To_Array_Index.completed] === "<input type=\"checkbox\">")
+								if(table_Body_Array[row_Index].completed === "<input type=\"checkbox\">")
 								{
 									table_Data_Changed(row_Index, column_Name_To_Array_Index.completed);
 								}
-								if(Number(table_Body_Array[row_Index][column_Name_To_Array_Index.time]) > last_Quest_Time_In_Minutes)
+								if(Number(table_Body_Array[row_Index].time) > last_Quest_Time_In_Minutes)
 								{
 									table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent = table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent + " Time changed from " + table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.time].textContent + " to " + last_Quest_Time_In_Minutes + ".";
 									table_Data_Changed(row_Index, column_Name_To_Array_Index.notes);
@@ -819,11 +799,7 @@
 				}
 			}
 
-			if(window.localStorage.getItem("table_Body_Data") === null)
-			{
-				convert_Raw_String_To_Table();
-			}
-			else
+			if(window.localStorage.getItem("table_Body_Data") !== null)
 			{
 				table_Body_Array = JSON.parse(window.localStorage.getItem("table_Body_Data"));
 
@@ -878,50 +854,6 @@
 				}
 			}
 			update_Table();
-
-			/*for(let i = 0; i < table_Body_Array.length; i++)	//Used to ensure the JSON format matches the loaded data
-			{
-				if(!((JSON_Table[i].completed === true && table_Body_Array[i][column_Name_To_Array_Index.completed] === "<input type=\"checkbox\" checked=\"\">") || (JSON_Table[i].completed === false && table_Body_Array[i][column_Name_To_Array_Index.completed] === "<input type=\"checkbox\">")))
-				{
-					console.log("Completed did not match for index " + i + ": JSON_Table[i].completed: " + JSON_Table[i].completed + ". table_Body_Array[i][column_Name_To_Array_Index.completed]: " + table_Body_Array[i][column_Name_To_Array_Index.completed]);
-				}
-				if(JSON_Table[i].level !== Number(table_Body_Array[i][column_Name_To_Array_Index.level]))
-				{
-					console.log("Level did not match for index " + i + ": JSON_Table[i].level: " + JSON_Table[i].level + ". table_Body_Array[i][column_Name_To_Array_Index.level]: " + table_Body_Array[i][column_Name_To_Array_Index.level]);
-				}
-				if(JSON_Table[i].quest_Name !== table_Body_Array[i][column_Name_To_Array_Index.quest_Name])
-				{
-					console.log("name did not match for index " + i + ": JSON_Table[i].quest_Name: " + JSON_Table[i].quest_Name + ". table_Body_Array[i][column_Name_To_Array_Index.quest_Name]: " + table_Body_Array[i][column_Name_To_Array_Index.quest_Name]);
-				}
-				if(JSON_Table[i].experience !== Number(table_Body_Array[i][column_Name_To_Array_Index.experience]))
-				{
-					console.log("experience did not match for index " + i + ": JSON_Table[i].experience: " + JSON_Table[i].experience + ". table_Body_Array[i][column_Name_To_Array_Index.experience]: " + table_Body_Array[i][column_Name_To_Array_Index.experience]);
-				}
-				if(JSON_Table[i].time !== Number(table_Body_Array[i][column_Name_To_Array_Index.time]))
-				{
-					console.log("time did not match for index " + i + ": JSON_Table[i].time: " + JSON_Table[i].time + ". table_Body_Array[i][column_Name_To_Array_Index.time]: " + table_Body_Array[i][column_Name_To_Array_Index.time]);
-				}
-				if(JSON_Table[i].favor !== Number(table_Body_Array[i][column_Name_To_Array_Index.favor]))
-				{
-					console.log("favor did not match for index " + i + ": JSON_Table[i].favor: " + JSON_Table[i].favor + ". table_Body_Array[i][column_Name_To_Array_Index.favor]: " + table_Body_Array[i][column_Name_To_Array_Index.favor]);
-				}
-				if(JSON_Table[i].location !== table_Body_Array[i][column_Name_To_Array_Index.location])
-				{
-					console.log("location did not match for index " + i + ": JSON_Table[i].location: " + JSON_Table[i].location + ". table_Body_Array[i][column_Name_To_Array_Index.location]: " + table_Body_Array[i][column_Name_To_Array_Index.location]);
-				}
-				if(JSON_Table[i].adventure_Pack !== table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack])
-				{
-					console.log("adventure_Pack did not match for index " + i + ": JSON_Table[i].adventure_Pack: " + JSON_Table[i].adventure_Pack + ". table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack]: " + table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack]);
-				}
-				if(JSON_Table[i].damage_Reduction_Information !== table_Body_Array[i][column_Name_To_Array_Index.damage_Reduction_Information])
-				{
-					console.log("damage_Reduction_Information did not match for index " + i + ": JSON_Table[i].damage_Reduction_Information: " + JSON_Table[i].damage_Reduction_Information + ". table_Body_Array[i][column_Name_To_Array_Index.damage_Reduction_Information]: " + table_Body_Array[i][column_Name_To_Array_Index.damage_Reduction_Information]);
-				}
-				if(JSON_Table[i].notes !== table_Body_Array[i][column_Name_To_Array_Index.notes])
-				{
-					console.log("notes did not match for index " + i + ": JSON_Table[i].notes: " + JSON_Table[i].notes + ". table_Body_Array[i][column_Name_To_Array_Index.notes]: " + table_Body_Array[i][column_Name_To_Array_Index.notes]);
-				}
-			}*/
 		</script>
 		<!--<script type = "text/javascript" src = "quest_Name_To_DDO_Audit_Location_ID_Map.js">--><!--Use when updating DDO Audit's Location Mapping. Creates a global variable quest_Name_To_DDO_Audit_Location_ID_Map for converting quest names to DDO Audit's Location IDs and logs some information to the console-->
 		<!--</script>-->
