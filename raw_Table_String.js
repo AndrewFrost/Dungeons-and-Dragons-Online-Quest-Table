@@ -1,5 +1,5 @@
 //Completed,								Level,	Name,																																		Experience,	Time,	Favor,	Location,																Adventure Pack,							Damage Reduction Types,																																									Notes
-var raw_Table_String = 
+let raw_Table_String = 
 "<input type=\"checkbox\">					1		<a href=\"http://ddowiki.com/page/The_Collaborator\">The Collaborator</a>																	819			4.767	12		Korthos																	Free to Play							-																																														-\n\
 <input type=\"checkbox\">					1		<a href=\"http://ddowiki.com/page/Redemption_(quest)\">Redemption</a>																		628			9.033	9		Korthos																	Free to Play							-																																														-\n\
 <input type=\"checkbox\">					1		<a href=\"http://ddowiki.com/page/Sacrifices\">Sacrifices</a>																				628			8.033	9		Korthos																	Free to Play							-																																														-\n\

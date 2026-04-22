@@ -1,4 +1,4 @@
-var JSON_Table = [
+let JSON_Table = [
 {
 	"completed": false,
 	"level": 1,

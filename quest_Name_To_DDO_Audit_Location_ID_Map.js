@@ -1,4 +1,4 @@
-var quest_Name_To_DDO_Audit_Location_ID_Map = new Map([
+let quest_Name_To_DDO_Audit_Location_ID_Map = new Map([
 ["Time Flies", 1879300861],
 ["Sorrowdusk Isle", 1879061486],
 ["The Final Draw", 1879300843],
@@ -656,8 +656,8 @@ var quest_Name_To_DDO_Audit_Location_ID_Map = new Map([
 ["Grand Theft Aureon", 1879283304]
 ]);
 
-var map_Array_String = "";	//Use when updating quest name mapping
-for(var i = 0; i < table_Body_Array.length; i++)
+let map_Array_String = "";	//Use when updating quest name mapping
+for(let i = 0; i < table_Body_Array.length; i++)
 {
 //	console.log(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent);
 	if(quest_Name_To_DDO_Audit_Location_ID_Map.get(table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent) !== undefined)

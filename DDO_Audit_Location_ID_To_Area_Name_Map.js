@@ -1,4 +1,4 @@
-var DDO_Audit_Location_ID_To_Area_Name_Map = new Map([
+let DDO_Audit_Location_ID_To_Area_Name_Map = new Map([
 [1879059422, "The Harbor - Indoors"],
 [1879059423, "House Phiarlan Enclave"],
 [1879059445, "Caverns of Shaagh"],
