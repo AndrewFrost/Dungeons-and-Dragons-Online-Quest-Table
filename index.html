@@ -31,26 +31,27 @@
 			{
 				border: 1px solid black;
 				cursor: pointer;
+				background-color: rgba(200, 200, 200, 1.0);
 			}
 
 			.ascending_Column
 			{
-				background-color: rgba(210, 255, 210, 1.0);
+				background-color: rgba(100, 150, 255, .9);
 			}
 
 			.descending_Column
 			{
-				background-color: rgba(255, 210, 210, 1.0);
+				background-color: rgba(255, 140, 50, .9);
 			}
 
 			.last_Sorted_Header.ascending_Column
 			{
-				background-color: rgba(180, 225, 180, 1.0);
+				background-color: rgba(50, 100, 200, 1.0);
 			}
 
 			.last_Sorted_Header.descending_Column
 			{
-				background-color: rgba(225, 180, 180, 1.0);
+				background-color: rgba(200, 100, 20, 1.0);
 			}
 
 			tr
@@ -223,16 +224,6 @@
 			<caption></caption>
 			<thead>
 				<tr  id = "table_Header_Row">
-					<th onclick = "sort_Table(0)" class = "ascending_Column">Completed</th>
-					<th onclick = "sort_Table(1)" class = "numerical_Column ascending_Column last_Sorted_Header">Level</th>
-					<th onclick = "sort_Table(2)" class = "alphabetical_Column ascending_Column">Quest Name</th>
-					<th onclick = "sort_Table(3)" class = "numerical_Column descending_Column">Exp</th>
-					<th onclick = "sort_Table(4)" class = "numerical_Column ascending_Column">Time</th>
-					<th onclick = "sort_Table(5)" class = "numerical_Column descending_Column">Favor</th>
-					<th onclick = "sort_Table(6)" class = "alphabetical_Column ascending_Column">Location</th>
-					<th onclick = "sort_Table(7)" class = "alphabetical_Column ascending_Column">Adventure Pack</th>
-					<th onclick = "sort_Table(8)" class = "alphabetical_Column ascending_Column">Damage Reduction Information</th>
-					<th onclick = "sort_Table(9)" class = "alphabetical_Column ascending_Column">Notes</th>
 				</tr>
 			</thead>
 			<tbody id = "table_Body">
@@ -290,16 +281,48 @@
 			let last_Completed_Quest_Duration_Element = document.getElementById("last_Completed_Quest_Duration");
 
 			let quest_Name_To_Table_Index_Map = new Map();
-			let column_Name_To_Array_Index =		{	completed: 0,	level: 1,		quest_Name: 2,	experience: 3,	time: 4,		favor: 5,		location: 6,	adventure_Pack: 7,	damage_Reduction_Information: 8,	notes: 9};	//Update type as well if any changes are made
-			let index_To_Column_Name_Array =		[	"completed",	"level",		"quest_Name",	"experience",	"time",			"favor",		"location",		"adventure_Pack",	"damage_Reduction_Information",		"notes"];
-			let sort_Selection_Type_Array =			[	"Checkbox",		"Numerical",	"Quest Name",	"Numerical",	"Numerical",	"Numerical",	"Alphabetical",	"Alphabetical",		"Alphabetical",						"Alphabetical"];	//The type of sort to use on each selection
-			let sort_Selection_Ascending_State_Array = [1, 1, 1, -1, 1, -1, 1, 1, 1, 1];	//1 represents that the values for a selection type are ascending as the rows go down, -1 represents values are descending as the rows go down
 			let current_Sort_Selection = 1;
-/*			for(let i = 0; i < sort_Selection_Ascending_State_Array.length; i++)	//If switching to more dynamically set initialization, this works but causes a noticable flashing at the start, similar to when loading from local storage
+
+			function generate_Table_Headers()
 			{
-				update_Table_Header_View(i);
+				for(let i = 0; i < column_Properties.length; i++)
+				{
+					let new_Header = document.createElement("TH");
+					new_Header.textContent = column_Properties[i].displayName;
+					new_Header.onclick = function() { sort_Table(i); };
+
+					// Add column type class
+					if(column_Properties[i].type === "Alphabetical" || column_Properties[i].type === "Quest Name")
+					{
+						new_Header.classList.add("alphabetical_Column");
+					}
+					else if(column_Properties[i].type === "Numerical")
+					{
+						new_Header.classList.add("numerical_Column");
+					}
+
+					// Add ascending/descending class
+					if(sort_Selection_Ascending_State_Array[i] === 1)
+					{
+						new_Header.classList.add("ascending_Column");
+					}
+					else
+					{
+						new_Header.classList.add("descending_Column");
+					}
+
+					// Mark current sort selection
+					if(i === current_Sort_Selection)
+					{
+						new_Header.classList.add("last_Sorted_Header");
+					}
+
+					table_Header_Row_Element.appendChild(new_Header);
+				}
 			}
-//			table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");*/
+
+			generate_Table_Headers();
+
 			let number_Of_Items_Filtered = 0;
 
 			function filter_Table()

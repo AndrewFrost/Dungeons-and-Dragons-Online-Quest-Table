@@ -1,3 +1,29 @@
+let column_Properties = [
+    { name: "completed", displayName: "Completed", type: "Checkbox", ascending: 1 },
+    { name: "level", displayName: "Level", type: "Numerical", ascending: 1 },
+    { name: "quest_Name", displayName: "Quest Name", type: "Quest Name", ascending: 1 },
+    { name: "experience", displayName: "Exp", type: "Numerical", ascending: -1 },
+    { name: "time", displayName: "Time", type: "Numerical", ascending: 1 },
+    { name: "favor", displayName: "Favor", type: "Numerical", ascending: -1 },
+    { name: "location", displayName: "Location", type: "Alphabetical", ascending: 1 },
+    { name: "adventure_Pack", displayName: "Adventure Pack", type: "Alphabetical", ascending: 1 },
+    { name: "damage_Reduction_Information", displayName: "Damage Reduction Information", type: "Alphabetical", ascending: 1 },
+    { name: "notes", displayName: "Notes", type: "Alphabetical", ascending: 1 }
+];
+
+// Dynamically generate mapping objects from column_Properties
+let column_Name_To_Array_Index = {};
+let index_To_Column_Name_Array = [];
+let sort_Selection_Type_Array = [];
+let sort_Selection_Ascending_State_Array = [];
+
+for(let i = 0; i < column_Properties.length; i++) {
+    column_Name_To_Array_Index[column_Properties[i].name] = i;
+    index_To_Column_Name_Array.push(column_Properties[i].name);
+    sort_Selection_Type_Array.push(column_Properties[i].type);
+    sort_Selection_Ascending_State_Array.push(column_Properties[i].ascending);
+}
+
 let table_Body_Array = [
 {
 completed: "<input type=\"checkbox\">",
