@@ -302,14 +302,14 @@
 					}
 
 					// Add ascending/descending class
-					if(sort_Selection_Ascending_State_Array[i] === 1)
-					{
-						new_Header.classList.add("ascending_Column");
-					}
-					else
-					{
-						new_Header.classList.add("descending_Column");
-					}
+				if(column_Properties[i].ascending === 1)
+				{
+					new_Header.classList.add("ascending_Column");
+				}
+				else
+				{
+					new_Header.classList.add("descending_Column");
+				}
 
 					// Mark current sort selection
 					if(i === current_Sort_Selection)
@@ -495,11 +495,11 @@
 			{
 				if(Number(item_1[index_To_Column_Name_Array[current_Sort_Selection]]) < Number(item_2[index_To_Column_Name_Array[current_Sort_Selection]]))
 				{
-					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
+					return -1 * column_Properties[current_Sort_Selection].ascending;
 				}
 				else
 				{
-					return 1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
+					return 1 * column_Properties[current_Sort_Selection].ascending;
 				}
 			}
 
@@ -507,18 +507,18 @@
 			{
 				if(item_1[index_To_Column_Name_Array[current_Sort_Selection]] < item_2[index_To_Column_Name_Array[current_Sort_Selection]])
 				{
-					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
+					return -1 * column_Properties[current_Sort_Selection].ascending;
 				}
 				else
 				{
-					return 1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
+					return 1 * column_Properties[current_Sort_Selection].ascending;
 				}
 			}
 
 			function update_Table_Header_View(header_Index)
 			{
 				table_Header_Row_Element.children[header_Index].classList.remove("ascending_Column", "descending_Column");
-				if(sort_Selection_Ascending_State_Array[header_Index] === 1)
+				if(column_Properties[header_Index].ascending === 1)
 				{
 					table_Header_Row_Element.children[header_Index].classList.add("ascending_Column");
 				}
@@ -528,30 +528,30 @@
 				}
 			}
 
-			function sort_Table(sort_Selection)	//Orders the table by a column
+			function sort_Table(sort_Selection)    //Orders the table by a column
 			{
-				if(sort_Selection === current_Sort_Selection)	//Flip from ascending to/from descending if the user clicks on the already selected category to sort
+				if(sort_Selection === current_Sort_Selection)    //Flip from ascending to/from descending if the user clicks on the already selected category to sort
 				{
-					sort_Selection_Ascending_State_Array[sort_Selection] = sort_Selection_Ascending_State_Array[sort_Selection] * -1;
+					column_Properties[sort_Selection].ascending = column_Properties[sort_Selection].ascending * -1;
 					update_Table_Header_View(sort_Selection);
 				}
 				table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");
 				current_Sort_Selection = sort_Selection;
 				table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");
 
-				if(sort_Selection_Type_Array[current_Sort_Selection] === "Numerical")	//Numerical Sort
+				if(column_Properties[current_Sort_Selection].type === "Numerical")    //Numerical Sort
 				{
 					table_Body_Array.sort(numerical_Sort);
 				}
-				else	//Regular Alphabetical, also used for Checkboxes
+				else    //Regular Alphabetical, also used for Checkboxes
 				{
 					table_Body_Array.sort(alphabetical_Sort);
 				}
 
 				update_Table();
-			}
+		}
 
-			function save_To_Local_Storage()
+		function save_To_Local_Storage()
 			{
 				window.localStorage.setItem("table_Body_Data", JSON.stringify(table_Body_Array));
 
@@ -581,7 +581,7 @@
 				window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Does_Not_Contain_Phrases_Input_Box", does_Not_Contain_Phrases_Input_Box_Element.value);
 
-				window.localStorage.setItem("last_Sort_Selection_Ascending_State_Array", JSON.stringify(sort_Selection_Ascending_State_Array));
+				window.localStorage.setItem("last_Sort_Selection_Ascending_State_Array", JSON.stringify(column_Properties.map(column => column.ascending)));
 				window.localStorage.setItem("last_Sort_Selection", current_Sort_Selection);
 
 				window.localStorage.setItem("character_Name_Input_Box_Element", character_Name_Input_Box_Element.value);
@@ -602,34 +602,41 @@
 
 			function convert_Table_To_JSON()
 			{
-				let JSON_Table_String = "let JSON_Table = [\n";
-				for(let i = 0; i < table_Body_Element.children.length; i++)
+				let JSON_Table_String = "let column_Properties = [\n";
+				for(let i = 0; i < column_Properties.length; i++)
 				{
 					JSON_Table_String = JSON_Table_String + "{\n";
-					for(let j = 0; j < sort_Selection_Type_Array.length; j++)
+					JSON_Table_String = JSON_Table_String + "\tname: \"" + column_Properties[i].name + "\",\n";
+					JSON_Table_String = JSON_Table_String + "\tdisplayName: \"" + column_Properties[i].displayName + "\",\n";
+					JSON_Table_String = JSON_Table_String + "\ttype: \"" + column_Properties[i].type + "\",\n";
+					JSON_Table_String = JSON_Table_String + "\tvisible: " + column_Properties[i].visible + ",\n";
+					JSON_Table_String = JSON_Table_String + "\tascending: " + column_Properties[i].ascending + "\n";
+					if(i !== column_Properties.length - 1)
 					{
-						JSON_Table_String = JSON_Table_String + index_To_Column_Name_Array[j] + ": ";
-						if(sort_Selection_Type_Array[j] === "Alphabetical" || sort_Selection_Type_Array[j] === "Quest Name" || sort_Selection_Type_Array[j] === "Checkbox")
+						JSON_Table_String = JSON_Table_String + "},\n";
+					}
+					else
+					{
+						JSON_Table_String = JSON_Table_String + "}\n";
+					}
+				}
+				JSON_Table_String = JSON_Table_String + "];\n\nlet column_Name_To_Array_Index = {};\nlet index_To_Column_Name_Array = [];\n\nfor(let i = 0; i < column_Properties.length; i++)\n{\n\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n";
+				JSON_Table_String = JSON_Table_String + "let table_Body_Array = [\n";
+				for(let i = 0; i < table_Body_Array.length; i++)
+				{
+					JSON_Table_String = JSON_Table_String + "{\n";
+					for(let j = 0; j < column_Properties.length; j++)
+					{
+						JSON_Table_String = JSON_Table_String + "\t" +index_To_Column_Name_Array[j] + ": ";
+						if(column_Properties[j].type === "Alphabetical")
 						{
-							JSON_Table_String = JSON_Table_String + "\"";
-							for(k = 0; k < table_Body_Element.children[i].children[j].innerHTML.length; k++)
-							{
-								if(table_Body_Element.children[i].children[j].innerHTML[k] === '\'' || table_Body_Element.children[i].children[j].innerHTML[k] === '\"')
-								{
-									JSON_Table_String = JSON_Table_String + '\\';
-								}
-								JSON_Table_String = JSON_Table_String + table_Body_Element.children[i].children[j].innerHTML[k];
-							}
-							JSON_Table_String = JSON_Table_String + "\"";
+							JSON_Table_String = JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
 						}
-						else if(sort_Selection_Type_Array[j] === "Numerical")
+						else
 						{
-							for(k = 0; k < table_Body_Element.children[i].children[j].innerHTML.length; k++)
-							{
-								JSON_Table_String = JSON_Table_String + table_Body_Element.children[i].children[j].innerHTML[k];
-							}
+							JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]];
 						}
-						if(j !== sort_Selection_Type_Array.length - 1)
+						if(j !== column_Properties.length - 1)
 						{
 							JSON_Table_String = JSON_Table_String + ",\n";
 						}
@@ -638,7 +645,7 @@
 							JSON_Table_String = JSON_Table_String + "\n";
 						}
 					}
-					if(i !== table_Body_Element.children.length - 1)
+					if(i !== table_Body_Array.length - 1)
 					{
 						JSON_Table_String = JSON_Table_String + "},\n";
 					}
@@ -866,10 +873,14 @@
 				contains_Phrases_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Contains_Phrases_Input_Box");
 				does_Not_Contain_Phrases_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Does_Not_Contain_Phrases_Input_Box");
 
-				sort_Selection_Ascending_State_Array = JSON.parse(window.localStorage.getItem("last_Sort_Selection_Ascending_State_Array"));
-				for(let i = 0; i < table_Header_Row_Element.children.length && sort_Selection_Ascending_State_Array.length === table_Header_Row_Element.children.length; i++)
+				const savedAscendingStates = JSON.parse(window.localStorage.getItem("last_Sort_Selection_Ascending_State_Array"));
+				if(savedAscendingStates !== null)
 				{
-					update_Table_Header_View(i);
+					for(let i = 0; i < table_Header_Row_Element.children.length && savedAscendingStates.length === table_Header_Row_Element.children.length; i++)
+					{
+						column_Properties[i].ascending = savedAscendingStates[i];
+						update_Table_Header_View(i);
+					}
 				}
 
 				table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");

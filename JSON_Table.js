@@ -1,28 +1,90 @@
 let column_Properties = [
-    { name: "completed", displayName: "Completed", type: "Checkbox", ascending: 1, visible: true},
-    { name: "level", displayName: "Level", type: "Numerical", ascending: 1, visible: true},
-    { name: "quest_Name", displayName: "Quest Name", type: "Alphabetical", ascending: 1, visible: true},
-	{ name: "quest_Link", displayName: "Quest Link", type: "Alphabetical", ascending: 1, visible: false},
-    { name: "experience", displayName: "Exp", type: "Numerical", ascending: -1, visible: true},
-    { name: "time", displayName: "Time", type: "Numerical", ascending: 1, visible: true},
-    { name: "favor", displayName: "Favor", type: "Numerical", ascending: -1, visible: true},
-    { name: "location", displayName: "Location", type: "Alphabetical", ascending: 1, visible: true},
-    { name: "adventure_Pack", displayName: "Adventure Pack", type: "Alphabetical", ascending: 1, visible: true},
-    { name: "damage_Reduction_Information", displayName: "Damage Reduction Information", type: "Alphabetical", ascending: 1, visible: false},
-    { name: "notes", displayName: "Notes", type: "Alphabetical", ascending: 1, visible: true}
+{
+	name: "completed",
+	displayName: "Completed",
+	type: "Checkbox",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "level",
+	displayName: "Level",
+	type: "Numerical",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "quest_Name",
+	displayName: "Quest Name",
+	type: "Alphabetical",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "quest_Link",
+	displayName: "Quest Link",
+	type: "Alphabetical",
+	visible: false,
+	ascending: 1
+},
+{
+	name: "experience",
+	displayName: "Exp",
+	type: "Numerical",
+	visible: true,
+	ascending: -1
+},
+{
+	name: "time",
+	displayName: "Time",
+	type: "Numerical",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "favor",
+	displayName: "Favor",
+	type: "Numerical",
+	visible: true,
+	ascending: -1
+},
+{
+	name: "location",
+	displayName: "Location",
+	type: "Alphabetical",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "adventure_Pack",
+	displayName: "Adventure Pack",
+	type: "Alphabetical",
+	visible: true,
+	ascending: 1
+},
+{
+	name: "damage_Reduction_Information",
+	displayName: "Damage Reduction Information",
+	type: "Alphabetical",
+	visible: false,
+	ascending: 1
+},
+{
+	name: "notes",
+	displayName: "Notes",
+	type: "Alphabetical",
+	visible: true,
+	ascending: 1
+}
 ];
 
-// Dynamically generate mapping objects from column_Properties
 let column_Name_To_Array_Index = {};
 let index_To_Column_Name_Array = [];
-let sort_Selection_Type_Array = [];
-let sort_Selection_Ascending_State_Array = [];
 
-for(let i = 0; i < column_Properties.length; i++) {
-    column_Name_To_Array_Index[column_Properties[i].name] = i;
-    index_To_Column_Name_Array.push(column_Properties[i].name);
-    sort_Selection_Type_Array.push(column_Properties[i].type);
-    sort_Selection_Ascending_State_Array.push(column_Properties[i].ascending);
+for(let i = 0; i < column_Properties.length; i++)
+{
+	column_Name_To_Array_Index[column_Properties[i].name] = i;
+	index_To_Column_Name_Array.push(column_Properties[i].name);
 }
 
 let table_Body_Array = [
