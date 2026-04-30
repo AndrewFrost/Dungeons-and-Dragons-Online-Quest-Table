@@ -317,16 +317,20 @@
 						new_Header.classList.add("last_Sorted_Header");
 					}
 
+					if(column_Properties[i].visible === false)
+					{
+						new_Header.style.display = "none";
+					}
 					table_Header_Row_Element.appendChild(new_Header);
 				}
 			}
 
 			generate_Table_Headers();
 
-			let number_Of_Items_Filtered = 0;
-
 			function filter_Table()
 			{
+				let number_Of_Items_Filtered = 0;
+
 				table_Body_Element.style.display = "none";	//Avoids unnecessary redrawing of Table
 				number_Of_Items_Filtered = 0;
 
@@ -347,10 +351,10 @@
 					table_Body_Element.children[i].style.display = "table-row";
 					if
 					(
-						Number(table_Body_Array[i][column_Name_To_Array_Index.level]) < level_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i][column_Name_To_Array_Index.level]) > level_Upper_Limit_Input_Box_Element.value
-						|| Number(table_Body_Array[i][column_Name_To_Array_Index.experience]) < experience_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i][column_Name_To_Array_Index.experience]) > experience_Upper_Limit_Input_Box_Element.value
-						|| Number(table_Body_Array[i][column_Name_To_Array_Index.time]) < time_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i][column_Name_To_Array_Index.time]) > time_Upper_Limit_Input_Box_Element.value
-						|| Number(table_Body_Array[i][column_Name_To_Array_Index.favor]) < favor_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i][column_Name_To_Array_Index.favor]) > favor_Upper_Limit_Input_Box_Element.value
+						Number(table_Body_Array[i].level) < level_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i].level) > level_Upper_Limit_Input_Box_Element.value
+						|| Number(table_Body_Array[i].experience) < experience_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i].experience) > experience_Upper_Limit_Input_Box_Element.value
+						|| Number(table_Body_Array[i].time) < time_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i].time) > time_Upper_Limit_Input_Box_Element.value
+						|| Number(table_Body_Array[i].favor) < favor_Lower_Limit_Input_Box_Element.value || Number(table_Body_Array[i].favor) > favor_Upper_Limit_Input_Box_Element.value
 					)
 					{
 						table_Body_Element.children[i].style.display = "none";
@@ -358,7 +362,7 @@
 						continue;
 					}
 
-					if(((Number(table_Body_Array[i][column_Name_To_Array_Index.experience]) * experience_Weight_Input_Box_Element.value) + (Number(table_Body_Array[i][column_Name_To_Array_Index.favor]) * favor_Weight_Input_Box_Element.value) / Number(table_Body_Array[i][column_Name_To_Array_Index.time])) < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value)
+					if(((Number(table_Body_Array[i].experience) * experience_Weight_Input_Box_Element.value) + (Number(table_Body_Array[i].favor) * favor_Weight_Input_Box_Element.value) / Number(table_Body_Array[i].time)) < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value)
 					{
 						table_Body_Element.children[i].style.display = "none";
 						number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -367,7 +371,7 @@
 
 					if(filter_Completed_Checkbox_Element.checked === true)
 					{
-						if(table_Body_Array[i][column_Name_To_Array_Index.completed] === "<input type=\"checkbox\" checked=\"\">")
+						if(table_Body_Array[i].completed === true)
 						{
 							table_Body_Element.children[i].style.display = "none";
 							number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -375,7 +379,7 @@
 						}
 					}
 
-					if(adventure_Pack_Name_To_Checkbox_Element_Map.has(table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack]) && adventure_Pack_Name_To_Checkbox_Element_Map.get(table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack]).checked === true)	//Check if the Adventure Pack entry matches a checked Adventure Pack filter checkbox
+					if(adventure_Pack_Name_To_Checkbox_Element_Map.has(table_Body_Array[i].adventure_Pack) && adventure_Pack_Name_To_Checkbox_Element_Map.get(table_Body_Array[i].adventure_Pack).checked === true)	//Check if the Adventure Pack entry matches a checked Adventure Pack filter checkbox
 					{
 						table_Body_Element.children[i].style.display = "none";
 						number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -385,11 +389,11 @@
 					{
 						if
 						(
-							table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false	//Uses the table itself rather than array to avoid matching hidden URLs
-							&& table_Body_Array[i][column_Name_To_Array_Index.location].toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
-							&& table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack].toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
-							&& table_Body_Array[i][column_Name_To_Array_Index.damage_Reduction_Information].toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
-							&& table_Body_Array[i][column_Name_To_Array_Index.notes].toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
+							table_Body_Array[i].quest_Name.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
+							&& table_Body_Array[i].location.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
+							&& table_Body_Array[i].adventure_Pack.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
+							&& table_Body_Array[i].damage_Reduction_Information.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
+							&& table_Body_Array[i].notes.toLowerCase().includes(contains_Phrases_Array[j].toLowerCase()) === false
 						)
 						{
 							table_Body_Element.children[i].style.display = "none";
@@ -406,11 +410,11 @@
 					{
 						if
 						(
-							table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true	//Uses the table itself rather than array to avoid matching hidden URLs
-							|| table_Body_Array[i][column_Name_To_Array_Index.location].toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
-							|| table_Body_Array[i][column_Name_To_Array_Index.adventure_Pack].toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
-							|| table_Body_Array[i][column_Name_To_Array_Index.damage_Reduction_Information].toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
-							|| table_Body_Array[i][column_Name_To_Array_Index.notes].toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
+							table_Body_Array[i].quest_Name.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
+							|| table_Body_Array[i].location.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
+							|| table_Body_Array[i].adventure_Pack.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
+							|| table_Body_Array[i].damage_Reduction_Information.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
+							|| table_Body_Array[i].notes.toLowerCase().includes(does_Not_Contain_Phrases_Array[j].toLowerCase()) === true
 						)
 						{
 							table_Body_Element.children[i].style.display = "none";
@@ -444,19 +448,43 @@
 					let new_Table_Row = document.createElement("TR");
 					for(const property in table_Body_Array[i])
 					{
-						let new_Table_Data = document.createElement("TD");
-						new_Table_Data.innerHTML = table_Body_Array[i][property];
-						if(property === "experience" || property === "time" || property === "damage_Reduction_Information" || property === "notes")
+						if(column_Properties[column_Name_To_Array_Index[property]].visible === true)
 						{
-							new_Table_Data.setAttribute("contenteditable", "true");
+							let new_Table_Data = document.createElement("TD");
+							if(property === "quest_Name")
+							{
+								new_Table_Data.innerHTML = "<a href = " + table_Body_Array[i].quest_Link + ">" + table_Body_Array[i][property] + "</a>";
+							}
+							else if(property === "completed")
+							{
+								if(table_Body_Array[i].completed === true)
+								{
+									new_Table_Data.innerHTML = "<input type=\"checkbox\" checked>";
+								}
+								else
+								{
+									new_Table_Data.innerHTML = "<input type=\"checkbox\">";
+								}
+							}
+							else
+							{
+								new_Table_Data.innerHTML = table_Body_Array[i][property];
+							}
+							if(property === "experience" || property === "time" || property === "damage_Reduction_Information" || property === "notes")
+							{
+								new_Table_Data.setAttribute("contenteditable", "true");
+							}
+							else if(property === "quest_Name")
+							{
+								quest_Name_To_Table_Index_Map.set(table_Body_Array[i][property][table_Body_Array[i][property].length - 1], i);
+							}
+							new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
+							if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
+							{
+								new_Table_Data.display = "none";
+							}
+							new_Table_Row.appendChild(new_Table_Data);
 						}
-						else if(property === "quest_Name")
-						{
-							let quest_Name_Without_Hyperlink = table_Body_Array[i][property][table_Body_Array[i][property].length - 1] === ">" ? table_Body_Array[i][property].split(">")[1].split("<")[0] : table_Body_Array[i][property];
-							quest_Name_To_Table_Index_Map.set(quest_Name_Without_Hyperlink, i);
-						}
-						new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
-						new_Table_Row.appendChild(new_Table_Data);
 					}
 					table_Body_Element.appendChild(new_Table_Row);
 				}
@@ -466,20 +494,6 @@
 			function numerical_Sort(item_1, item_2)
 			{
 				if(Number(item_1[index_To_Column_Name_Array[current_Sort_Selection]]) < Number(item_2[index_To_Column_Name_Array[current_Sort_Selection]]))
-				{
-					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
-				}
-				else
-				{
-					return 1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
-				}
-			}
-
-			function quest_Name_Sort(item_1, item_2)	//Quest names should not contain the > character aside from the the ones present in <a>Name</a> and should always be closed properly if it has a hidden URL
-			{
-				let item_1_Quest_Name = item_1.quest_Name[item_1.quest_Name.length - 1] === ">" ? item_1.quest_Name.split(">")[1].split("<")[0] : item_1.quest_Name;
-				let item_2_Quest_Name = item_2.quest_Name[item_2.quest_Name.length - 1] === ">" ? item_2.quest_Name.split(">")[1].split("<")[0] : item_2.quest_Name;
-				if(item_1_Quest_Name < item_2_Quest_Name)
 				{
 					return -1 * sort_Selection_Ascending_State_Array[current_Sort_Selection];
 				}
@@ -528,10 +542,6 @@
 				if(sort_Selection_Type_Array[current_Sort_Selection] === "Numerical")	//Numerical Sort
 				{
 					table_Body_Array.sort(numerical_Sort);
-				}
-				else if(sort_Selection_Type_Array[current_Sort_Selection] === "Quest Name")	//Quest Name Sort
-				{
-					table_Body_Array.sort(quest_Name_Sort);
 				}
 				else	//Regular Alphabetical, also used for Checkboxes
 				{
@@ -652,17 +662,15 @@
 
 			function table_Data_Changed(table_Row, table_Column)
 			{
-				if(table_Column === column_Name_To_Array_Index.completed)	//The HTML of Checkboxes doesn't update when checked, so this will force them to do so with the new value for both the array and displayed table
+				if(table_Column === column_Name_To_Array_Index.completed)
 				{
-					if(table_Body_Array[table_Row].completed === "<input type=\"checkbox\" checked=\"\">")
+					if(table_Body_Array[table_Row].completed === true)
 					{
-						table_Body_Array[table_Row].completed = "<input type=\"checkbox\">";
-						table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.completed].innerHTML = "<input type=\"checkbox\">";
+						table_Body_Array[table_Row].completed = false;
 					}
 					else
 					{
-						table_Body_Array[table_Row].completed = "<input type=\"checkbox\" checked=\"\">";
-						table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.completed].innerHTML = "<input type=\"checkbox\" checked=\"\">";
+						table_Body_Array[table_Row].completed = true;
 					}
 				}
 				else
