@@ -476,7 +476,7 @@
 							}
 							else if(property === "quest_Name")
 							{
-								quest_Name_To_Table_Index_Map.set(table_Body_Array[i][property][table_Body_Array[i][property].length - 1], i);
+								quest_Name_To_Table_Index_Map.set(table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name, i);
 							}
 							new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
 							if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
@@ -606,11 +606,18 @@
 				for(let i = 0; i < column_Properties.length; i++)
 				{
 					JSON_Table_String = JSON_Table_String + "{\n";
-					JSON_Table_String = JSON_Table_String + "\tname: \"" + column_Properties[i].name + "\",\n";
-					JSON_Table_String = JSON_Table_String + "\tdisplayName: \"" + column_Properties[i].displayName + "\",\n";
-					JSON_Table_String = JSON_Table_String + "\ttype: \"" + column_Properties[i].type + "\",\n";
-					JSON_Table_String = JSON_Table_String + "\tvisible: " + column_Properties[i].visible + ",\n";
-					JSON_Table_String = JSON_Table_String + "\tascending: " + column_Properties[i].ascending + "\n";
+					let keys = Object.keys(column_Properties[i]);
+					for(let k = 0; k < keys.length; k++)
+					{
+						let value = column_Properties[i][keys[k]];
+						value = (typeof value === 'string') ? "\"" + value + "\"" : value;
+						JSON_Table_String = JSON_Table_String + "\t" + keys[k] + ": " + value;
+						if (k < keys.length - 1)
+						{
+							JSON_Table_String = JSON_Table_String + ",";
+						}
+						JSON_Table_String = JSON_Table_String + "\n";
+					}
 					if(i !== column_Properties.length - 1)
 					{
 						JSON_Table_String = JSON_Table_String + "},\n";
@@ -620,7 +627,12 @@
 						JSON_Table_String = JSON_Table_String + "}\n";
 					}
 				}
-				JSON_Table_String = JSON_Table_String + "];\n\nlet column_Name_To_Array_Index = {};\nlet index_To_Column_Name_Array = [];\n\nfor(let i = 0; i < column_Properties.length; i++)\n{\n\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n";
+				JSON_Table_String = JSON_Table_String + "];\n\n";
+				JSON_Table_String = JSON_Table_String + "let column_Name_To_Array_Index = {};\n";
+				JSON_Table_String = JSON_Table_String + "let index_To_Column_Name_Array = [];\n\n";
+				JSON_Table_String = JSON_Table_String + "for(let i = 0; i < column_Properties.length; i++)\n{\n";
+				JSON_Table_String = JSON_Table_String + "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n";
+				JSON_Table_String = JSON_Table_String + "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n";
 				JSON_Table_String = JSON_Table_String + "let table_Body_Array = [\n";
 				for(let i = 0; i < table_Body_Array.length; i++)
 				{
@@ -756,6 +768,7 @@
 			let last_Quest_Time_Entered_String = "";
 			let last_Quest_Time_In_Minutes = 0;
 			let current_Character_Level = 0;
+			let current_Quest_Tier = "Heroic";
 			let quest_Completion_Order = 1;
 			let retrieve_Character_Location_Error_Counter = 0;
 			async function retrieve_Character_Location()
@@ -782,7 +795,7 @@
 								last_Completed_Quest_Name_Element.innerHTML = last_Quest_Entered_String;
 								last_Quest_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Quest_Time_Entered_String)) / 60000).toFixed(3);
 								last_Completed_Quest_Duration_Element.innerHTML = last_Quest_Time_In_Minutes;
-								let row_Index = quest_Name_To_Table_Index_Map.get(last_Quest_Entered_String);
+								let row_Index = quest_Name_To_Table_Index_Map.get(current_Quest_Tier + " " + last_Quest_Entered_String);
 								if(table_Body_Array[row_Index].completed === "<input type=\"checkbox\">")
 								{
 									table_Data_Changed(row_Index, column_Name_To_Array_Index.completed);
@@ -814,6 +827,18 @@
 						}
 						last_Location_ID_Entered = result.data.location_id;
 						current_Character_Level = result.data.total_level;
+						if(current_Character_Level < 20)
+						{
+							current_Quest_Tier = "Heroic";
+						}
+						else if(current_Character_Level < 30)
+						{
+							current_Quest_Tier = "Epic";
+						}
+						else
+						{
+							current_Quest_Tier = "Legendary";
+						}
 						autocomplete_Quests_Error_Message_Element.innerHTML = "";
 						retrieve_Character_Location_Error_Counter = 0;
 						if(result.data.is_online === false)
@@ -895,7 +920,31 @@
 					toggle_Location_Retrieval();
 				}
 			}
+			
 			update_Table();
+
+/*			async function temporary_Change()
+			{
+				const url = "https://api.ddoaudit.com/v1/quests/";
+				try
+				{
+					const response = await fetch(url);
+					if(!response.ok)
+					{
+						throw new Error(response.status);
+					}
+					const result = await response.json();
+					for(let i = 0; i < result.data.length; i++)
+					{
+						console.log(result.data[i]);
+					}
+					update_Table();
+				}
+				catch(DDO_Audit_Error_Response)
+				{
+				}
+			}
+			temporary_Change();*/
 		</script>
 		<!--<script type = "text/javascript" src = "quest_Name_To_DDO_Audit_Location_ID_Map.js">--><!--Use when updating DDO Audit's Location Mapping. Creates a global variable quest_Name_To_DDO_Audit_Location_ID_Map for converting quest names to DDO Audit's Location IDs and logs some information to the console-->
 		<!--</script>-->
