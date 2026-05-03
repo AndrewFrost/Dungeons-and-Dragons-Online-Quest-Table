@@ -920,31 +920,41 @@
 					toggle_Location_Retrieval();
 				}
 			}
-			
-			update_Table();
 
-/*			async function temporary_Change()
+/*			for(let i = 0; i < table_Body_Array.length; i++)	//Calculate Reaper Experience for each quest with Reaper 1 with the First Time Bonus included assumed
 			{
-				const url = "https://api.ddoaudit.com/v1/quests/";
-				try
+				let reaper_Multiplier = 1;
+				if(table_Body_Array[i].quest_Length === "Short")
 				{
-					const response = await fetch(url);
-					if(!response.ok)
-					{
-						throw new Error(response.status);
-					}
-					const result = await response.json();
-					for(let i = 0; i < result.data.length; i++)
-					{
-						console.log(result.data[i]);
-					}
-					update_Table();
+					reaper_Multiplier = .8;
 				}
-				catch(DDO_Audit_Error_Response)
+				else if(table_Body_Array[i].quest_Length === "Medium")
 				{
+					reaper_Multiplier = 1;
 				}
-			}
-			temporary_Change();*/
+				else if(table_Body_Array[i].quest_Length === "Long")
+				{
+					reaper_Multiplier = 1.2;
+				}
+				else if(table_Body_Array[i].quest_Length === "Very Long")
+				{
+					reaper_Multiplier = 1.4;
+				}
+				else
+				{
+					reaper_Multiplier = 0;
+				}
+				if(table_Body_Array[i].level < 30)
+				{
+					table_Body_Array[i].reaper_Experience = Math.round((50 + (3 * table_Body_Array[i].level)) * 3 * reaper_Multiplier * 10) / 10;
+				}
+				else
+				{
+					table_Body_Array[i].reaper_Experience = Math.round((50 + (3 * table_Body_Array[i].level)) * 3 * 2 * reaper_Multiplier * 10) / 10;
+				}
+			}*/
+
+			update_Table();
 		</script>
 		<!--<script type = "text/javascript" src = "quest_Name_To_DDO_Audit_Location_ID_Map.js">--><!--Use when updating DDO Audit's Location Mapping. Creates a global variable quest_Name_To_DDO_Audit_Location_ID_Map for converting quest names to DDO Audit's Location IDs and logs some information to the console-->
 		<!--</script>-->
