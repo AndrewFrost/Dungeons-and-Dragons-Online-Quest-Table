@@ -448,8 +448,6 @@
 					let new_Table_Row = document.createElement("TR");
 					for(const property in table_Body_Array[i])
 					{
-						if(column_Properties[column_Name_To_Array_Index[property]].visible === true)
-						{
 							let new_Table_Data = document.createElement("TD");
 							if(property === "quest_Name")
 							{
@@ -481,10 +479,9 @@
 							new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
 							if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
 							{
-								new_Table_Data.display = "none";
+								new_Table_Data.style.display = "none";
 							}
 							new_Table_Row.appendChild(new_Table_Data);
-						}
 					}
 					table_Body_Element.appendChild(new_Table_Row);
 				}
@@ -493,25 +490,37 @@
 
 			function numerical_Sort(item_1, item_2)
 			{
-				if(Number(item_1[index_To_Column_Name_Array[current_Sort_Selection]]) < Number(item_2[index_To_Column_Name_Array[current_Sort_Selection]]))
+				const value_1 = Number(item_1[index_To_Column_Name_Array[current_Sort_Selection]]);
+				const value_2 = Number(item_2[index_To_Column_Name_Array[current_Sort_Selection]]);
+				if(value_1 < value_2)
 				{
 					return -1 * column_Properties[current_Sort_Selection].ascending;
 				}
-				else
+				else if(value_1 > value_2)
 				{
 					return 1 * column_Properties[current_Sort_Selection].ascending;
+				}
+				else
+				{
+					return 0;
 				}
 			}
 
 			function alphabetical_Sort(item_1, item_2)
 			{
-				if(item_1[index_To_Column_Name_Array[current_Sort_Selection]] < item_2[index_To_Column_Name_Array[current_Sort_Selection]])
+				const value_1 = item_1[index_To_Column_Name_Array[current_Sort_Selection]];
+				const value_2 = item_2[index_To_Column_Name_Array[current_Sort_Selection]];
+				if(value_1 < value_2)
 				{
 					return -1 * column_Properties[current_Sort_Selection].ascending;
 				}
-				else
+				else if(value_1 > value_2)
 				{
 					return 1 * column_Properties[current_Sort_Selection].ascending;
+				}
+				else
+				{
+					return 0;
 				}
 			}
 
