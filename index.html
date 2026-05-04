@@ -80,7 +80,7 @@
 
 			.filter_Title
 			{
-				width: 165px;
+				width: 200px;
 				display: inline-block;
 				white-space: nowrap;
 			}
@@ -104,7 +104,7 @@
 
 			.alphabetical_Column
 			{
-				min-width: 175px;
+				min-width: 75px;
 			}
 
 			.numerical_Column
@@ -115,16 +115,18 @@
 	</head>
 	<body>
 		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "convert_Table_To_JSON()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
-		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "filter_Table()">
+		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "update_Table()">
 			<br>
 			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37"></input><br>
 			<span class = "filter_Title">Experience: </span><input type = "number" class = "filter_Number_Input" id = "experience_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "experience_Upper_Limit_Input_Box" value = "1000000"></input><br>
 			<span class = "filter_Title">Time: </span><input type = "number" class = "filter_Number_Input" id = "estimated_Time_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "estimated_Time_Upper_Limit_Input_Box" value = "120"></input><br>
 			<span class = "filter_Title">Favor: </span><input type = "number" class = "filter_Number_Input" id = "favor_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "favor_Upper_Limit_Input_Box" value = "42"></input><br>
 			<br>
-			<span class = "filter_Title">Experience Weight: </span><input type = "number" class = "filter_Number_Input" id = "experience_Weight_Input_Box" value = 1></input><br>
-			<span class = "filter_Title">Favor Weight: </span><input type = "number" class = "filter_Number_Input" id = "favor_Weight_Input_Box" value = 1000></input><br>
-			<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" class = "filter_Number_Input" id = "weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box" value = 0></input><br>
+			<span class = "filter_Title">1 / Experience Weight: </span><input type = "number" step = "1000" class = "filter_Number_Input" id = "experience_Weight_Input_Box" value = 5000></input><br>
+			<span class = "filter_Title">1 / Reaper Experience Weight: </span><input type = "number" step = "100" class = "filter_Number_Input" id = "reaper_Experience_Weight_Input_Box" value = 500></input><br>
+			<span class = "filter_Title">1 / Favor Weight: </span><input type = "number" step = "1" class = "filter_Number_Input" id = "favor_Weight_Input_Box" value = 4></input><br>
+			<span class = "filter_Title">Custom Weight Multiplier: </span><input type = "number" step = ".1" class = "filter_Number_Input" id = "custom_Weight_Multiplier_Input_Box" value = 1></input><br>
+			<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" step = ".05" class = "filter_Number_Input" id = "weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box" value = 0></input><br>
 			<br>
 			<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" id = "filter_Completed_Checkbox"><br>
 			<br>
@@ -253,7 +255,9 @@
 			let favor_Upper_Limit_Input_Box_Element = document.getElementById("favor_Upper_Limit_Input_Box");
 
 			let experience_Weight_Input_Box_Element = document.getElementById("experience_Weight_Input_Box");
+			let reaper_Experience_Weight_Input_Box_Element = document.getElementById("reaper_Experience_Weight_Input_Box");
 			let favor_Weight_Input_Box_Element = document.getElementById("favor_Weight_Input_Box");
+			let custom_Weight_Multiplier_Input_Box_Element = document.getElementById("custom_Weight_Multiplier_Input_Box");
 			let weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element = document.getElementById("weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box");
 
 			let filter_Completed_Checkbox_Element = document.getElementById("filter_Completed_Checkbox");
@@ -362,7 +366,7 @@
 						continue;
 					}
 
-					if(((Number(table_Body_Array[i].experience) * experience_Weight_Input_Box_Element.value) + (Number(table_Body_Array[i].favor) * favor_Weight_Input_Box_Element.value) / Number(table_Body_Array[i].time)) < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value)
+					if(table_Body_Array[i].total_Weight_Over_Time < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value)
 					{
 						table_Body_Element.children[i].style.display = "none";
 						number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -448,40 +452,47 @@
 					let new_Table_Row = document.createElement("TR");
 					for(const property in table_Body_Array[i])
 					{
-							let new_Table_Data = document.createElement("TD");
-							if(property === "quest_Name")
+						let new_Table_Data = document.createElement("TD");
+						if(property === "quest_Name")
+						{
+							new_Table_Data.innerHTML = "<a href = " + table_Body_Array[i].quest_Link + ">" + table_Body_Array[i][property] + "</a>";
+							quest_Name_To_Table_Index_Map.set((table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name), i);
+						}
+						else if(property === "completed")
+						{
+							if(table_Body_Array[i].completed === true)
 							{
-								new_Table_Data.innerHTML = "<a href = " + table_Body_Array[i].quest_Link + ">" + table_Body_Array[i][property] + "</a>";
-							}
-							else if(property === "completed")
-							{
-								if(table_Body_Array[i].completed === true)
-								{
-									new_Table_Data.innerHTML = "<input type=\"checkbox\" checked>";
-								}
-								else
-								{
-									new_Table_Data.innerHTML = "<input type=\"checkbox\">";
-								}
+								new_Table_Data.innerHTML = "<input type=\"checkbox\" checked>";
 							}
 							else
 							{
-								new_Table_Data.innerHTML = table_Body_Array[i][property];
+								new_Table_Data.innerHTML = "<input type=\"checkbox\">";
 							}
-							if(property === "experience" || property === "time" || property === "damage_Reduction_Information" || property === "notes")
-							{
-								new_Table_Data.setAttribute("contenteditable", "true");
-							}
-							else if(property === "quest_Name")
-							{
-								quest_Name_To_Table_Index_Map.set(table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name, i);
-							}
-							new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
-							if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
-							{
-								new_Table_Data.style.display = "none";
-							}
-							new_Table_Row.appendChild(new_Table_Data);
+						}
+						else if(property === "total_Weight")
+						{
+							table_Body_Array[i].total_Weight = ((table_Body_Array[i].experience * (1 / experience_Weight_Input_Box.value)) + (table_Body_Array[i].reaper_Experience * (1 / reaper_Experience_Weight_Input_Box.value)) + (table_Body_Array[i].favor * (1 / favor_Weight_Input_Box.value)) + (table_Body_Array[i].custom_Weight * custom_Weight_Multiplier_Input_Box.value)).toFixed(3);
+							new_Table_Data.innerHTML = table_Body_Array[i].total_Weight;
+						}
+						else if(property === "total_Weight_Over_Time")
+						{
+							table_Body_Array[i].total_Weight_Over_Time = (table_Body_Array[i].total_Weight / table_Body_Array[i].time).toFixed(3);
+							new_Table_Data.innerHTML = table_Body_Array[i].total_Weight_Over_Time;
+						}
+						else
+						{
+							new_Table_Data.innerHTML = table_Body_Array[i][property];
+						}
+						if(property === "experience" || property === "time" || property === "damage_Reduction_Information" || property === "notes" || property === "custom_Weight")
+						{
+							new_Table_Data.setAttribute("contenteditable", "true");
+						}
+						new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
+						if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
+						{
+							new_Table_Data.style.display = "none";
+						}
+						new_Table_Row.appendChild(new_Table_Data);
 					}
 					table_Body_Element.appendChild(new_Table_Row);
 				}
@@ -577,7 +588,9 @@
 				window.localStorage.setItem("table_Filter_Favor_Upper_Limit", favor_Upper_Limit_Input_Box_Element.value);
 
 				window.localStorage.setItem("table_Filter_Experience_Weight", experience_Weight_Input_Box_Element.value);
+				window.localStorage.setItem("table_Filter_Reaper_Experience_Weight", reaper_Experience_Weight_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Favor_Weight", favor_Weight_Input_Box_Element.value);
+				window.localStorage.setItem("table_Filter_Custom_Weight_Multiplier", custom_Weight_Multiplier_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box", weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value);
 
 				window.localStorage.setItem("filter_Completed_Checkbox", filter_Completed_Checkbox_Element.checked);
@@ -695,10 +708,12 @@
 					if(table_Body_Array[table_Row].completed === true)
 					{
 						table_Body_Array[table_Row].completed = false;
+						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to match the data change
 					}
 					else
 					{
 						table_Body_Array[table_Row].completed = true;
+						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
 					}
 				}
 				else
@@ -734,10 +749,12 @@
 				favor_Lower_Limit_Input_Box_Element.value = favor_Lower_Limit_Input_Box_Element.getAttribute("value");
 				favor_Upper_Limit_Input_Box_Element.value = favor_Upper_Limit_Input_Box_Element.getAttribute("value");
 				experience_Weight_Input_Box_Element.value = experience_Weight_Input_Box_Element.getAttribute("value");
+				reaper_Experience_Weight_Input_Box_Element.value = reaper_Experience_Weight_Input_Box_Element.getAttribute("value");
 				favor_Weight_Input_Box_Element.value = favor_Weight_Input_Box_Element.getAttribute("value");
+				custom_Weight_Multiplier_Input_Box_Element.value = custom_Weight_Multiplier_Input_Box_Element.getAttribute("value");
 				weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value = weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.getAttribute("value");
 				filter_Completed_Checkbox_Element.checked = false;
-
+				
 				for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
 				{
 					map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
@@ -804,9 +821,14 @@
 								last_Completed_Quest_Name_Element.innerHTML = last_Quest_Entered_String;
 								last_Quest_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Quest_Time_Entered_String)) / 60000).toFixed(3);
 								last_Completed_Quest_Duration_Element.innerHTML = last_Quest_Time_In_Minutes;
-								let row_Index = quest_Name_To_Table_Index_Map.get(current_Quest_Tier + " " + last_Quest_Entered_String);
-								if(table_Body_Array[row_Index].completed === "<input type=\"checkbox\">")
+								let row_Index = quest_Name_To_Table_Index_Map.get((current_Quest_Tier + " " + last_Quest_Entered_String));
+								if(row_Index === undefined)
 								{
+									row_Index = quest_Name_To_Table_Index_Map.get(("Heroic " + last_Quest_Entered_String));
+								}
+								if(table_Body_Array[row_Index].completed === false)
+								{
+									//table_Data_Changed is used to update the checkbox
 									table_Data_Changed(row_Index, column_Name_To_Array_Index.completed);
 								}
 								if(Number(table_Body_Array[row_Index].time) > last_Quest_Time_In_Minutes)
@@ -888,7 +910,9 @@
 				favor_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Favor_Upper_Limit");
 
 				experience_Weight_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Experience_Weight");
+				reaper_Experience_Weight_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Reaper_Experience_Weight");
 				favor_Weight_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Favor_Weight");
+				custom_Weight_Multiplier_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Custom_Weight_Multiplier");
 				weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box");
 
 				if(window.localStorage.getItem("filter_Completed_Checkbox") === "true")	//Booleans are stored as text- default for all is false
