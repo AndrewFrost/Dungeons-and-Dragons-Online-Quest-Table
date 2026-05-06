@@ -115,23 +115,23 @@
 	</head>
 	<body>
 		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "convert_Table_To_JSON()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
-		<div id = "filters_Section" style = "display: none; width: 680px" onchange = "update_Table()">
+		<div id = "filters_Section" style = "display: none; width: 680px"">
 			<br>
-			<span class = "filter_Title">Level: </span><input type = "number" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37"></input><br>
-			<span class = "filter_Title">Experience: </span><input type = "number" class = "filter_Number_Input" id = "experience_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "experience_Upper_Limit_Input_Box" value = "1000000"></input><br>
-			<span class = "filter_Title">Time: </span><input type = "number" class = "filter_Number_Input" id = "estimated_Time_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "estimated_Time_Upper_Limit_Input_Box" value = "120"></input><br>
-			<span class = "filter_Title">Favor: </span><input type = "number" class = "filter_Number_Input" id = "favor_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "favor_Upper_Limit_Input_Box" value = "42"></input><br>
+			<span class = "filter_Title">Level: </span><input type = "number" onchange = "filter_Table()" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1"></input> to <input type = "number" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37"></input><br>
+			<span class = "filter_Title">Experience: </span><input type = "number" onchange = "filter_Table()" class = "filter_Number_Input" id = "experience_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "experience_Upper_Limit_Input_Box" value = "1000000"></input><br>
+			<span class = "filter_Title">Time: </span><input type = "number" onchange = "filter_Table()" class = "filter_Number_Input" id = "estimated_Time_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "estimated_Time_Upper_Limit_Input_Box" value = "120"></input><br>
+			<span class = "filter_Title">Favor: </span><input type = "number" onchange = "filter_Table()" class = "filter_Number_Input" id = "favor_Lower_Limit_Input_Box" value = "0"></input> to <input type = "number" class = "filter_Number_Input" id = "favor_Upper_Limit_Input_Box" value = "42"></input><br>
 			<br>
-			<span class = "filter_Title">1 / Experience Weight: </span><input type = "number" step = "1000" class = "filter_Number_Input" id = "experience_Weight_Input_Box" value = 5000></input><br>
-			<span class = "filter_Title">1 / Reaper Experience Weight: </span><input type = "number" step = "100" class = "filter_Number_Input" id = "reaper_Experience_Weight_Input_Box" value = 500></input><br>
-			<span class = "filter_Title">1 / Favor Weight: </span><input type = "number" step = "1" class = "filter_Number_Input" id = "favor_Weight_Input_Box" value = 4></input><br>
-			<span class = "filter_Title">Custom Weight Multiplier: </span><input type = "number" step = ".1" class = "filter_Number_Input" id = "custom_Weight_Multiplier_Input_Box" value = 1></input><br>
-			<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" step = ".05" class = "filter_Number_Input" id = "weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box" value = 0></input><br>
+			<span class = "filter_Title">1 / Experience Weight: </span><input type = "number" value = 5000 step = "1000" onchange = "update_Table()" class = "filter_Number_Input" id = "experience_Weight_Input_Box"></input><br>
+			<span class = "filter_Title">1 / Reaper Experience Weight: </span><input type = "number" value = 500 step = "100" onchange = "update_Table()" class = "filter_Number_Input" id = "reaper_Experience_Weight_Input_Box"></input><br>
+			<span class = "filter_Title">1 / Favor Weight: </span><input type = "number" value = 4 step = "1" onchange = "update_Table()" class = "filter_Number_Input" id = "favor_Weight_Input_Box"></input><br>
+			<span class = "filter_Title">Custom Weight Multiplier: </span><input type = "number" value = 1 step = ".1" onchange = "update_Table()" class = "filter_Number_Input" id = "custom_Weight_Multiplier_Input_Box"></input><br>
+			<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" value = 0 step = ".05" onchange = "filter_Table()" class = "filter_Number_Input" id = "weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box"></input><br>
 			<br>
-			<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" id = "filter_Completed_Checkbox"><br>
+			<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" onchange = "filter_Table()" id = "filter_Completed_Checkbox"><br>
 			<br>
 			<span class = "filter_Title"><button onclick = "toggle_Visibility(this, 'adventure_Packs_Selection_Section', 'Adventure Packs')">Show Adventure Packs</button></span><br>
-			<div id = "adventure_Packs_Selection_Section" style = "display: none"><!--Ensure the value of each checkbox exactly matches the name of the Adventure Pack when a new adventure pack is added-->
+			<div onchange = "filter_Table()" id = "adventure_Packs_Selection_Section" style = "display: none"><!--Ensure the value of each checkbox exactly matches the name of the Adventure Pack when a new adventure pack is added-->
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Against_the_Slave_Lords">Against the Slave Lords</a>: </span><input type = "checkbox" class = "adventure_Pack_Checkbox" value = "Against the Slave Lords"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Attack_on_Stormreach">Attack on Stormreach</a>: </span><input type = "checkbox" class = "adventure_Pack_Checkbox" value = "Attack on Stormreach"><br>
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Delera%27s_Tomb">Delera's Tomb</a>: </span><input type = "checkbox" class = "adventure_Pack_Checkbox" value = "Delera's Tomb"><br>
@@ -198,12 +198,16 @@
 				<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/White_Plume_Mountain_and_Other_Tales">White Plume Mountain and Other Tales</a>: </span><input class = "adventure_Pack_Checkbox" type = "checkbox" value = "White Plume Mountain and Other Tales"><br>
 			</div>
 			<br>
-			<span class = "filter_Title">Contains phrases: </span><input type = "text" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
-			<span class = "filter_Title">Does not contain phrases: </span><input type = "text" class = "filter_Text_Input" id = "does_Not_Contain_Phrases_Input_Box"><br>
+			<span class = "filter_Title">Contains phrases: </span><input type = "text" onchange = "filter_Table()" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
+			<span class = "filter_Title">Does not contain phrases: </span><input type = "text" onchange = "filter_Table()" class = "filter_Text_Input" id = "does_Not_Contain_Phrases_Input_Box"><br>
 			<br>
 			<button onclick = "reset_Filters()">Reset Filters</button>
 		</div>
 		<br>
+		<div>
+			<span>Personal Experience Multiplier: </span><input type = "number" id = "personal_Experience_Multiplier_Input_Box" value = "1.1" min = "0" step = "0.05"><br>
+			<span>Quest Experience Multiplier: </span><input type = "number" id = "quest_Experience_Multiplier_Input_Box" value = "2.7" min = "0" step = "0.1"><br>
+		</div>
 		<div>
 			<br>
 			<span>Character Name: </span><input type = "text" id = "character_Name_Input_Box"><br>
@@ -716,6 +720,36 @@
 						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
 					}
 				}
+				else if(table_Column === column_Name_To_Array_Index.custom_Weight)
+				{
+					table_Body_Array[table_Row].custom_Weight = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
+					table_Body_Array[table_Row].total_Weight = ((table_Body_Array[table_Row].experience * (1 / experience_Weight_Input_Box.value)) + (table_Body_Array[table_Row].reaper_Experience * (1 / reaper_Experience_Weight_Input_Box.value)) + (table_Body_Array[table_Row].favor * (1 / favor_Weight_Input_Box.value)) + (table_Body_Array[table_Row].custom_Weight * custom_Weight_Multiplier_Input_Box.value)).toFixed(3);
+					table_Body_Array[table_Row].total_Weight_Over_Time = (table_Body_Array[table_Row].total_Weight / table_Body_Array[table_Row].time).toFixed(3);
+					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[table_Row].total_Weight;	//Updates the Total Weight cell to match the custom weight change
+					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[table_Row].total_Weight_Over_Time;	//Updates the Total Weight Over Time cell to match the custom weight change
+					if(table_Body_Array[table_Row].total_Weight_Over_Time < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value)
+					{
+						table_Body_Element.children[table_Row].style.display = "none";
+					}
+					else
+					{
+						table_Body_Element.children[table_Row].style.display = "table-row";
+					}
+				}
+				else if(table_Column === column_Name_To_Array_Index.time)
+				{
+					table_Body_Array[table_Row].time = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
+					table_Body_Array[table_Row].total_Weight_Over_Time = (table_Body_Array[table_Row].total_Weight / table_Body_Array[table_Row].time).toFixed(3);
+					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[table_Row].total_Weight_Over_Time;	//Updates the Total Weight Over Time cell to match the time change
+					if(table_Body_Array[table_Row].total_Weight_Over_Time < weighted_Experience_And_Favor_Per_Time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time < time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time > time_Upper_Limit_Input_Box_Element.value || table_Body_Array[table_Row].experience < time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time > time_Upper_Limit_Input_Box_Element.value)
+					{
+						table_Body_Element.children[table_Row].style.display = "none";
+					}
+					else
+					{
+						table_Body_Element.children[table_Row].style.display = "table-row";
+					}
+				}
 				else
 				{
 					table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = table_Body_Element.children[table_Row].children[table_Column].textContent;
@@ -822,6 +856,14 @@
 								last_Quest_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Quest_Time_Entered_String)) / 60000).toFixed(3);
 								last_Completed_Quest_Duration_Element.innerHTML = last_Quest_Time_In_Minutes;
 								let row_Index = quest_Name_To_Table_Index_Map.get((current_Quest_Tier + " " + last_Quest_Entered_String));
+								if(row_Index === undefined)
+								{
+									row_Index = quest_Name_To_Table_Index_Map.get(("Legendary " + last_Quest_Entered_String));
+								}
+								if(row_Index === undefined)
+								{
+									row_Index = quest_Name_To_Table_Index_Map.get(("Epic " + last_Quest_Entered_String));
+								}
 								if(row_Index === undefined)
 								{
 									row_Index = quest_Name_To_Table_Index_Map.get(("Heroic " + last_Quest_Entered_String));
