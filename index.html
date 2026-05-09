@@ -574,12 +574,7 @@
 					for(const property in table_Body_Array[i])
 					{
 						let new_Table_Data = document.createElement("TD");
-						if(property === "quest_Name")
-						{
-							new_Table_Data.innerHTML = "<a href = " + table_Body_Array[i].quest_Link + ">" + table_Body_Array[i][property] + "</a>";
-							quest_Name_To_Table_Index_Map.set((table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name), i);
-						}
-						else if(property === "completed")
+						if(property === "completed")
 						{
 							if(table_Body_Array[i].completed === true)
 							{
@@ -588,6 +583,39 @@
 							else
 							{
 								new_Table_Data.innerHTML = "<input type=\"checkbox\">";
+							}
+						}
+						else if(property === "quest_Name")
+						{
+							new_Table_Data.innerHTML = "<a href = " + table_Body_Array[i].quest_Link + ">" + table_Body_Array[i].quest_Name + "</a>";
+							quest_Name_To_Table_Index_Map.set((table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name), i);
+						}
+						else if(property === "saga_Contribution")
+						{
+							if(table_Body_Array[i].saga_Contribution !== "-")
+							{
+								let saga_Names = table_Body_Array[i].saga_Contribution.split(", ");
+								let saga_Links = table_Body_Array[i].saga_Link.split(", ");
+								if(saga_Names.length !== saga_Links.length)
+								{
+									new_Table_Data.innerHTML = table_Body_Array[i].saga_Contribution;
+									console.log("Saga Link error for " + table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name + ", entry " + i);
+								}
+								else
+								{
+									for(let j = 0; j < saga_Names.length; j++)
+									{
+										new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<a href = " + saga_Links[j] + ">" + saga_Names[j] + "</a>";
+										if(j != saga_Names.length - 1)
+										{
+											new_Table_Data.innerHTML = new_Table_Data.innerHTML + ", ";
+										}
+									}
+								}
+							}
+							else
+							{
+								new_Table_Data.innerHTML = table_Body_Array[i].saga_Contribution;
 							}
 						}
 						else if(property === "total_Experience")
@@ -1125,6 +1153,146 @@
 					toggle_Location_Retrieval();
 				}
 			}
+
+
+			/*for(let i = 0; i < table_Body_Array.length; i++)
+			{
+				if(table_Body_Array[i].quest_Name === "The Troglodytes' Get" || table_Body_Array[i].quest_Name === "Old Grey Garl" || table_Body_Array[i].quest_Name === "Ghost of a Chance" || table_Body_Array[i].quest_Name === "Prove Your Worth" || table_Body_Array[i].quest_Name === "The Legend of Two-Toed Tobias" || table_Body_Array[i].quest_Name === "Irestone Inlet" || table_Body_Array[i].quest_Name === "Precious Cargo" || table_Body_Array[i].adventure_Pack === "Sentinels of Stormreach")
+				{
+					if(table_Body_Array[i].quest_Tier === "Heroic")
+					{
+						if(table_Body_Array[i].quest_Name !== "Spies in the House")
+						{
+							table_Body_Array[i].saga_Contribution = "The Pirates of the Thunder Sea (Heroic)";
+							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_Pirates_of_the_Thunder_Sea_%28Heroic%29";
+						}
+					}
+					else
+					{
+						table_Body_Array[i].saga_Contribution = "The Pirates of the Thunder Sea (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_Pirates_of_the_Thunder_Sea_%28Epic%29";
+					}
+				}
+				else if(table_Body_Array[i].adventure_Pack === "Sinister Secret of Saltmarsh" || table_Body_Array[i].adventure_Pack === "Fables of the Feywild" || table_Body_Array[i].adventure_Pack === "The Isle of Dread" || table_Body_Array[i].adventure_Pack === "The Chill of Ravenloft" || table_Body_Array[i].adventure_Pack === "Mists of Ravenloft" || table_Body_Array[i].adventure_Pack === "Magic of Myth Drannor" || table_Body_Array[i].adventure_Pack === "Vecna Unleashed")
+				{
+					if(table_Body_Array[i].quest_Tier === "Heroic")
+					{
+						table_Body_Array[i].saga_Contribution = table_Body_Array[i].adventure_Pack + " (Heroic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/" + table_Body_Array[i].adventure_Pack + "%28Heroic%29";
+					}
+					else if(table_Body_Array[i].quest_Type !== "Raid")
+					{
+						table_Body_Array[i].saga_Contribution = table_Body_Array[i].adventure_Pack + " (Legendary)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/" + table_Body_Array[i].adventure_Pack + "%28Legendary%29";
+					}
+				}
+				else if(table_Body_Array[i].adventure_Pack === "Ruins of Gianthold")
+				{
+					if(table_Body_Array[i].quest_Type !== "Raid")
+					{
+						if(table_Body_Array[i].quest_Tier === "Heroic")
+						{
+							table_Body_Array[i].saga_Contribution = "In the Wastes of Gianthold (Heroic)";
+							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/In_the_Wastes_of_Gianthold_%28Heroic%29";
+						}
+						else
+						{
+							table_Body_Array[i].saga_Contribution = "In the Wastes of Gianthold (Epic)";
+							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/In_the_Wastes_of_Gianthold_%28Epic%29";
+						}
+					}
+				}
+				else if(table_Body_Array[i].adventure_Pack === "Masterminds of Sharn" || table_Body_Array[i].quest_Name === "Lost at Sea")
+				{
+					if(table_Body_Array[i].quest_Type !== "Raid")
+					{
+						if(table_Body_Array[i].location === "Sharn - Clifftop Tower District" || table_Body_Array[i].quest_Name === "Lost at Sea")
+						{
+							if(table_Body_Array[i].quest_Tier === "Heroic")
+							{
+								table_Body_Array[i].saga_Contribution = "Masterminds of Sharn (Heroic)";
+								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Masterminds_of_Sharn_%28Heroic%29";
+							}
+							else
+							{
+								table_Body_Array[i].saga_Contribution = "Masterminds of Sharn (Legendary)";
+								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Masterminds_of_Sharn_%28Epic%29";
+							}
+						}
+						else
+						{
+							if(table_Body_Array[i].quest_Tier === "Heroic")
+							{
+								table_Body_Array[i].saga_Contribution = "Cogs Explorer Dungeons (Heroic)";
+								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Cogs_Explorer_Dungeons_%28Heroic%29";
+							}
+							else
+							{
+								table_Body_Array[i].saga_Contribution = "Cogs Explorer Dungeons (Legendary)";
+								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Cogs_Explorer_Dungeons_%28Epic%29";
+							}
+						}
+					}
+				}
+				else if(table_Body_Array[i].quest_Tier === "Heroic" && (table_Body_Array[i].quest_Name === "Murder By Night" || table_Body_Array[i].quest_Name === "The Riddle" || table_Body_Array[i].quest_Name === "Outbreak" || table_Body_Array[i].quest_Name === "Overgrowth" || table_Body_Array[i].quest_Name === "Thorn and Paw" || table_Body_Array[i].quest_Name === "Disciples of Shar" || table_Body_Array[i].quest_Name === "Escape Plan" || table_Body_Array[i].quest_Name === "Shadow of a Doubt"))
+				{
+					table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Heroic)";
+					table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr_%28Heroic%29";
+				}
+				else if(table_Body_Array[i].quest_Tier === "Heroic" && (table_Body_Array[i].quest_Name === "The Druid's Curse" || table_Body_Array[i].quest_Name === "Detour" || table_Body_Array[i].quest_Name === "Rest Stop" || table_Body_Array[i].quest_Name === "Lost in the Swamp" || table_Body_Array[i].quest_Name === "A Stay at the Inn" || table_Body_Array[i].quest_Name === "The End of the Road" || table_Body_Array[i].quest_Name === "Friends in Low Places" || table_Body_Array[i].quest_Name === "A Lesson in Deception" || table_Body_Array[i].quest_Name === "The Thrill of the Hunt" || table_Body_Array[i].quest_Name === "Army of Shadow" || table_Body_Array[i].quest_Name === "Through a Mirror Darkly" || table_Body_Array[i].quest_Name === "The Tracker's Trap" || table_Body_Array[i].quest_Name === "Lines of Supply" || table_Body_Array[i].quest_Name === "Breaking the Ranks" || table_Body_Array[i].quest_Name === "A Break In the Ice" || table_Body_Array[i].quest_Name === "What Goes Up"))
+				{
+					table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Heroic), Perils of Cormyr (Heroic)";
+					table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers_%28Heroic%29, https://ddowiki.com/page/Perils_of_Cormyr_%28Heroic%29";
+				}
+				else if(table_Body_Array[i].quest_Tier === "Epic")	//These aren't completely accurate!
+				{
+					if(table_Body_Array[i].quest_Name === "The Lords of Dust" || table_Body_Array[i].quest_Name === "Servants of the Overlord" || table_Body_Array[i].quest_Name === "The Spinner of Shadows")
+					{
+						table_Body_Array[i].saga_Contribution = "The End of Eberron (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_End_of_Eberron";
+					}
+					else if(table_Body_Array[i].quest_Name === "Outbreak" || table_Body_Array[i].quest_Name === "Overgrowth" || table_Body_Array[i].quest_Name === "Thorn and Paw")
+					{
+						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark";
+					}
+					else if(table_Body_Array[i].quest_Name === "The Druid's Curse" || table_Body_Array[i].quest_Name === "Friends in Low Places" || table_Body_Array[i].quest_Name === "A Lesson in Deception" || table_Body_Array[i].quest_Name === "The Thrill of the Hunt" || table_Body_Array[i].quest_Name === "Army of Shadow" || table_Body_Array[i].quest_Name === "The Tracker's Trap" || table_Body_Array[i].quest_Name === "Lines of Supply" || table_Body_Array[i].quest_Name === "Breaking the Ranks" || table_Body_Array[i].quest_Name === "A Break In the Ice" || table_Body_Array[i].quest_Name === "What Goes Up")
+					{
+						table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Epic), Perils of Cormyr (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers, https://ddowiki.com/page/Perils_of_Cormyr";
+					}
+					else if(table_Body_Array[i].quest_Name === "Impossible Demands" || table_Body_Array[i].quest_Name === "The Unquiet Graves")
+					{
+						table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Epic), Menace of the Underdark (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/Menace_of_the_Underdark";
+					}
+					else if(table_Body_Array[i].quest_Name === "The Battle for Eveningstar" || table_Body_Array[i].quest_Name === "Don't Drink the Water" || table_Body_Array[i].quest_Name === "In the Belly of the Beast" || table_Body_Array[i].quest_Name === "The House of Rusted Blades" || table_Body_Array[i].quest_Name === "The House of Broken Chains" || table_Body_Array[i].quest_Name === "The House of Death Undone" || table_Body_Array[i].quest_Name === "The Portal Opens")
+					{
+						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic), The End of Eberron (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_End_of_Eberron";
+					}
+					else if(table_Body_Array[i].quest_Name === "Trial by Fury" || table_Body_Array[i].quest_Name === "The Deal and the Demon" || table_Body_Array[i].quest_Name === "Reclaiming the Rift")
+					{
+						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic), The End of Eberron (Epic), The Planes-walker's Path (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_End_of_Eberron, https://ddowiki.com/page/The_Planes-walker%27s_Path";
+					}
+					else if(table_Body_Array[i].quest_Name === "The Lost Thread")
+					{
+						table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Epic), Menace of the Underdark (Epic), The Planes-walker's Path (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_Planes-walker%27s_Path";
+					}
+					else if(table_Body_Array[i].quest_Name === "Detour" || table_Body_Array[i].quest_Name === "Rest Stop" || table_Body_Array[i].quest_Name === "Lost in the Swamp" || table_Body_Array[i].quest_Name === "A Stay at the Inn" || table_Body_Array[i].quest_Name === "The End of the Road" || table_Body_Array[i].quest_Name === "Through a Mirror Darkly")
+					{
+						table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Epic), Perils of Cormyr (Epic), The Planes-walker's Path (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers, https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/The_Planes-walker%27s_Path";
+					}
+					else if(table_Body_Array[i].quest_Name === "Beyond the Rift")
+					{
+						table_Body_Array[i].saga_Contribution = "The End of Eberron (Epic), The Planes-walker's Path (Epic)";
+						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_End_of_Eberron, https://ddowiki.com/page/The_Planes-walker%27s_Path";
+					}
+				}
+			}*/
 
 			update_Table();
 		</script>
