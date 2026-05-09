@@ -111,6 +111,31 @@
 			{
 				min-width: 50px;
 			}
+
+			.numerical_Input_List_Column
+			{
+				min-width: 250px;
+			}
+
+			.numerical_Input_List_Table_Data
+			{
+				text-align: left;
+			}
+
+			.left_Table_Cell
+			{
+				width: 50%;
+				line-height: 18px;
+			}
+
+			.right_Table_Cell
+			{
+				float: right;
+				width: 30%;
+				height: 16px;
+				border: 1px solid black;
+				padding: 0px;
+			}
 		</style>
 	</head>
 	<body>
@@ -309,16 +334,20 @@
 					{
 						new_Header.classList.add("numerical_Column");
 					}
+					else if(column_Properties[i].type === "Numerical Input List")
+					{
+						new_Header.classList.add("numerical_Input_List_Column");
+					}
 
 					// Add ascending/descending class
-				if(column_Properties[i].ascending === 1)
-				{
-					new_Header.classList.add("ascending_Column");
-				}
-				else
-				{
-					new_Header.classList.add("descending_Column");
-				}
+					if(column_Properties[i].ascending === 1)
+					{
+						new_Header.classList.add("ascending_Column");
+					}
+					else
+					{
+						new_Header.classList.add("descending_Column");
+					}
 
 					// Mark current sort selection
 					if(i === current_Sort_Selection)
@@ -445,48 +474,28 @@
 				table_Body_Element.style.display = "table-row-group";	//Return the Table to visible
 			}
 
+			//Should also set experience to 0 for overleveled quests and Epic/Heroic quests when level 30+
 			function set_Total_Experience(index)
 			{
-				let quest_Experience_Multiplier = 3.9;
-				if(table_Body_Array[index].completed === false)
+				let total_Experience = table_Body_Array[index].base_Experience;
+				for(let i = 0; i < table_Body_Array[index].experience_Modifiers.length; i++)
 				{
-					if(table_Body_Array[index].quest_Type === "Challenge")
-					{
-						quest_Experience_Multiplier = 1;
-					}
-					else if(table_Body_Array[index].quest_Type === "Solo Quest")
-					{
-						quest_Experience_Multiplier = 2.15;
-					}
-					else if(table_Body_Array[index].quest_Type === "Reaper Unavailable")
-					{
-						quest_Experience_Multiplier = 3.4;
-					}
-					else
-					{
-						quest_Experience_Multiplier = 3.9;
-					}
+					total_Experience = total_Experience + Math.floor(table_Body_Array[index].experience_Modifiers[i] * table_Body_Array[index].base_Experience);
 				}
-				else
-				{
-					if(table_Body_Array[index].quest_Type === "Challenge")
-					{
-						quest_Experience_Multiplier = .1;
-					}
-					else if(table_Body_Array[index].quest_Type === "Solo Quest")
-					{
-						quest_Experience_Multiplier = 1.4;
-					}
-					else if(table_Body_Array[index].quest_Type === "Reaper Unavailable")
-					{
-						quest_Experience_Multiplier = 1.65;
-					}
-					else
-					{
-						quest_Experience_Multiplier = 1.85;
-					}
-				}
-				table_Body_Array[index].total_Experience = Math.floor(Math.floor(table_Body_Array[index].base_Experience * quest_Experience_Multiplier) * Number(personal_Experience_Multiplier_Input_Box_Element.value));
+				table_Body_Array[index].total_Experience = Math.floor(total_Experience * Number(personal_Experience_Multiplier_Input_Box_Element.value));				
+			}
+
+			let experience_Modifier_Names = ["Delving Bonus","First-time Difficulty", "Tome of Learning", "Daily Bonus", "Persistence", "Flawless Victory", "Kills", "Traps", "Secret Doors", "Breakables", "Quest Ransack", "Over-level Penalty", "Power-leveling Penalty", "Reentry", "Late Entry", "Other"];
+			function set_Experience_Modifier(quest_Index, modifier_Index, new_Value)
+			{
+				table_Body_Array[quest_Index].experience_Modifiers[modifier_Index] = new_Value;
+				table_Body_Element.children[quest_Index].children[column_Name_To_Array_Index.experience_Modifiers].children[Number(modifier_Index * 3 + 1)].value = new_Value;
+				set_Total_Experience(quest_Index);
+				set_Total_Weight(quest_Index);
+				set_Total_Weight_Over_Time(quest_Index);
+				table_Body_Element.children[quest_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[quest_Index].total_Experience;
+				table_Body_Element.children[quest_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[quest_Index].total_Weight;
+				table_Body_Element.children[quest_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[quest_Index].total_Weight_Over_Time;
 			}
 
 			function set_Reaper_Experience(index)
@@ -622,6 +631,18 @@
 						{
 							set_Total_Experience(i);
 							new_Table_Data.innerHTML = table_Body_Array[i].total_Experience;
+						}
+						else if(property === "experience_Modifiers")
+						{
+							new_Table_Data.classList.add("numerical_Input_List_Table_Data");
+							for(let j = 0; j < experience_Modifier_Names.length; j++)
+							{
+								new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"left_Table_Cell\">" + experience_Modifier_Names[j] + ":</span><input type = \"number\" onchange = \"set_Experience_Modifier(" + i + ", " + j + ", this.value)\" class = \"right_Table_Cell\" id = \"" + table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name + j + "\" value = \"" + table_Body_Array[i].experience_Modifiers[j] + "\" step = \".05\"" + "></input><br>";
+							}
+						}
+						else if(property === "optional_Objectives")
+						{
+							//
 						}
 						else if(property === "reaper_Experience")
 						{
@@ -805,6 +826,24 @@
 						{
 							JSON_Table_String = JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
 						}
+						else if(column_Properties[j].name === "experience_Modifiers")
+						{
+							JSON_Table_String = JSON_Table_String + "[";
+							for(let k = 0; k < table_Body_Array[i].experience_Modifiers.length; k++)
+							{
+								JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].experience_Modifiers.length - 1 ? "" : ", ");
+							}
+							JSON_Table_String = JSON_Table_String + "]";
+						}
+						else if(column_Properties[j].name === "optional_Objectives")
+						{
+							JSON_Table_String = JSON_Table_String + "[";
+							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
+							{
+								JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
+							}
+							JSON_Table_String = JSON_Table_String + "]";
+						}
 						else if(column_Properties[j].calculated === true)
 						{
 							JSON_Table_String = JSON_Table_String + "0";
@@ -851,13 +890,112 @@
 					if(table_Body_Array[table_Row].completed === true)
 					{
 						table_Body_Array[table_Row].completed = false;
-						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to match the data change
+						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to off to match the data change
+						if(table_Body_Array[table_Row].quest_Type === "Reaper Unavailable")
+						{
+							set_Experience_Modifier(table_Row, 0, 1);	//Elite Delving Bonus is available
+							set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .5);	//First Time Heroic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .25);	//First Time Epic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+							}
+
+						}
+						else if(table_Body_Array[table_Row].quest_Type === "Solo Quest")
+						{
+							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is always 0 for Solo Quests
+							set_Experience_Modifier(table_Row, 1, .2);	//First Time Solo Completion is available
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .5);	//First Time Heroic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .25);	//First Time Epic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+							}
+							
+						}
+						else if(table_Body_Array[table_Row].quest_Type === "Challenge")
+						{
+							//Handled specially for now
+						}
+						else	//Standard and Raid
+						{
+							set_Experience_Modifier(table_Row, 0, 1.5);	//Full Delving Bonus is available
+							set_Experience_Modifier(table_Row, 1, .45);	//First Time Reaper Completion is assumed to be up next
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .5);	//First Time Heroic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .25);	//First Time Epic Tome of Learning Bonus
+								set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+							}
+							
+						}
 					}
 					else
 					{
 						table_Body_Array[table_Row].completed = true;
 						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
+						if(table_Body_Array[table_Row].quest_Type === "Reaper Unavailable")
+						{
+							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is used up
+							set_Experience_Modifier(table_Row, 1, .2);	//First Time Hard Completion is assumed to be up next
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .2);	//Repeat Tome of Learning Bonus
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .1);	//Repeat Epic Tome of Learning Bonus
+							}
+							set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+						}
+						else if(table_Body_Array[table_Row].quest_Type === "Solo Quest")
+						{
+							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is always 0 for Solo Quests
+							set_Experience_Modifier(table_Row, 1, 0);	//First Time Solo Completion is used up
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .2);	//Repeat Tome of Learning Bonus
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .1);	//Repeat Epic Tome of Learning Bonus
+							}
+							set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+						}
+						else if(table_Body_Array[table_Row].quest_Type === "Challenge")
+						{
+							//Handled specially for now
+						}
+						else	//Standard and Raid
+						{
+							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is used up
+							set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
+							if(table_Body_Array[table_Row].quest_Tier === "Heroic")
+							{
+								set_Experience_Modifier(table_Row, 2, .2);	//Repeat Tome of Learning Bonus
+							}
+							else
+							{
+								set_Experience_Modifier(table_Row, 2, .1);	//Repeat Epic Tome of Learning Bonus
+							}
+							set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+						}
 					}
+
 					set_Total_Experience(table_Row);
 					set_Reaper_Experience(table_Row);
 					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[table_Row].total_Experience;
@@ -877,6 +1015,10 @@
 						}
 					}
 
+				}
+				else if(table_Column === column_Name_To_Array_Index.experience_Modifiers)
+				{
+					//Do nothing but ensure it is caught here, handled by onchange handlers with set_Experience_Modifier on each of the input boxes due to needing an extra index
 				}
 				else if(table_Column === column_Name_To_Array_Index.custom_Weight)
 				{
@@ -1153,146 +1295,6 @@
 					toggle_Location_Retrieval();
 				}
 			}
-
-
-			/*for(let i = 0; i < table_Body_Array.length; i++)
-			{
-				if(table_Body_Array[i].quest_Name === "The Troglodytes' Get" || table_Body_Array[i].quest_Name === "Old Grey Garl" || table_Body_Array[i].quest_Name === "Ghost of a Chance" || table_Body_Array[i].quest_Name === "Prove Your Worth" || table_Body_Array[i].quest_Name === "The Legend of Two-Toed Tobias" || table_Body_Array[i].quest_Name === "Irestone Inlet" || table_Body_Array[i].quest_Name === "Precious Cargo" || table_Body_Array[i].adventure_Pack === "Sentinels of Stormreach")
-				{
-					if(table_Body_Array[i].quest_Tier === "Heroic")
-					{
-						if(table_Body_Array[i].quest_Name !== "Spies in the House")
-						{
-							table_Body_Array[i].saga_Contribution = "The Pirates of the Thunder Sea (Heroic)";
-							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_Pirates_of_the_Thunder_Sea_%28Heroic%29";
-						}
-					}
-					else
-					{
-						table_Body_Array[i].saga_Contribution = "The Pirates of the Thunder Sea (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_Pirates_of_the_Thunder_Sea_%28Epic%29";
-					}
-				}
-				else if(table_Body_Array[i].adventure_Pack === "Sinister Secret of Saltmarsh" || table_Body_Array[i].adventure_Pack === "Fables of the Feywild" || table_Body_Array[i].adventure_Pack === "The Isle of Dread" || table_Body_Array[i].adventure_Pack === "The Chill of Ravenloft" || table_Body_Array[i].adventure_Pack === "Mists of Ravenloft" || table_Body_Array[i].adventure_Pack === "Magic of Myth Drannor" || table_Body_Array[i].adventure_Pack === "Vecna Unleashed")
-				{
-					if(table_Body_Array[i].quest_Tier === "Heroic")
-					{
-						table_Body_Array[i].saga_Contribution = table_Body_Array[i].adventure_Pack + " (Heroic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/" + table_Body_Array[i].adventure_Pack + "%28Heroic%29";
-					}
-					else if(table_Body_Array[i].quest_Type !== "Raid")
-					{
-						table_Body_Array[i].saga_Contribution = table_Body_Array[i].adventure_Pack + " (Legendary)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/" + table_Body_Array[i].adventure_Pack + "%28Legendary%29";
-					}
-				}
-				else if(table_Body_Array[i].adventure_Pack === "Ruins of Gianthold")
-				{
-					if(table_Body_Array[i].quest_Type !== "Raid")
-					{
-						if(table_Body_Array[i].quest_Tier === "Heroic")
-						{
-							table_Body_Array[i].saga_Contribution = "In the Wastes of Gianthold (Heroic)";
-							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/In_the_Wastes_of_Gianthold_%28Heroic%29";
-						}
-						else
-						{
-							table_Body_Array[i].saga_Contribution = "In the Wastes of Gianthold (Epic)";
-							table_Body_Array[i].saga_Link = "https://ddowiki.com/page/In_the_Wastes_of_Gianthold_%28Epic%29";
-						}
-					}
-				}
-				else if(table_Body_Array[i].adventure_Pack === "Masterminds of Sharn" || table_Body_Array[i].quest_Name === "Lost at Sea")
-				{
-					if(table_Body_Array[i].quest_Type !== "Raid")
-					{
-						if(table_Body_Array[i].location === "Sharn - Clifftop Tower District" || table_Body_Array[i].quest_Name === "Lost at Sea")
-						{
-							if(table_Body_Array[i].quest_Tier === "Heroic")
-							{
-								table_Body_Array[i].saga_Contribution = "Masterminds of Sharn (Heroic)";
-								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Masterminds_of_Sharn_%28Heroic%29";
-							}
-							else
-							{
-								table_Body_Array[i].saga_Contribution = "Masterminds of Sharn (Legendary)";
-								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Masterminds_of_Sharn_%28Epic%29";
-							}
-						}
-						else
-						{
-							if(table_Body_Array[i].quest_Tier === "Heroic")
-							{
-								table_Body_Array[i].saga_Contribution = "Cogs Explorer Dungeons (Heroic)";
-								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Cogs_Explorer_Dungeons_%28Heroic%29";
-							}
-							else
-							{
-								table_Body_Array[i].saga_Contribution = "Cogs Explorer Dungeons (Legendary)";
-								table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Cogs_Explorer_Dungeons_%28Epic%29";
-							}
-						}
-					}
-				}
-				else if(table_Body_Array[i].quest_Tier === "Heroic" && (table_Body_Array[i].quest_Name === "Murder By Night" || table_Body_Array[i].quest_Name === "The Riddle" || table_Body_Array[i].quest_Name === "Outbreak" || table_Body_Array[i].quest_Name === "Overgrowth" || table_Body_Array[i].quest_Name === "Thorn and Paw" || table_Body_Array[i].quest_Name === "Disciples of Shar" || table_Body_Array[i].quest_Name === "Escape Plan" || table_Body_Array[i].quest_Name === "Shadow of a Doubt"))
-				{
-					table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Heroic)";
-					table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr_%28Heroic%29";
-				}
-				else if(table_Body_Array[i].quest_Tier === "Heroic" && (table_Body_Array[i].quest_Name === "The Druid's Curse" || table_Body_Array[i].quest_Name === "Detour" || table_Body_Array[i].quest_Name === "Rest Stop" || table_Body_Array[i].quest_Name === "Lost in the Swamp" || table_Body_Array[i].quest_Name === "A Stay at the Inn" || table_Body_Array[i].quest_Name === "The End of the Road" || table_Body_Array[i].quest_Name === "Friends in Low Places" || table_Body_Array[i].quest_Name === "A Lesson in Deception" || table_Body_Array[i].quest_Name === "The Thrill of the Hunt" || table_Body_Array[i].quest_Name === "Army of Shadow" || table_Body_Array[i].quest_Name === "Through a Mirror Darkly" || table_Body_Array[i].quest_Name === "The Tracker's Trap" || table_Body_Array[i].quest_Name === "Lines of Supply" || table_Body_Array[i].quest_Name === "Breaking the Ranks" || table_Body_Array[i].quest_Name === "A Break In the Ice" || table_Body_Array[i].quest_Name === "What Goes Up"))
-				{
-					table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Heroic), Perils of Cormyr (Heroic)";
-					table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers_%28Heroic%29, https://ddowiki.com/page/Perils_of_Cormyr_%28Heroic%29";
-				}
-				else if(table_Body_Array[i].quest_Tier === "Epic")	//These aren't completely accurate!
-				{
-					if(table_Body_Array[i].quest_Name === "The Lords of Dust" || table_Body_Array[i].quest_Name === "Servants of the Overlord" || table_Body_Array[i].quest_Name === "The Spinner of Shadows")
-					{
-						table_Body_Array[i].saga_Contribution = "The End of Eberron (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_End_of_Eberron";
-					}
-					else if(table_Body_Array[i].quest_Name === "Outbreak" || table_Body_Array[i].quest_Name === "Overgrowth" || table_Body_Array[i].quest_Name === "Thorn and Paw")
-					{
-						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark";
-					}
-					else if(table_Body_Array[i].quest_Name === "The Druid's Curse" || table_Body_Array[i].quest_Name === "Friends in Low Places" || table_Body_Array[i].quest_Name === "A Lesson in Deception" || table_Body_Array[i].quest_Name === "The Thrill of the Hunt" || table_Body_Array[i].quest_Name === "Army of Shadow" || table_Body_Array[i].quest_Name === "The Tracker's Trap" || table_Body_Array[i].quest_Name === "Lines of Supply" || table_Body_Array[i].quest_Name === "Breaking the Ranks" || table_Body_Array[i].quest_Name === "A Break In the Ice" || table_Body_Array[i].quest_Name === "What Goes Up")
-					{
-						table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Epic), Perils of Cormyr (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers, https://ddowiki.com/page/Perils_of_Cormyr";
-					}
-					else if(table_Body_Array[i].quest_Name === "Impossible Demands" || table_Body_Array[i].quest_Name === "The Unquiet Graves")
-					{
-						table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Epic), Menace of the Underdark (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/Menace_of_the_Underdark";
-					}
-					else if(table_Body_Array[i].quest_Name === "The Battle for Eveningstar" || table_Body_Array[i].quest_Name === "Don't Drink the Water" || table_Body_Array[i].quest_Name === "In the Belly of the Beast" || table_Body_Array[i].quest_Name === "The House of Rusted Blades" || table_Body_Array[i].quest_Name === "The House of Broken Chains" || table_Body_Array[i].quest_Name === "The House of Death Undone" || table_Body_Array[i].quest_Name === "The Portal Opens")
-					{
-						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic), The End of Eberron (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_End_of_Eberron";
-					}
-					else if(table_Body_Array[i].quest_Name === "Trial by Fury" || table_Body_Array[i].quest_Name === "The Deal and the Demon" || table_Body_Array[i].quest_Name === "Reclaiming the Rift")
-					{
-						table_Body_Array[i].saga_Contribution = "Menace of the Underdark (Epic), The End of Eberron (Epic), The Planes-walker's Path (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_End_of_Eberron, https://ddowiki.com/page/The_Planes-walker%27s_Path";
-					}
-					else if(table_Body_Array[i].quest_Name === "The Lost Thread")
-					{
-						table_Body_Array[i].saga_Contribution = "Perils of Cormyr (Epic), Menace of the Underdark (Epic), The Planes-walker's Path (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/Menace_of_the_Underdark, https://ddowiki.com/page/The_Planes-walker%27s_Path";
-					}
-					else if(table_Body_Array[i].quest_Name === "Detour" || table_Body_Array[i].quest_Name === "Rest Stop" || table_Body_Array[i].quest_Name === "Lost in the Swamp" || table_Body_Array[i].quest_Name === "A Stay at the Inn" || table_Body_Array[i].quest_Name === "The End of the Road" || table_Body_Array[i].quest_Name === "Through a Mirror Darkly")
-					{
-						table_Body_Array[i].saga_Contribution = "Honor of the Huntsilvers (Epic), Perils of Cormyr (Epic), The Planes-walker's Path (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/Honor_of_the_Huntsilvers, https://ddowiki.com/page/Perils_of_Cormyr, https://ddowiki.com/page/The_Planes-walker%27s_Path";
-					}
-					else if(table_Body_Array[i].quest_Name === "Beyond the Rift")
-					{
-						table_Body_Array[i].saga_Contribution = "The End of Eberron (Epic), The Planes-walker's Path (Epic)";
-						table_Body_Array[i].saga_Link = "https://ddowiki.com/page/The_End_of_Eberron, https://ddowiki.com/page/The_Planes-walker%27s_Path";
-					}
-				}
-			}*/
 
 			update_Table();
 		</script>
