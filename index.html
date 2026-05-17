@@ -467,7 +467,7 @@
 						{
 							new_Table_Data.setAttribute("contenteditable", "true");
 						}
-						new_Table_Data.setAttribute("oninput", "table_Data_Changed(" + i + ", " + column_Name_To_Array_Index[property] + ")");
+						new_Table_Data.setAttribute("oninput", "table_Data_Changed(this.parentNode.rowIndex - 1, " + column_Name_To_Array_Index[property] + ")");
 						if(column_Properties[column_Name_To_Array_Index[property]].visible === false)
 						{
 							new_Table_Data.style.display = "none";
@@ -765,7 +765,7 @@
 				}
 			}
 
-			function sort_Table(sort_Selection)    //Orders the table by a column
+			async function sort_Table(sort_Selection)    //Orders the table by a column
 			{
 				if(sort_Selection === current_Sort_Selection)    //Flip from ascending to/from descending if the user clicks on the already selected category to sort
 				{
@@ -783,8 +783,9 @@
 				let element_2 = null;
 				for(let i = 0; i < table_Body_Array.length; i++)
 				{
+					//Swap rows and update the quest_Name_To_Table_Index_Map accordingly
 					if((table_Body_Array[i].quest_Tier + table_Body_Array[i].quest_Name) !== table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Tier].textContent + table_Body_Element.children[i].children[column_Name_To_Array_Index.quest_Name].textContent)
-					{	//Swap rows and update the quest_Name_To_Table_Index_Map accordingly
+					{
 						old_Table_Body_Element_Child_Index = quest_Name_To_Table_Index_Map.get(table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name);
 						element_1 = table_Body_Element.children[i];
 						element_2 = table_Body_Element.children[old_Table_Body_Element_Child_Index];
@@ -793,6 +794,21 @@
 						placeholder_Element.replaceWith(element_2);
 						quest_Name_To_Table_Index_Map.set(table_Body_Array[i].quest_Tier + " " + table_Body_Array[i].quest_Name, i);
 						quest_Name_To_Table_Index_Map.set(table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.quest_Tier].textContent + " " + table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.quest_Name].textContent, old_Table_Body_Element_Child_Index);
+					}
+					if(i <= 5)	//Stripe the first 5 entries for a more seemless UI
+					{
+						if(i % 2 === 1)
+						{
+							table_Body_Element.children[i].style.backgroundColor = "rgba(225, 225, 225, 1.0)";
+						}
+						else
+						{
+							table_Body_Element.children[i].style.backgroundColor = "rgba(255, 255, 255, 1.0)";
+						}
+					}
+					if(i % 50 === 5)	//Allow the UI to update every 50 quests
+					{
+						await new Promise(resolve => setTimeout(resolve, 1));
 					}
 				}
 				filter_Table();	//Used to preserve appropriate striping
