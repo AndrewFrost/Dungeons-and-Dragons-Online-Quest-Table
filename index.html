@@ -339,7 +339,6 @@
 
 			function generate_Table_Headers()
 			{
-				table_Header_Row_Element.replaceChildren();
 				for(let i = 0; i < column_Properties.length; i++)
 				{
 					let new_Header = document.createElement("TH");
@@ -380,11 +379,12 @@
 					{
 						new_Header.style.display = "none";
 					}
-					table_Header_Row_Element.appendChild(new_Header);
+					placeholder_Table_Fragment.appendChild(new_Header);
 				}
+				table_Header_Row_Element.replaceChildren(placeholder_Table_Fragment);
 			}
 
-			async function generate_Initial_Table()	//Converts the contents of the array into HTML
+			function generate_Initial_Table()	//Converts the contents of the array into HTML
 			{
 				for(let i = 0; i < table_Body_Array.length; i++)	//Fills the table with rows and data
 				{
