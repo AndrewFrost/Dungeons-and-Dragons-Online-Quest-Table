@@ -151,6 +151,12 @@
 				border: 0.0625rem solid black;
 				padding: 0px;
 			}
+
+			#autocomplete_Adventures_Error_Message
+			{
+				background-color: rgba(128, 32, 32, 1);
+				color: rgba(255, 255, 128, 1);
+			}
 		</style>
 	</head>
 	<body>
@@ -261,8 +267,11 @@
 				<option value = "Thrane">Thrane</option>
 			</select><br>
 			<span>Autocomplete Adventures On Exit: </span><input type = "checkbox" onclick = "toggle_Location_Retrieval()" id = "autocomplete_Adventures_On_Exit_Checkbox"><span id = "autocomplete_Adventures_Error_Message"></span><br>
+			<span>Current Character: </span><span id = "current_Character_Name">-</span><br>
+			<span>Current Level: </span><span id = "current_Character_Level">-</span><br>
+			<span>Current Group Size: </span><span id = "current_Group_Size">-</span><br>
 			<span>Current Adventure: </span><span id = "current_Adventure">None</span><br>
-			<span>Current Location: </span><span id = "current_Location">Unknown</span><br>
+			<span>Current Location: </span><span id = "current_Location">Unknown Location</span><br>
 			<br>
 			<span>Last Completed Adventure: </span><span id = "last_Completed_Adventure_Name">None</span><br>
 			<span>Minutes Taken: </span><span id = "last_Completed_Adventure_Duration">None</span><br>
@@ -340,6 +349,9 @@
 			let server_Dropdown_Menu_Element = document.getElementById("server_Dropdown_Menu");
 			let autocomplete_Adventures_On_Exit_Checkbox_Element = document.getElementById("autocomplete_Adventures_On_Exit_Checkbox");
 			let autocomplete_Adventures_Error_Message_Element = document.getElementById("autocomplete_Adventures_Error_Message");
+			let current_Character_Name_Element = document.getElementById("current_Character_Name");
+			let current_Character_Level_Element = document.getElementById("current_Character_Level");
+			let current_Group_Size_Element = document.getElementById("current_Group_Size");
 			let current_Adventure_Element = document.getElementById("current_Adventure");
 			let current_Location_Element = document.getElementById("current_Location");
 			let last_Completed_Adventure_Name_Element = document.getElementById("last_Completed_Adventure_Name");
@@ -427,7 +439,7 @@
 								let saga_Links = table_Body_Array[i].saga_Link.split(", ");
 								if(saga_Names.length !== saga_Links.length)
 								{
-									new_Table_Data.innerHTML = table_Body_Array[i].saga_Contribution;
+									new_Table_Data.innerText = table_Body_Array[i].saga_Contribution;
 									console.log("Saga Link error for " + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + ", entry " + i);
 								}
 								else
@@ -444,13 +456,13 @@
 							}
 							else
 							{
-								new_Table_Data.innerHTML = table_Body_Array[i].saga_Contribution;
+								new_Table_Data.innerText = table_Body_Array[i].saga_Contribution;
 							}
 						}
 						else if(property === "total_Experience")
 						{
 							set_Total_Experience(i);
-							new_Table_Data.innerHTML = table_Body_Array[i].total_Experience;
+							new_Table_Data.innerText = table_Body_Array[i].total_Experience;
 						}
 						else if(property === "experience_Modifiers")
 						{
@@ -467,26 +479,26 @@
 						else if(property === "reaper_Experience")
 						{
 							set_Reaper_Experience(i);
-							new_Table_Data.innerHTML = table_Body_Array[i].reaper_Experience;
+							new_Table_Data.innerText = table_Body_Array[i].reaper_Experience;
 						}
 						else if(property === "available_Favor")
 						{
 							set_Available_Favor(i);
-							new_Table_Data.innerHTML = table_Body_Array[i].available_Favor;
+							new_Table_Data.innerText = table_Body_Array[i].available_Favor;
 						}
 						else if(property === "total_Weight")
 						{
 							set_Total_Weight(i);
-							new_Table_Data.innerHTML = table_Body_Array[i].total_Weight;
+							new_Table_Data.innerText = table_Body_Array[i].total_Weight;
 						}
 						else if(property === "total_Weight_Over_Time")
 						{
 							set_Total_Weight_Over_Time(i);
-							new_Table_Data.innerHTML = table_Body_Array[i].total_Weight_Over_Time;
+							new_Table_Data.innerText = table_Body_Array[i].total_Weight_Over_Time;
 						}
 						else
 						{
-							new_Table_Data.innerHTML = table_Body_Array[i][property];
+							new_Table_Data.innerText = table_Body_Array[i][property];
 						}
 						if(property === "time" || property === "damage_Reduction_Information" || property === "notes" || property === "custom_Weight")
 						{
@@ -637,7 +649,7 @@
 					table_Body_Array[index].reaper_Experience = 0;
 					return;
 				}
-				if(table_Body_Array[index].adventure_Name === "Haverdasher" ||table_Body_Array[index].adventure_Name === "Return to Delera's Tomb")
+				if(table_Body_Array[index].adventure_Name === "Haverdasher" || table_Body_Array[index].adventure_Name === "Return to Delera's Tomb" || table_Body_Array[index].adventure_Name === "The Gate Chamber")
 				{
 					table_Body_Array[index].reaper_Experience = 0;
 					return;
@@ -1189,7 +1201,7 @@
 			function disable_Location_Retrieval(error_Message)
 			{
 				autocomplete_Adventures_On_Exit_Checkbox_Element.checked = false;
-				autocomplete_Adventures_Error_Message_Element.innerHTML = error_Message;
+				autocomplete_Adventures_Error_Message_Element.innerText = error_Message;
 				clearInterval(location_Retrieval_Interval_ID);
 				location_Retrieval_Interval_ID = "";
 			}
@@ -1198,7 +1210,7 @@
 			{
 				if(location_Retrieval_Interval_ID === "")
 				{
-					autocomplete_Adventures_Error_Message_Element.innerHTML = "";
+					autocomplete_Adventures_Error_Message_Element.innerText = "";
 					location_Retrieval_Interval_ID = setInterval(retrieve_Character_Location, 4000);
 					retrieve_Character_Location();
 				}
@@ -1209,7 +1221,8 @@
 			}
 
 			let last_Location_ID_Entered = "";
-			let last_Adventure_Entered_String = "";
+			let last_Location_Entered_String = "";
+			let current_Adventure_Entered_String = "";
 			let last_Adventure_Time_Entered_String = "";
 			let last_Adventure_Time_In_Minutes = 0;
 			let current_Character_Level = 0;
@@ -1233,25 +1246,29 @@
 							throw new Error(response.status);
 						}
 						const result = await response.json();
+						current_Character_Name_Element.innerText = result.data.name;
+						current_Character_Level = result.data.total_level;
+						current_Character_Level_Element.innerText = current_Character_Level;
+						current_Group_Size_Element.innerText = 1;
 						if(last_Location_ID_Entered !== result.data.location_id)
 						{
-							if(last_Adventure_Time_Entered_String !== "" && last_Adventure_Entered_String !== "")
+							if(last_Adventure_Time_Entered_String !== "" && current_Adventure_Entered_String !== "")
 							{
-								last_Completed_Adventure_Name_Element.innerHTML = last_Adventure_Entered_String;
+								last_Completed_Adventure_Name_Element.innerText = current_Adventure_Entered_String;
 								last_Adventure_Time_In_Minutes = ((new Date(result.data.last_update) - new Date(last_Adventure_Time_Entered_String)) / 60000).toFixed(3);
-								last_Completed_Adventure_Duration_Element.innerHTML = last_Adventure_Time_In_Minutes;
-								let row_Index = adventure_Name_To_Table_Index_Map.get((current_Adventure_Tier + " " + last_Adventure_Entered_String));
+								last_Completed_Adventure_Duration_Element.innerText = last_Adventure_Time_In_Minutes;
+								let row_Index = adventure_Name_To_Table_Index_Map.get((current_Adventure_Tier + " " + current_Adventure_Entered_String));
 								if(row_Index === undefined)
 								{
-									row_Index = adventure_Name_To_Table_Index_Map.get(("Legendary " + last_Adventure_Entered_String));
+									row_Index = adventure_Name_To_Table_Index_Map.get(("Legendary " + current_Adventure_Entered_String));
 								}
 								if(row_Index === undefined)
 								{
-									row_Index = adventure_Name_To_Table_Index_Map.get(("Epic " + last_Adventure_Entered_String));
+									row_Index = adventure_Name_To_Table_Index_Map.get(("Epic " + current_Adventure_Entered_String));
 								}
 								if(row_Index === undefined)
 								{
-									row_Index = adventure_Name_To_Table_Index_Map.get(("Heroic " + last_Adventure_Entered_String));
+									row_Index = adventure_Name_To_Table_Index_Map.get(("Heroic " + current_Adventure_Entered_String));
 								}
 								if(table_Body_Array[row_Index].completed === false)
 								{
@@ -1269,22 +1286,238 @@
 								table_Data_Changed(row_Index, column_Name_To_Array_Index.notes);
 								adventure_Completion_Order = adventure_Completion_Order + 1;
 								last_Adventure_Time_Entered_String = "";
-								last_Adventure_Entered_String = "";
+								current_Adventure_Entered_String = "";
 							}
-							if(DDO_Audit_Location_ID_To_Adventure_Name_Map.get(result.data.location_id) !== undefined)
+							if(DDO_Audit_Location_ID_To_Adventure_Name_Map.has(result.data.location_id))
 							{
-								last_Adventure_Entered_String = DDO_Audit_Location_ID_To_Adventure_Name_Map.get(result.data.location_id);
-								current_Adventure_Element.innerHTML = last_Adventure_Entered_String;
-								last_Adventure_Time_Entered_String = result.data.last_update;
+								current_Adventure_Entered_String = DDO_Audit_Location_ID_To_Adventure_Name_Map.get(result.data.location_id);
+
+								//Checks for quests with shared instances that DDO Audit's location tracking doesn't handle and applies various logic to select the most appropriate adventure
+								//Need to add: Tempest's Spine, The Shroud, A Vision of Destruction, The Master Artificer, The Lord of Blades, and potentially Haunted Halls of Eveningstar
+								switch(current_Adventure_Entered_String)
+								{
+									case "Stop Hazadill's Shipment":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Stop Hazadill's Shipment")].completed === true)
+										{
+											current_Adventure_Entered_String = "Retrieve the Stolen Goods";
+										}
+										break;
+									case "Gladewatch Outpost Defense":
+										if(current_Character_Level < 4 || (table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Gladewatch Outpost Defense")].completed === true && table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Kobold Assault")].completed === false))
+										{
+											current_Adventure_Entered_String = "Kobold Assault";
+										}
+										break;
+									case "The Friar's Niece":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Friar's Niece")].completed === true)
+											{
+												current_Adventure_Entered_String = "Return to the Sanctuary";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic The Friar's Niece")].completed === true)
+											{
+												current_Adventure_Entered_String = "Return to the Sanctuary";
+											}
+										}
+										break;
+									case "Endgame: The Archbishop's Fate":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Endgame: Marguerite")].completed === false)
+											{
+												current_Adventure_Entered_String = "";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Endgame: Marguerite")].completed === false)
+											{
+												current_Adventure_Entered_String = "";
+											}
+										}
+										break;
+									case "Old Grey Garl":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
+											{
+												current_Adventure_Entered_String = "The Troglodytes' Get";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Old Grey Garl")].completed === true && table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
+											{
+												current_Adventure_Entered_String = "The Troglodytes' Get";
+											}
+										}
+										break;
+									case "Brood of Flame":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Stones Run Red")].completed === false || table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Brood of Flame")].completed === true)
+										{
+											current_Adventure_Entered_String = "The Stones Run Red";
+										}
+										break;
+									case "The Last Move: The Way to Yarkuch":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic First Strike")].completed === false)
+										{
+											current_Adventure_Entered_String = "First Strike";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Hobgoblins' Captives")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Hobgoblins' Captives";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Yarkuch's War-plans")].completed === false)
+										{
+											current_Adventure_Entered_String = "Yarkuch's War-plans";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Whisperdoom's Spawn")].completed === false)
+										{
+											current_Adventure_Entered_String = "Whisperdoom's Spawn";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Deadly Package: The Stronghold Key")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Deadly Package: The Stronghold Key";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Doom of the Witch-doctor: The Way to Zulkash")].completed === false)
+										{
+											current_Adventure_Entered_String = "Doom of the Witch-doctor: The Way to Zulkash";
+										}
+										break;
+									case "The Last Move: Yarkuch's Last Stand":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Deadly Package: Agent of the Darguul")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Deadly Package: Agent of the Darguul";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Doom of the Witch-doctor: Zulkash, Herald of Woe")].completed === false)
+										{
+											current_Adventure_Entered_String = "Doom of the Witch-doctor: Zulkash, Herald of Woe";
+										}
+										break;
+									case "Free Delera":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Free Delera")].completed === true)
+											{
+												current_Adventure_Entered_String = "Return to Delera's Tomb";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Free Delera")].completed === true)
+											{
+												current_Adventure_Entered_String = "Return to Delera's Tomb";
+											}
+										}
+										break;
+									case "The Iron Mines: Freeing Achka":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Iron Mines: Freeing Achka")].completed === true)
+										{
+											current_Adventure_Entered_String = "The Iron Mines: Justice for Grust";
+										}
+										break;
+									case "The Grey Moon's Den: The Trollish Scourge":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Grey Moon's Den: The Trollish Scourge")].completed === true)
+										{
+											current_Adventure_Entered_String = "The Grey Moon's Den: Extermination";
+										}
+										break;
+									case "The Temple Outpost: The Libram of the Six":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Temple Outpost: Captives of the Cult")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Temple Outpost: Captives of the Cult";
+										}
+										break;
+									case "The Fane of the Six: Fall of the Prelate":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Fane of the Six: Cleansing the Temple")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Fane of the Six: Cleansing the Temple";
+										}
+										break;
+									case "The Sanctum: Quench the Flames":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Sanctum: Quench the Flames")].completed === true)
+										{
+											current_Adventure_Entered_String = "The Sanctum: Church of the Fury";
+										}
+										break;
+									case "Secure the Area":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic In Need of Supplies")].completed === false)
+										{
+											current_Adventure_Entered_String = "In Need of Supplies";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Rescue")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Rescue";
+										}
+										break;
+									case "Hold for Reinforcements":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Library of Threnal")].completed === false)
+										{
+											current_Adventure_Entered_String = "The Library of Threnal";
+										}
+										else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Escort the Expedition")].completed === false)
+										{
+											current_Adventure_Entered_String = "Escort the Expedition";
+										}
+										break;
+									case "The Missing Expedition":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Missing Expedition")].completed === true)
+										{
+											current_Adventure_Entered_String = "Entering the Gate Chamber";
+										}
+										break;
+									case "A Raven at the Door":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic An Invitation to Dinner")].completed === false)
+											{
+												current_Adventure_Entered_String = "An Invitation to Dinner";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Legendary An Invitation to Dinner")].completed === false)
+											{
+												current_Adventure_Entered_String = "An Invitation to Dinner";
+											}
+										}
+										break;
+									case "Legendary Hound of Xoriat":
+										if(last_Location_Entered_String === "The Subterrane - East")
+										{
+											current_Adventure_Entered_String = "Hound of Xoriat";
+										}
+										break;
+								}
+								if(current_Adventure_Entered_String !== "")
+								{
+									current_Adventure_Element.innerText = current_Adventure_Entered_String;
+									last_Adventure_Time_Entered_String = result.data.last_update;
+								}
+								else
+								{
+									current_Adventure_Element.innerText = "None";
+								}
 							}
 							else
 							{
-								current_Adventure_Element.innerHTML = "None";
+								current_Adventure_Element.innerText = "None";
 							}
-							current_Location_Element.innerHTML = DDO_Audit_Location_ID_To_Area_Name_Map.get(result.data.location_id);
 						}
 						last_Location_ID_Entered = result.data.location_id;
-						current_Character_Level = result.data.total_level;
+						if(DDO_Audit_Location_ID_To_Area_Name_Map.has(last_Location_ID_Entered))
+						{
+							last_Location_Entered_String = DDO_Audit_Location_ID_To_Area_Name_Map.get(last_Location_ID_Entered);
+							current_Location_Element.innerText = DDO_Audit_Location_ID_To_Area_Name_Map.get(last_Location_ID_Entered);
+						}
+						else
+						{
+							current_Location_Element.innerText = "Unknown Location";
+						}
 						if(current_Character_Level < 20)
 						{
 							current_Adventure_Tier = "Heroic";
@@ -1297,11 +1530,11 @@
 						{
 							current_Adventure_Tier = "Legendary";
 						}
-						autocomplete_Adventures_Error_Message_Element.innerHTML = "";
+						autocomplete_Adventures_Error_Message_Element.innerText = "";
 						retrieve_Character_Location_Error_Counter = 0;
 						if(result.data.is_online === false)
 						{
-							disable_Location_Retrieval("Character is currently offline, location retrieval stopped.");
+							current_Adventure_Element.innerText = "Character is currently offline or location retrieval is experiencing issues and real-time character tracking may be offline";
 						}
 					}
 					catch(DDO_Audit_Error_Response)
@@ -1309,7 +1542,7 @@
 						retrieve_Character_Location_Error_Counter = retrieve_Character_Location_Error_Counter + 1;
 						if(DDO_Audit_Error_Response.message === "404")
 						{
-							disable_Location_Retrieval("Unable to find the character \"" + character_Name_Input_Box_Element.value + "\" on the " + server_Dropdown_Menu_Element.value + " server. Please ensure both are correct.");
+							disable_Location_Retrieval("Unable to find the character \"" + character_Name_Input_Box_Element.value + "\" on the " + server_Dropdown_Menu_Element.value + " server. Please ensure both are correct and re-enable autocomplete.");
 						}
 						else if(retrieve_Character_Location_Error_Counter >= 3)
 						{

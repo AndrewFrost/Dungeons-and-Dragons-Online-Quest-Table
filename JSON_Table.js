@@ -953,7 +953,7 @@ let table_Body_Array = [
 	adventure_Pack: "Free to Play",
 	adventure_Pack_Link: "",
 	damage_Reduction_Information: "-",
-	notes: "Requires a Reaper to spawn to get Reaper Experience"
+	notes: "Requires a Reaper to spawn in order to get the 10 kills required to award Reaper Experience"
 },
 {
 	completed: false,
@@ -4253,7 +4253,7 @@ let table_Body_Array = [
 	adventure_Pack: "Delera's Tomb",
 	adventure_Pack_Link: "",
 	damage_Reduction_Information: "-",
-	notes: "-"
+	notes: "The 10 kills required to award Reaper Experience are not available"
 },
 {
 	completed: false,
@@ -8333,7 +8333,7 @@ let table_Body_Array = [
 	adventure_Pack: "The Ruins of Threnal",
 	adventure_Pack_Link: "",
 	damage_Reduction_Information: "-",
-	notes: "-"
+	notes: "The 10 kills required to award Reaper Experience are not available"
 },
 {
 	completed: false,
@@ -19013,7 +19013,7 @@ let table_Body_Array = [
 	adventure_Pack: "Delera's Tomb",
 	adventure_Pack_Link: "",
 	damage_Reduction_Information: "-",
-	notes: "-"
+	notes: "The 10 kills required to award Reaper Experience are not available"
 },
 {
 	completed: false,
