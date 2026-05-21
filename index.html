@@ -269,7 +269,8 @@
 			<span>Autocomplete Adventures On Exit: </span><input type = "checkbox" onclick = "toggle_Location_Retrieval()" id = "autocomplete_Adventures_On_Exit_Checkbox"><span id = "autocomplete_Adventures_Error_Message"></span><br>
 			<span>Current Character: </span><span id = "current_Character_Name">-</span><br>
 			<span>Current Level: </span><span id = "current_Character_Level">-</span><br>
-			<span>Current Group Size: </span><span id = "current_Group_Size">-</span><br>
+			<span>Highest Level of Group Members: </span><span id = "highest_Level_Of_Group_Members">-</span><br>
+			<!--<span>Current Group Size: </span><span id = "current_Group_Size">-</span><br>-->
 			<span>Current Adventure: </span><span id = "current_Adventure">None</span><br>
 			<span>Current Location: </span><span id = "current_Location">Unknown Location</span><br>
 			<br>
@@ -351,7 +352,8 @@
 			let autocomplete_Adventures_Error_Message_Element = document.getElementById("autocomplete_Adventures_Error_Message");
 			let current_Character_Name_Element = document.getElementById("current_Character_Name");
 			let current_Character_Level_Element = document.getElementById("current_Character_Level");
-			let current_Group_Size_Element = document.getElementById("current_Group_Size");
+			let highest_Level_Of_Group_Members_Element = document.getElementById("highest_Level_Of_Group_Members");
+//			let current_Group_Size_Element = document.getElementById("current_Group_Size");
 			let current_Adventure_Element = document.getElementById("current_Adventure");
 			let current_Location_Element = document.getElementById("current_Location");
 			let last_Completed_Adventure_Name_Element = document.getElementById("last_Completed_Adventure_Name");
@@ -1200,10 +1202,15 @@
 
 			function disable_Location_Retrieval(error_Message)
 			{
-				autocomplete_Adventures_On_Exit_Checkbox_Element.checked = false;
-				autocomplete_Adventures_Error_Message_Element.innerText = error_Message;
 				clearInterval(location_Retrieval_Interval_ID);
 				location_Retrieval_Interval_ID = "";
+				autocomplete_Adventures_On_Exit_Checkbox_Element.checked = false;
+				autocomplete_Adventures_Error_Message_Element.innerText = error_Message;
+				current_Character_Name_Element.textContent = "-";
+				current_Character_Level_Element.textContent = "-";
+//				current_Group_Size_Element.textContent = "-";
+				current_Adventure_Element.textContent = "None";
+				current_Location_Element.textContent = "Unknown Location";
 			}
 
 			function toggle_Location_Retrieval()
@@ -1226,6 +1233,7 @@
 			let last_Adventure_Time_Entered_String = "";
 			let last_Adventure_Time_In_Minutes = 0;
 			let current_Character_Level = 0;
+			let current_Group_Size = 1;
 			let current_Adventure_Tier = "Heroic";
 			let adventure_Completion_Order = 1;
 			let retrieve_Character_Location_Error_Counter = 0;
@@ -1241,15 +1249,41 @@
 					try
 					{
 						const response = await fetch(url);
-						if (!response.ok)
+						if(response.ok === false)
 						{
 							throw new Error(response.status);
 						}
 						const result = await response.json();
+						let group = null;
+						if(result.data.group_id !== null)
+						{
+							const group_Response = await fetch("https://api.ddoaudit.com/v1/characters/by-group-id/" + result.data.group_id);
+							if(group_Response.ok === true)
+							{
+								group = await group_Response.json();
+							}
+						}
 						current_Character_Name_Element.innerText = result.data.name;
 						current_Character_Level = result.data.total_level;
 						current_Character_Level_Element.innerText = current_Character_Level;
-						current_Group_Size_Element.innerText = 1;
+						if(group !== null)
+						{
+							let group_Member_IDs = Object.keys(group.data);
+							let highest_Level_Of_Group_Members = 1;
+							for(let i = 0; i < group_Member_IDs.length; i++)
+							{
+								highest_Level_Of_Group_Members = Math.max(highest_Level_Of_Group_Members, group.data[group_Member_IDs[i]].total_level);
+							}
+//							current_Group_Size_Element.innerText = group_Member_IDs.length;
+							current_Group_Size = group_Member_IDs.length;
+							highest_Level_Of_Group_Members_Element.innerText = highest_Level_Of_Group_Members;
+						}
+						else
+						{
+//							current_Group_Size_Element.innerText = 1;
+							current_Group_Size = 1;
+							highest_Level_Of_Group_Members_Element.innerText = current_Character_Level;
+						}
 						if(last_Location_ID_Entered !== result.data.location_id)
 						{
 							if(last_Adventure_Time_Entered_String !== "" && current_Adventure_Entered_String !== "")
@@ -1293,7 +1327,6 @@
 								current_Adventure_Entered_String = DDO_Audit_Location_ID_To_Adventure_Name_Map.get(result.data.location_id);
 
 								//Checks for quests with shared instances that DDO Audit's location tracking doesn't handle and applies various logic to select the most appropriate adventure
-								//Need to do: Investigate Ascension Chamber and Haunted Halls of Eveningstar. Find better logic for Tempest's Spine, The Shroud, A Vision of Destruction, The Master Artificer, and The Lord Of Blades
 								switch(current_Adventure_Entered_String)
 								{
 									//Harbor
@@ -1583,7 +1616,7 @@
 						retrieve_Character_Location_Error_Counter = 0;
 						if(result.data.is_online === false)
 						{
-							current_Adventure_Element.innerText = "Character is currently offline or location retrieval is experiencing issues and real-time character tracking may be offline";
+							current_Character_Name_Element.innerText = current_Character_Name_Element.innerText + ". Character is currently offline or location retrieval is experiencing issues and real-time character tracking may be offline";
 						}
 					}
 					catch(DDO_Audit_Error_Response)
@@ -1596,7 +1629,7 @@
 						else if(retrieve_Character_Location_Error_Counter >= 3)
 						{
 							retrieve_Character_Location_Error_Counter = 0;
-							disable_Location_Retrieval("An error was encountered repeatedly, location retrieval stopped. DDO Audit may be down and real-time character tracking may be offline.");
+							disable_Location_Retrieval("An error was encountered repeatedly, location retrieval stopped. Real-time character tracking may be offline.");
 						}
 					}
 				}
