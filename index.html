@@ -1293,21 +1293,26 @@
 								current_Adventure_Entered_String = DDO_Audit_Location_ID_To_Adventure_Name_Map.get(result.data.location_id);
 
 								//Checks for quests with shared instances that DDO Audit's location tracking doesn't handle and applies various logic to select the most appropriate adventure
-								//Need to add: Tempest's Spine, The Shroud, A Vision of Destruction, The Master Artificer, The Lord of Blades, and potentially Haunted Halls of Eveningstar
+								//Need to do: Investigate Ascension Chamber and Haunted Halls of Eveningstar. Find better logic for Tempest's Spine, The Shroud, A Vision of Destruction, The Master Artificer, and The Lord Of Blades
 								switch(current_Adventure_Entered_String)
 								{
+									//Harbor
 									case "Stop Hazadill's Shipment":
 										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Stop Hazadill's Shipment")].completed === true)
 										{
 											current_Adventure_Entered_String = "Retrieve the Stolen Goods";
 										}
 										break;
+
+									//Marketplace
 									case "Gladewatch Outpost Defense":
 										if(current_Character_Level < 4 || (table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Gladewatch Outpost Defense")].completed === true && table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Kobold Assault")].completed === false))
 										{
 											current_Adventure_Entered_String = "Kobold Assault";
 										}
 										break;
+
+									//The Catacombs
 									case "The Friar's Niece":
 										if(current_Character_Level < 20)
 										{
@@ -1340,28 +1345,8 @@
 											}
 										}
 										break;
-									case "Old Grey Garl":
-										if(current_Character_Level < 20)
-										{
-											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
-											{
-												current_Adventure_Entered_String = "The Troglodytes' Get";
-											}
-										}
-										else
-										{
-											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Old Grey Garl")].completed === true && table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
-											{
-												current_Adventure_Entered_String = "The Troglodytes' Get";
-											}
-										}
-										break;
-									case "Brood of Flame":
-										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Stones Run Red")].completed === false || table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Brood of Flame")].completed === true)
-										{
-											current_Adventure_Entered_String = "The Stones Run Red";
-										}
-										break;
+
+									//Tangleroot Gorge / Splinterskull
 									case "The Last Move: The Way to Yarkuch":
 										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic First Strike")].completed === false)
 										{
@@ -1398,6 +1383,32 @@
 											current_Adventure_Entered_String = "Doom of the Witch-doctor: Zulkash, Herald of Woe";
 										}
 										break;
+
+									//Three-Barrel Cove
+									case "Old Grey Garl":
+										if(current_Character_Level < 20)
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
+											{
+												current_Adventure_Entered_String = "The Troglodytes' Get";
+											}
+										}
+										else
+										{
+											if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Old Grey Garl")].completed === true && table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
+											{
+												current_Adventure_Entered_String = "The Troglodytes' Get";
+											}
+										}
+										break;
+									case "Brood of Flame":
+										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Stones Run Red")].completed === false || table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Brood of Flame")].completed === true)
+										{
+											current_Adventure_Entered_String = "The Stones Run Red";
+										}
+										break;
+
+									//Delera's
 									case "Free Delera":
 										if(current_Character_Level < 20)
 										{
@@ -1414,6 +1425,8 @@
 											}
 										}
 										break;
+
+									//Sorrowdusk
 									case "The Iron Mines: Freeing Achka":
 										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Iron Mines: Freeing Achka")].completed === true)
 										{
@@ -1444,6 +1457,8 @@
 											current_Adventure_Entered_String = "The Sanctum: Church of the Fury";
 										}
 										break;
+
+									//Threnal
 									case "Secure the Area":
 										if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic In Need of Supplies")].completed === false)
 										{
@@ -1470,6 +1485,8 @@
 											current_Adventure_Entered_String = "Entering the Gate Chamber";
 										}
 										break;
+
+									//Ravenloft
 									case "A Raven at the Door":
 										if(current_Character_Level < 20)
 										{
@@ -1484,6 +1501,38 @@
 											{
 												current_Adventure_Entered_String = "An Invitation to Dinner";
 											}
+										}
+										break;
+
+									//Raids
+									case "Legendary Tempest's Spine":
+										if(current_Character_Level < 20)
+										{
+											current_Adventure_Entered_String = "Tempest's Spine";
+										}
+										break;
+									case "The Legendary Shroud":
+										if(current_Character_Level < 20)
+										{
+											current_Adventure_Entered_String = "The Shroud";
+										}
+										break;
+									case "Legendary Vision of Destruction":
+										if(current_Character_Level < 20)
+										{
+											current_Adventure_Entered_String = "A Vision of Destruction";
+										}
+										break;
+									case "Legendary Master Artificer":
+										if(current_Character_Level < 20)
+										{
+											current_Adventure_Entered_String = "The Master Artificer";
+										}
+										break;
+									case "Legendary Lord of Blades":
+										if(current_Character_Level < 20)
+										{
+											current_Adventure_Entered_String = "The Lord Of Blades";
 										}
 										break;
 									case "Legendary Hound of Xoriat":
