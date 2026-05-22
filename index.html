@@ -268,8 +268,8 @@
 			</select><br>
 			<span>Autocomplete Adventures On Exit: </span><input type = "checkbox" onclick = "toggle_Location_Retrieval()" id = "autocomplete_Adventures_On_Exit_Checkbox"><span id = "autocomplete_Adventures_Error_Message"></span><br>
 			<span>Current Character: </span><span id = "current_Character_Name">-</span><br>
-			<span>Current Level: </span><span id = "current_Character_Level">-</span><br>
-			<span>Highest Level of Group Members: </span><span id = "highest_Level_Of_Group_Members">-</span><br>
+			<span>Current Level: </span><span id = "current_Character_Level">1</span><br>
+			<span>Highest Level of Group Members: </span><span id = "highest_Level_Of_Group_Members">1</span><br>
 			<!--<span>Current Group Size: </span><span id = "current_Group_Size">-</span><br>-->
 			<span>Current Adventure: </span><span id = "current_Adventure">None</span><br>
 			<span>Current Location: </span><span id = "current_Location">Unknown Location</span><br>
@@ -361,6 +361,9 @@
 
 			let adventure_Name_To_Table_Index_Map = new Map();
 			let current_Sort_Selection = 1;
+
+			let current_Character_Level = 1;
+			let highest_Level_Of_Group_Members = 1;
 
 			function generate_Table_Headers()
 			{
@@ -615,9 +618,141 @@
 				table_Body_Element.style.display = "table-row-group";	//Return the Table to visible
 			}
 
+			let experience_Modifier_Names = ["Delving Bonus","First-time Difficulty", "Tome of Learning", "Daily Bonus", "Persistence", "Flawless Victory", "Kills", "Traps", "Secret Doors", "Breakables", "Quest Ransack", "Over-level Penalty", "Power-leveling Penalty", "Reentry", "Late Entry", "Other"];
+			function set_Experience_Modifier(adventure_Index, modifier_Index, new_Value)
+			{
+				table_Body_Array[adventure_Index].experience_Modifiers[modifier_Index] = new_Value;
+				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.experience_Modifiers].children[Number(modifier_Index * 3 + 1)].value = new_Value;
+				set_Total_Experience(adventure_Index);
+				set_Reaper_Experience(adventure_Index);
+				set_Total_Weight(adventure_Index);
+				set_Total_Weight_Over_Time(adventure_Index);
+				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
+				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[adventure_Index].total_Weight;
+				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
+			}
+
+			function set_Delving_Bonus(quest_Index)
+			{
+				if(table_Body_Array[quest_Index].completed === true)
+				{
+					set_Experience_Modifier(quest_Index, 0, 0);
+					return;
+				}
+				switch(table_Body_Array[quest_Index].adventure_Type)
+				{
+					case "Solo Quest":
+					case "Challenge":
+						set_Experience_Modifier(quest_Index, 0, 0);	//No Delving Bonus available
+						break;
+					case "Reaper Unavailable":
+					if(table_Body_Array[quest_Index].adventure_Tier === "Heroic" && highest_Level_Of_Group_Members - 2 > table_Body_Array[quest_Index].level)
+					{
+						set_Experience_Modifier(quest_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Heroic
+					}
+					else if(table_Body_Array[quest_Index].adventure_Tier !== "Heroic" && highest_Level_Of_Group_Members - 4 > table_Body_Array[quest_Index].level)
+					{
+						set_Experience_Modifier(quest_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
+					}
+					else
+					{
+						set_Experience_Modifier(quest_Index, 0, 1);	//Elite Delving Bonus
+					}
+					break;
+					case "Standard":
+					case "Raid":
+					if(table_Body_Array[quest_Index].adventure_Tier === "Heroic")
+					{
+						if(highest_Level_Of_Group_Members - 4 > table_Body_Array[quest_Index].level)
+						{
+							set_Experience_Modifier(quest_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Heroic
+						}
+						else if(highest_Level_Of_Group_Members - 2 > table_Body_Array[quest_Index].level)
+						{
+							set_Experience_Modifier(quest_Index, 0, .75);	//Reaper Delving Bonus, halved for overlevel in Heroic
+						}
+						else
+						{
+							set_Experience_Modifier(quest_Index, 0, 1.5);	//Reaper Delving Bonus
+						}
+					}
+					else
+					{
+						if(highest_Level_Of_Group_Members - 6 > table_Body_Array[quest_Index].level)
+						{
+							set_Experience_Modifier(quest_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
+						}
+						else if(highest_Level_Of_Group_Members - 4 > table_Body_Array[quest_Index].level)
+						{
+							set_Experience_Modifier(quest_Index, 0, .75);	//Reaper Delving Bonus, halved for overlevel in Epic/Legendary
+						}
+						else
+						{
+							set_Experience_Modifier(quest_Index, 0, 1.5);	//Reaper Delving Bonus
+						}
+					}
+				}
+			}
+
+			const over_Level_Penalties = [0, 0, -.1, -.25, -.5, -.75, -.99, -1];
+			function set_Over_Level_Penalty(quest_Index)
+			{
+				if(current_Character_Level >= 30 && table_Body_Array[quest_Index].adventure_Tier !== "Legendary")
+				{
+					set_Experience_Modifier(quest_Index, 11, -1);
+					return;
+				}
+				let effective_Adventure_Level = table_Body_Array[quest_Index].level;
+				switch(table_Body_Array[quest_Index].adventure_Type)
+				{
+					case "Standard":
+					case "Raid":
+					case "Reaper Unavailable":
+						effective_Adventure_Level = effective_Adventure_Level + 2;
+					break;
+				}
+				if(table_Body_Array[quest_Index].adventure_Name === "Devil Assault" && table_Body_Array[quest_Index].adventure_Tier === "Heroic")
+				{
+					effective_Adventure_Level = 18;
+				}
+				if(effective_Adventure_Level >= 20)
+				{
+					set_Experience_Modifier(quest_Index, 11, 0);
+					return;
+				}
+				else
+				{
+					set_Experience_Modifier(quest_Index, 11, over_Level_Penalties[Math.max(0, Math.min(7, highest_Level_Of_Group_Members - effective_Adventure_Level))]);
+					return;
+				}
+			}
+
+			function set_Power_Leveling_Penalty(quest_Index)
+			{
+				if(current_Character_Level >= 20)
+				{
+					set_Experience_Modifier(quest_Index, 12, 0);
+				}
+				else
+				{
+					let current_Multiplier = 1;
+					for(let i = 3; i < highest_Level_Of_Group_Members - current_Character_Level; i++)
+					{
+						current_Multiplier = current_Multiplier * .5;
+					}
+					set_Experience_Modifier(quest_Index, 12, current_Multiplier - 1);
+				}
+			}
+
 			//Should also set experience to 0 for overleveled adventures and Epic/Heroic adventures when level 30+
 			function set_Total_Experience(index)
 			{
+				if(table_Body_Array[index].experience_Modifiers[11] + table_Body_Array[index].experience_Modifiers[12] <= -1)
+				{
+					table_Body_Array[index].total_Experience = 0;
+					return;
+				}
 				let total_Experience = table_Body_Array[index].base_Experience;
 				for(let i = 0; i < table_Body_Array[index].experience_Modifiers.length; i++)
 				{
@@ -631,22 +766,9 @@
 				table_Body_Array[index].total_Experience = Math.floor(total_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
 			}
 
-			let experience_Modifier_Names = ["Delving Bonus","First-time Difficulty", "Tome of Learning", "Daily Bonus", "Persistence", "Flawless Victory", "Kills", "Traps", "Secret Doors", "Breakables", "Quest Ransack", "Over-level Penalty", "Power-leveling Penalty", "Reentry", "Late Entry", "Other"];
-			function set_Experience_Modifier(adventure_Index, modifier_Index, new_Value)
-			{
-				table_Body_Array[adventure_Index].experience_Modifiers[modifier_Index] = new_Value;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.experience_Modifiers].children[Number(modifier_Index * 3 + 1)].value = new_Value;
-				set_Total_Experience(adventure_Index);
-				set_Total_Weight(adventure_Index);
-				set_Total_Weight_Over_Time(adventure_Index);
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[adventure_Index].total_Weight;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
-			}
-
 			function set_Reaper_Experience(index)
 			{
-				if(table_Body_Array[index].adventure_Type === "Challenge" || table_Body_Array[index].adventure_Type === "Solo Adventure" || table_Body_Array[index].adventure_Type === "Reaper Unavailable")
+				if(table_Body_Array[index].adventure_Type === "Challenge" || table_Body_Array[index].adventure_Type === "Solo Quest" || table_Body_Array[index].adventure_Type === "Reaper Unavailable")
 				{
 					table_Body_Array[index].reaper_Experience = 0;
 					return;
@@ -656,7 +778,24 @@
 					table_Body_Array[index].reaper_Experience = 0;
 					return;
 				}
-				if(table_Body_Array[index].completed === true)	//For now it is assumed Elite will be done after Reaper 1
+				if(table_Body_Array[index].adventure_Tier === "Heroic")
+				{
+					if(highest_Level_Of_Group_Members - 4 > table_Body_Array[index].level)
+					{
+						table_Body_Array[index].reaper_Experience = 0;
+						return;
+					}
+				}
+				else
+				{
+					if(highest_Level_Of_Group_Members - 6 > table_Body_Array[index].level)
+					{
+						table_Body_Array[index].reaper_Experience = 0;
+						return;
+					}
+					
+				}
+				if(table_Body_Array[index].completed === true && table_Body_Array[index].adventure_Tier !== "Legendary")	//For now it is assumed Elite will be done after Reaper except in Legendary quests
 				{
 					table_Body_Array[index].reaper_Experience = 0;
 					return;
@@ -683,7 +822,24 @@
 				let legendary_Adventure_Multiplier = table_Body_Array[index].level >= 30 ? 2 : 1;
 				let first_Time_Reaper_Completion_Multiplier = table_Body_Array[index].completed === false ? 3 : 1;
 				let reaper_Level = Number(assumed_Reaper_Level_Input_Box_Element.value);
-				table_Body_Array[index].reaper_Experience = Math.floor(Math.floor(((50 + table_Body_Array[index].level * 3 * reaper_Level) * legendary_Adventure_Multiplier * adventure_Length_Multplier) * first_Time_Reaper_Completion_Multiplier) * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
+				let base_Reaper_Experience = Math.trunc((50 + table_Body_Array[index].level * 3 * reaper_Level) * adventure_Length_Multplier) * legendary_Adventure_Multiplier;
+				let total_Reaper_Experience = Math.trunc(base_Reaper_Experience * Math.fround(first_Time_Reaper_Completion_Multiplier));
+				for(let i = 3; i <= 11; i++)
+				{
+					if(i === 11)
+					{
+						for(let j = 0; j < first_Time_Reaper_Completion_Multiplier; j++)
+						{
+							total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[index].experience_Modifiers[i]));
+						}
+					}
+					else
+					{
+						total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[index].experience_Modifiers[i]));
+					}
+				}
+				total_Reaper_Experience = Math.trunc(total_Reaper_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
+				table_Body_Array[index].reaper_Experience = total_Reaper_Experience;
 			}
 
 			function set_Available_Favor(index)
@@ -724,6 +880,24 @@
 				{
 					switch(columns_To_Update[i])
 					{
+						case "experience_Modifiers_Delving_Bonus":
+							for(let j = 0; j < table_Body_Array.length; j++)
+							{
+								set_Delving_Bonus(j);
+							}
+							break;
+						case "experience_Modifiers_Over_Level_Penalty":
+							for(let j = 0; j < table_Body_Array.length; j++)
+							{
+								set_Over_Level_Penalty(j);
+							}
+							break;
+						case "experience_Modifiers_Power_Leveling_Penalty":
+							for(let j = 0; j < table_Body_Array.length; j++)
+							{
+								set_Power_Leveling_Penalty(j);
+							}
+							break;
 						case "total_Experience":
 							for(let j = 0; j < table_Body_Array.length; j++)
 							{
@@ -990,9 +1164,9 @@
 					{
 						table_Body_Array[table_Row].completed = false;
 						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to off to match the data change
+						set_Delving_Bonus(table_Row);
 						if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
 						{
-							set_Experience_Modifier(table_Row, 0, 1);	//Elite Delving Bonus is available
 							set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1004,11 +1178,10 @@
 								set_Experience_Modifier(table_Row, 2, .25);	//First Time Epic Tome of Learning Bonus
 								set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
 							}
-
+//							set_Experience_Modifier(table_Row, 11, determine_Over_Level_Penalty(highest_Level_Of_Group_Members, table_Body_Array[table_Row].level + 2));
 						}
-						else if(table_Body_Array[table_Row].adventure_Type === "Solo Adventure")
+						else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
 						{
-							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is always 0 for Solo Adventures
 							set_Experience_Modifier(table_Row, 1, .2);	//First Time Solo Completion is available
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1028,7 +1201,6 @@
 						}
 						else	//Standard and Raid
 						{
-							set_Experience_Modifier(table_Row, 0, 1.5);	//Full Delving Bonus is available
 							set_Experience_Modifier(table_Row, 1, .45);	//First Time Reaper Completion is assumed to be up next
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1049,7 +1221,6 @@
 						table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
 						if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
 						{
-							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is used up
 							set_Experience_Modifier(table_Row, 1, .2);	//First Time Hard Completion is assumed to be up next
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1061,9 +1232,8 @@
 							}
 							set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
 						}
-						else if(table_Body_Array[table_Row].adventure_Type === "Solo Adventure")
+						else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
 						{
-							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is always 0 for Solo Adventures
 							set_Experience_Modifier(table_Row, 1, 0);	//First Time Solo Completion is used up
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1081,7 +1251,6 @@
 						}
 						else	//Standard and Raid
 						{
-							set_Experience_Modifier(table_Row, 0, 0);	//Delving Bonus is used up
 							set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
 							if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
 							{
@@ -1198,8 +1367,12 @@
 				filter_Table();
 			}
 
-			let location_Retrieval_Interval_ID = "";
+			function character_Or_Group_Level_Changed()
+			{
+				update_Table_Columns("experience_Modifiers_Delving_Bonus, experience_Modifiers_Over_Level_Penalty, experience_Modifiers_Power_Leveling_Penalty");
+			}
 
+			let location_Retrieval_Interval_ID = "";
 			function disable_Location_Retrieval(error_Message)
 			{
 				clearInterval(location_Retrieval_Interval_ID);
@@ -1207,7 +1380,14 @@
 				autocomplete_Adventures_On_Exit_Checkbox_Element.checked = false;
 				autocomplete_Adventures_Error_Message_Element.innerText = error_Message;
 				current_Character_Name_Element.textContent = "-";
-				current_Character_Level_Element.textContent = "-";
+				current_Character_Level_Element.textContent = "1";
+				highest_Level_Of_Group_Members_Element.textContent = "1";
+				if(highest_Level_Of_Group_Members !== 1 || current_Character_Level !== 1)
+				{
+					current_Character_Level = 1;
+					highest_Level_Of_Group_Members = 1;
+					character_Or_Group_Level_Changed();
+				}
 //				current_Group_Size_Element.textContent = "-";
 				current_Adventure_Element.textContent = "None";
 				current_Location_Element.textContent = "Unknown Location";
@@ -1232,7 +1412,6 @@
 			let current_Adventure_Entered_String = "";
 			let last_Adventure_Time_Entered_String = "";
 			let last_Adventure_Time_In_Minutes = 0;
-			let current_Character_Level = 0;
 			let current_Group_Size = 1;
 			let current_Adventure_Tier = "Heroic";
 			let adventure_Completion_Order = 1;
@@ -1255,7 +1434,7 @@
 						}
 						const result = await response.json();
 						let group = null;
-						if(result.data.group_id !== null)
+						if(result.data.group_id !== null && result.data.group_id !== 0)
 						{
 							const group_Response = await fetch("https://api.ddoaudit.com/v1/characters/by-group-id/" + result.data.group_id);
 							if(group_Response.ok === true)
@@ -1266,24 +1445,6 @@
 						current_Character_Name_Element.innerText = result.data.name;
 						current_Character_Level = result.data.total_level;
 						current_Character_Level_Element.innerText = current_Character_Level;
-						if(group !== null)
-						{
-							let group_Member_IDs = Object.keys(group.data);
-							let highest_Level_Of_Group_Members = 1;
-							for(let i = 0; i < group_Member_IDs.length; i++)
-							{
-								highest_Level_Of_Group_Members = Math.max(highest_Level_Of_Group_Members, group.data[group_Member_IDs[i]].total_level);
-							}
-//							current_Group_Size_Element.innerText = group_Member_IDs.length;
-							current_Group_Size = group_Member_IDs.length;
-							highest_Level_Of_Group_Members_Element.innerText = highest_Level_Of_Group_Members;
-						}
-						else
-						{
-//							current_Group_Size_Element.innerText = 1;
-							current_Group_Size = 1;
-							highest_Level_Of_Group_Members_Element.innerText = current_Character_Level;
-						}
 						if(last_Location_ID_Entered !== result.data.location_id)
 						{
 							if(last_Adventure_Time_Entered_String !== "" && current_Adventure_Entered_String !== "")
@@ -1617,6 +1778,34 @@
 						if(result.data.is_online === false)
 						{
 							current_Character_Name_Element.innerText = current_Character_Name_Element.innerText + ". Character is currently offline or location retrieval is experiencing issues and real-time character tracking may be offline";
+						}
+						if(group !== null)
+						{
+							let group_Member_IDs = Object.keys(group.data);
+							let current_Highest_Level_Of_Group_Members = 1;
+							for(let i = 0; i < group_Member_IDs.length; i++)
+							{
+								current_Highest_Level_Of_Group_Members = Math.max(current_Highest_Level_Of_Group_Members, group.data[group_Member_IDs[i]].total_level);
+							}
+//							current_Group_Size_Element.innerText = group_Member_IDs.length;
+							current_Group_Size = group_Member_IDs.length;
+							if(current_Highest_Level_Of_Group_Members !== highest_Level_Of_Group_Members)
+							{
+								highest_Level_Of_Group_Members = current_Highest_Level_Of_Group_Members;
+								highest_Level_Of_Group_Members_Element.innerText = highest_Level_Of_Group_Members;
+								character_Or_Group_Level_Changed();
+							}
+						}
+						else
+						{
+//							current_Group_Size_Element.innerText = 1;
+							current_Group_Size = 1;
+							if(highest_Level_Of_Group_Members !== current_Character_Level)
+							{
+								highest_Level_Of_Group_Members = current_Character_Level;
+								highest_Level_Of_Group_Members_Element.innerText = highest_Level_Of_Group_Members;
+								character_Or_Group_Level_Changed();
+							}
 						}
 					}
 					catch(DDO_Audit_Error_Response)
