@@ -167,20 +167,20 @@
 			.optional_Objective_Title
 			{
 				box-sizing: border-box;
-				width: 150px;
+				width: 120px;
 				height: 1rem;
 				line-height: 1rem;
-				overflow: hidden;
+				/*overflow: hidden; When optional titles are added, change the element to a span and reactivate styling. Play around and try to get the spacing equal to the input boxes
 				white-space: nowrap;
-				text-overflow: ellipsis;
+				text-overflow: ellipsis;*/
 			}
 
-			.optional_Objective_Title:hover
+			/*.optional_Objective_Title:hover
 			{
 				height: auto;
 				text-overflow: clip;
 				white-space: wrap;
-			}
+			}*/
 
 			.optional_Objective_Value
 			{
@@ -545,7 +545,10 @@
 							new_Table_Data.classList.add("numerical_Input_List_Table_Data");
 							for(let j = 0; j < table_Body_Array[i].optional_Objectives.length; j++)
 							{
-								new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><span onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'title', this.innerText)\" class =  \"optional_Objective_Title\" contenteditable = \"true\">" + table_Body_Array[i].optional_Objectives[j].title + ":</span><input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'value', this.value)\" class = \"optional_Objective_Value\" id = \"" + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " Optional " + j + "\" value = \"" + table_Body_Array[i].optional_Objectives[j].value + "\" step = \".05\"" + "><span class = \"optional_Objective_Experience\"></span><input type = \"checkbox\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
+								//Swap in one of the following lines and remove the current implementation once Optional Objective names have been established for all quests
+								//new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><span oninput = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'title', this.innerText)\" class =  \"optional_Objective_Title\" contenteditable = \"true\">" + table_Body_Array[i].optional_Objectives[j].title + ":</span><input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'value', this.value)\" class = \"optional_Objective_Value\" id = \"" + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " Optional " + j + "\" value = \"" + table_Body_Array[i].optional_Objectives[j].value + "\" step = \".05\"" + "><span class = \"optional_Objective_Experience\"></span><input type = \"checkbox\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
+								//new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><span class =  \"optional_Objective_Title\">" + table_Body_Array[i].optional_Objectives[j].title + ":</span><input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'value', this.value)\" class = \"optional_Objective_Value\" id = \"" + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " Optional " + j + "\" value = \"" + table_Body_Array[i].optional_Objectives[j].value + "\" step = \".05\"" + "><span class = \"optional_Objective_Experience\"></span><input type = \"checkbox\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
+								new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><input type = \"text\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'title', this.value)\" class =  \"optional_Objective_Title\" value = \"" + table_Body_Array[i].optional_Objectives[j].title + "\">:<input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'value', this.value)\" class = \"optional_Objective_Value\" id = \"" + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " Optional " + j + "\" value = \"" + table_Body_Array[i].optional_Objectives[j].value + "\" step = \".05\"" + "><span class = \"optional_Objective_Experience\"></span><input type = \"checkbox\" onchange = \"set_Optional_Objective_Parameter((this.parentNode.parentNode.parentNode.rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
 								set_Optional_Objective_Parameter(i, j, 'experience');
 								new_Table_Data.children[j].children[2].innerText = table_Body_Array[i].optional_Objectives[j].experience;
 							}
@@ -704,10 +707,6 @@
 				set_Reaper_Experience(adventure_Index);
 				set_Total_Weight(adventure_Index);
 				set_Total_Weight_Over_Time(adventure_Index);
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[adventure_Index].total_Weight;
-				table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
 			}
 
 			function set_Delving_Bonus(adventure_Index)
@@ -862,13 +861,13 @@
 			let optional_Objective_Property_Name_To_Index = {title: 0, value: 1, experience: 2, included: 3};
 			function set_Optional_Objective_Parameter(adventure_Index, optional_Objective_Index, property_Name, new_Value = 0)
 			{
-				table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index][property_Name] = new_Value;
+//				table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index][property_Name] = new_Value;
 				if(property_Name === "title")
 				{
 					table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].title = new_Value;
 					if(table_Body_Loaded === true)
 					{
-						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].textContent = new_Value;
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].value = table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].title;
 					}
 				}
 				else if(property_Name === "value")
@@ -876,14 +875,14 @@
 					table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].value = new_Value;
 					if(table_Body_Loaded === true)
 					{
-						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].value = new_Value;
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].value = table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].value;
 					}
 					set_Optional_Objective_Parameter(adventure_Index, optional_Objective_Index, 'experience');
 				}
 				else if(property_Name === "experience")
 				{
 					table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].experience = 
-					Math.floor
+					Math.trunc
 					(
 						(
 							Math.fround
@@ -893,7 +892,7 @@
 							*
 							(
 								table_Body_Array[adventure_Index].base_Experience
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -901,7 +900,7 @@
 										table_Body_Array[adventure_Index].experience_Modifiers[2]
 									)
 								)
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -909,7 +908,7 @@
 										table_Body_Array[adventure_Index].experience_Modifiers[11]
 									)
 								)
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -917,7 +916,7 @@
 										table_Body_Array[adventure_Index].experience_Modifiers[12]
 									)
 								)
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -925,7 +924,7 @@
 										table_Body_Array[adventure_Index].experience_Modifiers[13]
 									)
 								)
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -933,7 +932,7 @@
 										table_Body_Array[adventure_Index].experience_Modifiers[14]
 									)
 								)
-								+ Math.floor
+								+ Math.trunc
 								(
 									table_Body_Array[adventure_Index].base_Experience
 									* Math.fround
@@ -958,7 +957,7 @@
 					table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].included = new_Value;
 					if(table_Body_Loaded === true)
 					{
-						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].checked = new_Value;
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.optional_Objectives].children[optional_Objective_Index].children[optional_Objective_Property_Name_To_Index[property_Name]].checked = table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].included;
 					}
 				}
 				if(property_Name === "value" || property_Name === "included")
@@ -966,85 +965,110 @@
 					set_Total_Experience(adventure_Index);
 					set_Total_Weight(adventure_Index);
 					set_Total_Weight_Over_Time(adventure_Index);
-					if(table_Body_Loaded === true)
-					{
-					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
-					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[adventure_Index].total_Weight;
-					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
-					}
 				}
 			}
 
-			//Should also set experience to 0 for overleveled adventures and Epic/Heroic adventures when level 30+
-			function set_Total_Experience(index)
+			function set_Total_Experience(adventure_Index)
 			{
-				if(table_Body_Array[index].experience_Modifiers[11] + table_Body_Array[index].experience_Modifiers[12] <= -1)
+				if(table_Body_Array[adventure_Index].experience_Modifiers[11] + table_Body_Array[adventure_Index].experience_Modifiers[12] <= -1)
 				{
-					table_Body_Array[index].total_Experience = 0;
+					table_Body_Array[adventure_Index].total_Experience = 0;
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
+					}
 					return;
 				}
 				if(current_Character_Level === 34)
 				{
-					table_Body_Array[index].total_Experience = 0;	//Maximum level- no regular experience can be awarded
+					table_Body_Array[adventure_Index].total_Experience = 0;	//Maximum level- no regular experience can be awarded
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
+					}
 					return;
 				}
-				let total_Experience = table_Body_Array[index].base_Experience;
-				for(let i = 0; i < table_Body_Array[index].experience_Modifiers.length; i++)
+				let total_Experience = table_Body_Array[adventure_Index].base_Experience;
+				for(let i = 0; i < table_Body_Array[adventure_Index].experience_Modifiers.length; i++)
 				{
-					total_Experience = total_Experience + Math.floor(table_Body_Array[index].experience_Modifiers[i] * table_Body_Array[index].base_Experience);
+					total_Experience = total_Experience + Math.trunc(table_Body_Array[adventure_Index].experience_Modifiers[i] * table_Body_Array[adventure_Index].base_Experience);
 				}
-				total_Experience = total_Experience + Math.floor(Number(server_Modifier_Input_Box_Element.value) * table_Body_Array[index].base_Experience);
+				total_Experience = total_Experience + Math.trunc(Number(server_Modifier_Input_Box_Element.value) * table_Body_Array[adventure_Index].base_Experience);
 				if(include_Saga_Experience_In_Total_Experience_Checkbox_Element.checked === true)
 				{
-					total_Experience = total_Experience + table_Body_Array[index].saga_Experience;
+					total_Experience = total_Experience + table_Body_Array[adventure_Index].saga_Experience;
 				}
-				total_Experience = Math.floor(total_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
-				for(let i = 0; i < table_Body_Array[index].optional_Objectives.length; i++)
+				total_Experience = Math.trunc(total_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
+				for(let i = 0; i < table_Body_Array[adventure_Index].optional_Objectives.length; i++)
 				{
-					if(table_Body_Array[index].optional_Objectives[i].included === true)
+					if(table_Body_Array[adventure_Index].optional_Objectives[i].included === true)
 					{
-						total_Experience = total_Experience + table_Body_Array[index].optional_Objectives[i].experience;
+						total_Experience = total_Experience + table_Body_Array[adventure_Index].optional_Objectives[i].experience;
 					}
 				}
-				table_Body_Array[index].total_Experience = total_Experience;
+				table_Body_Array[adventure_Index].total_Experience = total_Experience;
+				if(table_Body_Loaded === true)
+				{
+					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[adventure_Index].total_Experience;
+				}
 			}
 
-			function set_Reaper_Experience(index)
+			function set_Reaper_Experience(adventure_Index)
 			{
-				if(table_Body_Array[index].adventure_Type === "Challenge" || table_Body_Array[index].adventure_Type === "Solo Quest" || table_Body_Array[index].adventure_Type === "Reaper Unavailable")
+				if(table_Body_Array[adventure_Index].adventure_Type === "Challenge" || table_Body_Array[adventure_Index].adventure_Type === "Solo Quest" || table_Body_Array[adventure_Index].adventure_Type === "Reaper Unavailable")
 				{
-					table_Body_Array[index].reaper_Experience = 0;
-					return;
-				}
-				if(table_Body_Array[index].adventure_Name === "Haverdasher" || table_Body_Array[index].adventure_Name === "Return to Delera's Tomb" || table_Body_Array[index].adventure_Name === "The Gate Chamber")
-				{
-					table_Body_Array[index].reaper_Experience = 0;
-					return;
-				}
-				if(table_Body_Array[index].adventure_Tier === "Heroic")
-				{
-					if(highest_Level_Of_Group_Members - 4 > table_Body_Array[index].level)
+					table_Body_Array[adventure_Index].reaper_Experience = 0;
+					if(table_Body_Loaded === true)
 					{
-						table_Body_Array[index].reaper_Experience = 0;
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+					}
+					return;
+				}
+				if(table_Body_Array[adventure_Index].adventure_Name === "Haverdasher" || table_Body_Array[adventure_Index].adventure_Name === "Return to Delera's Tomb" || table_Body_Array[adventure_Index].adventure_Name === "The Gate Chamber")
+				{
+					table_Body_Array[adventure_Index].reaper_Experience = 0;
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+					}
+					return;
+				}
+				if(table_Body_Array[adventure_Index].adventure_Tier === "Heroic")
+				{
+					if(highest_Level_Of_Group_Members - 4 > table_Body_Array[adventure_Index].level)
+					{
+						table_Body_Array[adventure_Index].reaper_Experience = 0;
+						if(table_Body_Loaded === true)
+						{
+							table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+						}
 						return;
 					}
 				}
 				else
 				{
-					if(highest_Level_Of_Group_Members - 6 > table_Body_Array[index].level)
+					if(highest_Level_Of_Group_Members - 6 > table_Body_Array[adventure_Index].level)
 					{
-						table_Body_Array[index].reaper_Experience = 0;
+						table_Body_Array[adventure_Index].reaper_Experience = 0;
+						if(table_Body_Loaded === true)
+						{
+							table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+						}
 						return;
 					}
 					
 				}
-				if(table_Body_Array[index].completed === true && table_Body_Array[index].adventure_Tier !== "Legendary")	//For now it is assumed Elite will be done after Reaper except in Legendary quests
+				if(table_Body_Array[adventure_Index].completed === true && table_Body_Array[adventure_Index].adventure_Tier !== "Legendary")	//For now it is assumed Elite will be done after Reaper except in Legendary quests
 				{
-					table_Body_Array[index].reaper_Experience = 0;
+					table_Body_Array[adventure_Index].reaper_Experience = 0;
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+					}
 					return;
 				}
 				let adventure_Length_Multplier = 1;
-				switch(table_Body_Array[index].adventure_Length)
+				switch(table_Body_Array[adventure_Index].adventure_Length)
 				{
 					case "Short":
 						adventure_Length_Multplier = 0.8;
@@ -1059,13 +1083,13 @@
 						adventure_Length_Multplier = 1.4;
 						break;
 					default:
-						console.error(table_Body_Array[index].adventure_Tier + " " + table_Body_Array[index].adventure_Name + " has an unrecognized adventure_Length.");
+						console.error(table_Body_Array[adventure_Index].adventure_Tier + " " + table_Body_Array[adventure_Index].adventure_Name + " has an unrecognized adventure_Length.");
 						break;
 				}
-				let legendary_Adventure_Multiplier = table_Body_Array[index].level >= 30 ? 2 : 1;
-				let first_Time_Reaper_Completion_Multiplier = table_Body_Array[index].completed === false ? 3 : 1;
+				let legendary_Adventure_Multiplier = table_Body_Array[adventure_Index].level >= 30 ? 2 : 1;
+				let first_Time_Reaper_Completion_Multiplier = table_Body_Array[adventure_Index].completed === false ? 3 : 1;
 				let reaper_Level = Number(assumed_Reaper_Level_Input_Box_Element.value);
-				let base_Reaper_Experience = Math.trunc((50 + table_Body_Array[index].level * 3 * reaper_Level) * adventure_Length_Multplier) * legendary_Adventure_Multiplier;
+				let base_Reaper_Experience = Math.trunc((50 + table_Body_Array[adventure_Index].level * 3 * reaper_Level) * adventure_Length_Multplier) * legendary_Adventure_Multiplier;
 				let total_Reaper_Experience = Math.trunc(base_Reaper_Experience * Math.fround(first_Time_Reaper_Completion_Multiplier));
 				for(let i = 3; i <= 11; i++)
 				{
@@ -1073,47 +1097,67 @@
 					{
 						for(let j = 0; j < first_Time_Reaper_Completion_Multiplier; j++)
 						{
-							total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[index].experience_Modifiers[i]));
+							total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[i]));
 						}
 					}
 					else
 					{
-						total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[index].experience_Modifiers[i]));
+						total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[i]));
 					}
 				}
 				total_Reaper_Experience = Math.trunc(total_Reaper_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));
-				table_Body_Array[index].reaper_Experience = total_Reaper_Experience;
+				table_Body_Array[adventure_Index].reaper_Experience = total_Reaper_Experience;
+				if(table_Body_Loaded === true)
+				{
+					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[adventure_Index].reaper_Experience;
+				}
 			}
 
-			function set_Available_Favor(index)
+			function set_Available_Favor(adventure_Index)
 			{
-				let available_Difficulties = table_Body_Array[index].available_Adventure_Tiers.split(", ");
+				let available_Difficulties = table_Body_Array[adventure_Index].available_Adventure_Tiers.split(", ");
 				let completed_On_Some_Difficulty = false;
 				for(let i = 0; i < available_Difficulties.length; i++)
 				{
-					if(adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[index].adventure_Name) !== undefined && table_Body_Array[adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[index].adventure_Name)].completed === true)
+					if(adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[adventure_Index].adventure_Name) !== undefined && table_Body_Array[adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[adventure_Index].adventure_Name)].completed === true)
 					{
 						completed_On_Some_Difficulty = true;
 					}
 				}
 				if(completed_On_Some_Difficulty === false)
 				{
-					table_Body_Array[index].available_Favor = table_Body_Array[index].total_Favor;
+					table_Body_Array[adventure_Index].available_Favor = table_Body_Array[adventure_Index].total_Favor;
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.available_Favor].textContent = table_Body_Array[adventure_Index].available_Favor;
+					}
 				}
 				else
 				{
-					table_Body_Array[index].available_Favor = 0;
+					table_Body_Array[adventure_Index].available_Favor = 0;
+					if(table_Body_Loaded === true)
+					{
+						table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.available_Favor].textContent = table_Body_Array[adventure_Index].available_Favor;
+					}
 				}
 			}
 
-			function set_Total_Weight(index)	//Sets the total weight in the array based on the constituent parts of the array and appropriate multipliers
+			function set_Total_Weight(adventure_Index)	//Sets the total weight in the array based on the constituent parts of the array and appropriate multipliers
 			{
-				table_Body_Array[index].total_Weight = Number(((table_Body_Array[index].total_Experience * (1 / Number(experience_Weight_Input_Box_Element.value))) + (table_Body_Array[index].reaper_Experience * (1 / Number(reaper_Experience_Weight_Input_Box_Element.value))) + (table_Body_Array[index].available_Favor * (1 / Number(favor_Weight_Input_Box_Element.value))) + (table_Body_Array[index].custom_Weight * Number(custom_Weight_Multiplier_Input_Box_Element.value))).toFixed(3));
+				table_Body_Array[adventure_Index].total_Weight = Number(((table_Body_Array[adventure_Index].total_Experience * (1 / Number(experience_Weight_Input_Box_Element.value))) + (table_Body_Array[adventure_Index].reaper_Experience * (1 / Number(reaper_Experience_Weight_Input_Box_Element.value))) + (table_Body_Array[adventure_Index].available_Favor * (1 / Number(favor_Weight_Input_Box_Element.value))) + (table_Body_Array[adventure_Index].custom_Weight * Number(custom_Weight_Multiplier_Input_Box_Element.value))).toFixed(3));
+				if(table_Body_Loaded === true)
+				{
+					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[adventure_Index].total_Weight;
+				}
 			}
 
-			function set_Total_Weight_Over_Time(index)	//Sets the total weight over time in the array based on the total weight and time
+			function set_Total_Weight_Over_Time(adventure_Index)	//Sets the total weight over time in the array based on the total weight and time
 			{
-				table_Body_Array[index].total_Weight_Over_Time = Number((table_Body_Array[index].total_Weight / table_Body_Array[index].time).toFixed(3));
+				table_Body_Array[adventure_Index].total_Weight_Over_Time = Number((table_Body_Array[adventure_Index].total_Weight / table_Body_Array[adventure_Index].time).toFixed(3));
+				if(table_Body_Loaded === true)
+				{
+					table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
+				}
 			}
 
 			function update_Table_Columns(column_Names)
@@ -1136,28 +1180,24 @@
 							for(let j = 0; j < table_Body_Array.length; j++)
 							{
 								set_Total_Experience(j);
-								table_Body_Element.children[j].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[j].total_Experience;
 							}
 							break;
 						case "reaper_Experience":
 							for(let j = 0; j < table_Body_Array.length; j++)
 							{
 								set_Reaper_Experience(j);
-								table_Body_Element.children[j].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[j].reaper_Experience;
 							}
 							break;
 						case "total_Weight":
 							for(let j = 0; j < table_Body_Array.length; j++)
 							{
 								set_Total_Weight(j);
-								table_Body_Element.children[j].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[j].total_Weight;
 							}
 							break;
 						case "total_Weight_Over_Time":
 							for(let j = 0; j < table_Body_Array.length; j++)
 							{
 								set_Total_Weight_Over_Time(j);
-								table_Body_Element.children[j].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[j].total_Weight_Over_Time;
 							}
 							break;
 					}
@@ -1347,7 +1387,7 @@
 							JSON_Table_String = JSON_Table_String + "[";
 							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
 							{
-								JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
+								JSON_Table_String = JSON_Table_String + "{title: \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", value: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", experience: 0, included: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
 							}
 							JSON_Table_String = JSON_Table_String + "]";
 						}
@@ -1472,8 +1512,6 @@
 
 					set_Total_Experience(table_Row);
 					set_Reaper_Experience(table_Row);
-					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Experience].textContent = table_Body_Array[table_Row].total_Experience;
-					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.reaper_Experience].textContent = table_Body_Array[table_Row].reaper_Experience;
 					let available_Difficulties = table_Body_Array[table_Row].available_Adventure_Tiers.split(", ");
 					for(let i = 0; i < available_Difficulties.length; i++)
 					{
@@ -1483,9 +1521,6 @@
 							set_Available_Favor(current_Entry_Index);
 							set_Total_Weight(current_Entry_Index);
 							set_Total_Weight_Over_Time(current_Entry_Index);
-							table_Body_Element.children[current_Entry_Index].children[column_Name_To_Array_Index.available_Favor].textContent = table_Body_Array[current_Entry_Index].available_Favor;
-							table_Body_Element.children[current_Entry_Index].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[current_Entry_Index].total_Weight;
-							table_Body_Element.children[current_Entry_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[current_Entry_Index].total_Weight_Over_Time;
 						}
 					}
 
@@ -1503,8 +1538,6 @@
 					table_Body_Array[table_Row].custom_Weight = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
 					set_Total_Weight(table_Row);
 					set_Total_Weight_Over_Time(table_Row);
-					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight].textContent = table_Body_Array[table_Row].total_Weight;
-					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[table_Row].total_Weight_Over_Time;
 					if(table_Body_Array[table_Row].total_Weight_Over_Time < weight_Over_Time_Lower_Limit_Input_Box_Element.value)
 					{
 						table_Body_Element.children[table_Row].style.display = "none";
@@ -1518,7 +1551,6 @@
 				{
 					table_Body_Array[table_Row].time = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
 					set_Total_Weight_Over_Time(table_Row);
-					table_Body_Element.children[table_Row].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[table_Row].total_Weight_Over_Time;
 					if(table_Body_Array[table_Row].total_Weight_Over_Time < weight_Over_Time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time < time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time > time_Upper_Limit_Input_Box_Element.value || table_Body_Array[table_Row].total_Experience < time_Lower_Limit_Input_Box_Element.value || table_Body_Array[table_Row].time > time_Upper_Limit_Input_Box_Element.value)
 					{
 						table_Body_Element.children[table_Row].style.display = "none";
