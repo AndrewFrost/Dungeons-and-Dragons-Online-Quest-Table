@@ -309,8 +309,8 @@
 		</div>
 		<br>
 		<div>
-			<span>Personal Experience Multiplier: </span><input type = "number" onchange = "update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')" id = "personal_Experience_Multiplier_Input_Box" value = "1.3" min = "0" step = "0.05"><br>
-			<span>Server Bonus: </span><input type = "number" onchange = "update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')" id = "server_Modifier_Input_Box" value = "0" min = "0" step = "0.05"><br>
+			<span>Personal Experience Multiplier: </span><input type = "number" onblur = "update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')" onkeydown = "if(event.key === 'Enter' || event.key === ' '){update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')}" id = "personal_Experience_Multiplier_Input_Box" value = "1.3" min = "0" step = "0.05"><br>
+			<span>Server Bonus: </span><input type = "number" onblur = "update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')" onkeydown = "if(event.key === 'Enter' || event.key === ' '){update_Table_Columns('optional_Objectives, total_Experience, reaper_Experience, total_Weight, total_Weight_Over_Time')}" id = "server_Modifier_Input_Box" value = "0" min = "0" step = "0.05"><br>
 			<span>Assumed Reaper Level: </span><input type = "number" onchange = "update_Table_Columns('reaper_Experience, total_Weight, total_Weight_Over_Time')" id = "assumed_Reaper_Level_Input_Box" value = "1" min = "1" max = "10" step = "1"><br>
 			<span>Include Saga Experience portion in each adventure: </span><input type = "checkbox" onchange = "update_Table_Columns('total_Experience, total_Weight, total_Weight_Over_Time')" id = "include_Saga_Experience_In_Total_Experience_Checkbox" checked>
 		</div>
@@ -861,7 +861,6 @@
 			let optional_Objective_Property_Name_To_Index = {title: 0, value: 1, experience: 2, included: 3};
 			function set_Optional_Objective_Parameter(adventure_Index, optional_Objective_Index, property_Name, new_Value = 0)
 			{
-//				table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index][property_Name] = new_Value;
 				if(property_Name === "title")
 				{
 					table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].title = new_Value;
@@ -1356,13 +1355,13 @@
 						JSON_Table_String = JSON_Table_String + "}\n";
 					}
 				}
-				JSON_Table_String = JSON_Table_String + "];\n\n";
-				JSON_Table_String = JSON_Table_String + "let column_Name_To_Array_Index = {};\n";
-				JSON_Table_String = JSON_Table_String + "let index_To_Column_Name_Array = [];\n\n";
-				JSON_Table_String = JSON_Table_String + "for(let i = 0; i < column_Properties.length; i++)\n{\n";
-				JSON_Table_String = JSON_Table_String + "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n";
-				JSON_Table_String = JSON_Table_String + "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n";
-				JSON_Table_String = JSON_Table_String + "let table_Body_Array = [\n";
+				JSON_Table_String = JSON_Table_String + "];\n\n"
+				+ "let column_Name_To_Array_Index = {};\n"
+				+ "let index_To_Column_Name_Array = [];\n\n"
+				+ "for(let i = 0; i < column_Properties.length; i++)\n{\n"
+				+ "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n"
+				+ "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n"
+				+ "let table_Body_Array = [\n";
 				for(let i = 0; i < table_Body_Array.length; i++)
 				{
 					JSON_Table_String = JSON_Table_String + "{\n";
