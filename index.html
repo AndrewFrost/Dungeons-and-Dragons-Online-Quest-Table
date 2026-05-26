@@ -226,7 +226,7 @@
 		</style>
 	</head>
 	<body>
-		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_Raw_String_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "convert_Table_To_JSON()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
+		<div style = "width: 800px"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_JSON_Table_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "download_JSON_Table()">Save to computer</button></a><button onclick = "toggle_Visibility(this, 'filters_Section', 'Filters')" id = "filters_Section_Toggle_Button">Show Filters</button><span id = "number_Of_Items_Sorted"></span><br></div>
 		<div id = "filters_Section" style = "display: none; width: 680px"">
 			<br>
 			<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" onchange = "filter_Table_Rows()" id = "filter_Completed_Checkbox"><br>
@@ -453,7 +453,7 @@
 
 			let table_Body_Element = document.getElementById("table_Body");
 			let table_Header_Row_Element = document.getElementById("table_Header_Row");
-			let download_Raw_String_Link_Element = document.getElementById("download_Raw_String_Link");
+			let download_JSON_Table_Link_Element = document.getElementById("download_JSON_Table_Link");
 
 			let filter_Completed_Checkbox_Element = document.getElementById("filter_Completed_Checkbox");
 
@@ -1442,9 +1442,69 @@
 				}
 			}
 
+			function convert_Table_Body_Array_To_Custom_JSON()
+			{
+				let custom_JSON_Table_String = "[\n";
+				for(let i = 0; i < table_Body_Array.length; i++)
+				{
+					custom_JSON_Table_String = custom_JSON_Table_String + "{\n";
+					for(let j = 0; j < column_Properties.length; j++)
+					{
+						custom_JSON_Table_String = custom_JSON_Table_String + "\t" +index_To_Column_Name_Array[j] + ": ";
+						if(column_Properties[j].type === "Alphabetical")
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
+						}
+						else if(column_Properties[j].name === "experience_Modifiers")
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "[";
+							for(let k = 0; k < table_Body_Array[i].experience_Modifiers.length; k++)
+							{
+								custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].experience_Modifiers.length - 1 ? "" : ", ");
+							}
+							custom_JSON_Table_String = custom_JSON_Table_String + "]";
+						}
+						else if(column_Properties[j].name === "optional_Objectives")
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "[";
+							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
+							{
+								custom_JSON_Table_String = custom_JSON_Table_String + "{title: \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", value: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", experience: 0, included: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
+							}
+							custom_JSON_Table_String = custom_JSON_Table_String + "]";
+						}
+						else if(column_Properties[j].calculated === true)
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "0";
+						}
+						else
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]];
+						}
+						if(j !== column_Properties.length - 1)
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + ",\n";
+						}
+						else
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "\n";
+						}
+					}
+					if(i !== table_Body_Array.length - 1)
+					{
+						custom_JSON_Table_String = custom_JSON_Table_String + "},\n";
+					}
+					else
+					{
+						custom_JSON_Table_String = custom_JSON_Table_String + "}\n";
+					}
+				}
+				return (custom_JSON_Table_String + "];");
+			}
+
 			function save_To_Local_Storage()
 			{
-				window.localStorage.setItem("table_Body_Data", JSON.stringify(table_Body_Array));
+				window.localStorage.setItem("table_Body_Data", convert_Table_Body_Array_To_Custom_JSON());
 
 				window.localStorage.setItem("table_Filter_Level_Lower_Limit", level_Lower_Limit_Input_Box_Element.value);
 				window.localStorage.setItem("table_Filter_Level_Upper_Limit", level_Upper_Limit_Input_Box_Element.value);
@@ -1493,7 +1553,7 @@
 				}
 			}
 
-			function convert_Table_To_JSON()
+			function download_JSON_Table()
 			{
 				let JSON_Table_String = "let column_Properties = [\n";
 				for(let i = 0; i < column_Properties.length; i++)
@@ -1526,64 +1586,11 @@
 				+ "for(let i = 0; i < column_Properties.length; i++)\n{\n"
 				+ "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n"
 				+ "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n"
-				+ "let table_Body_Array = [\n";
-				for(let i = 0; i < table_Body_Array.length; i++)
-				{
-					JSON_Table_String = JSON_Table_String + "{\n";
-					for(let j = 0; j < column_Properties.length; j++)
-					{
-						JSON_Table_String = JSON_Table_String + "\t" +index_To_Column_Name_Array[j] + ": ";
-						if(column_Properties[j].type === "Alphabetical")
-						{
-							JSON_Table_String = JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
-						}
-						else if(column_Properties[j].name === "experience_Modifiers")
-						{
-							JSON_Table_String = JSON_Table_String + "[";
-							for(let k = 0; k < table_Body_Array[i].experience_Modifiers.length; k++)
-							{
-								JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].experience_Modifiers.length - 1 ? "" : ", ");
-							}
-							JSON_Table_String = JSON_Table_String + "]";
-						}
-						else if(column_Properties[j].name === "optional_Objectives")
-						{
-							JSON_Table_String = JSON_Table_String + "[";
-							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
-							{
-								JSON_Table_String = JSON_Table_String + "{title: \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", value: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", experience: 0, included: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
-							}
-							JSON_Table_String = JSON_Table_String + "]";
-						}
-						else if(column_Properties[j].calculated === true)
-						{
-							JSON_Table_String = JSON_Table_String + "0";
-						}
-						else
-						{
-							JSON_Table_String = JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]];
-						}
-						if(j !== column_Properties.length - 1)
-						{
-							JSON_Table_String = JSON_Table_String + ",\n";
-						}
-						else
-						{
-							JSON_Table_String = JSON_Table_String + "\n";
-						}
-					}
-					if(i !== table_Body_Array.length - 1)
-					{
-						JSON_Table_String = JSON_Table_String + "},\n";
-					}
-					else
-					{
-						JSON_Table_String = JSON_Table_String + "}\n";
-					}
-				}
-				JSON_Table_String = JSON_Table_String + "];";
+				+ "let table_Body_Array = ";
+//				JSON_Table_String = JSON_Table_String + JSON.stringify(table_Body_Array, [...index_To_Column_Name_Array, "title", "value", "experience", "included"], '\t');	//Not used because it expands sub-objects, uses calculated fields, and doesn't format as preferred, so a manual string building method is used
+				JSON_Table_String = JSON_Table_String + convert_Table_Body_Array_To_Custom_JSON();
 
-				window.URL.revokeObjectURL(download_Raw_String_Link_Element.href);
+				window.URL.revokeObjectURL(download_JSON_Table_Link_Element.href);
 				let table_Blob = new Blob
 				(
 					[JSON_Table_String],
@@ -1591,7 +1598,7 @@
 						type: 'text/javascript'
 					}
 				);
-				download_Raw_String_Link_Element.href = window.URL.createObjectURL(table_Blob);
+				download_JSON_Table_Link_Element.href = window.URL.createObjectURL(table_Blob);
 			}
 
 			function table_Data_Changed(table_Row, table_Column)
