@@ -1727,7 +1727,7 @@
 					custom_JSON_Table_String = custom_JSON_Table_String + "{\n";
 					for(let j = 0; j < column_Properties.length; j++)
 					{
-						custom_JSON_Table_String = custom_JSON_Table_String + "\t" +index_To_Column_Name_Array[j] + ": ";
+						custom_JSON_Table_String = custom_JSON_Table_String + "\t\"" +index_To_Column_Name_Array[j] + "\": ";
 						if(column_Properties[j].type === "Alphabetical")
 						{
 							custom_JSON_Table_String = custom_JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
@@ -1746,7 +1746,7 @@
 							custom_JSON_Table_String = custom_JSON_Table_String + "[";
 							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
 							{
-								custom_JSON_Table_String = custom_JSON_Table_String + "{title: \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", value: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", experience: 0, included: " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
+								custom_JSON_Table_String = custom_JSON_Table_String + "{\"title\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", \"value\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", \"experience\": 0, \"included\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
 							}
 							custom_JSON_Table_String = custom_JSON_Table_String + "]";
 						}
@@ -1776,7 +1776,9 @@
 						custom_JSON_Table_String = custom_JSON_Table_String + "}\n";
 					}
 				}
-				return (custom_JSON_Table_String + "];");
+				custom_JSON_Table_String = custom_JSON_Table_String + "]";
+
+				return custom_JSON_Table_String;
 			}
 
 			function save_To_Local_Storage()
@@ -1866,6 +1868,7 @@
 				+ "let table_Body_Array = ";
 //				JSON_Table_String = JSON_Table_String + JSON.stringify(table_Body_Array, [...index_To_Column_Name_Array, "title", "value", "experience", "included"], '\t');	//Not used because it expands sub-objects, uses calculated fields, and doesn't format as preferred, so a manual string building method is used
 				JSON_Table_String = JSON_Table_String + convert_Table_Body_Array_To_Custom_JSON();
+				JSON_Table_String = JSON_Table_String + ";";
 
 				window.URL.revokeObjectURL(download_JSON_Table_Link_Element.href);
 				let table_Blob = new Blob
