@@ -3,6 +3,17 @@
 	<head>
 		<meta charset = "utf-8">
 		<style>
+			:root
+			{
+				--ascending_Column_Base_Red: 100;
+				--ascending_Column_Base_Green: 150;
+				--ascending_Column_Base_Blue: 255;
+				--descending_Column_Base_Red: 255;
+				--descending_Column_Base_Green: 140;
+				--descending_Column_Base_Blue: 50;
+				--last_Sored_Column_Multiplier: .8;
+			}
+
 			button
 			{
 				width: 190px;
@@ -33,15 +44,50 @@
 
 			table
 			{
-				border-collapse: collapse;
+				box-sizing: border-box;
+				border-spacing: 0;
 				border-bottom: 1px solid black;
+			}
+
+			thead tr
+			{
+				top: 0;
+				margin: 0;
+				padding: 0;
+				border: 1px solid black;
 			}
 
 			th
 			{
-				border: 1px solid black;
+				position: sticky;
+				top: 0;
 				cursor: pointer;
+				border: 1px solid black;
+				max-width: 0;
 				background-color: rgba(200, 200, 200, 1.0);
+				overflow: hidden;
+				text-overflow: clip;
+			}
+
+			th:hover
+			{
+				overflow: visible;
+				z-index: 2;
+			}
+
+			th:hover::after
+			{
+				content: attr(text_Content);
+				position: absolute;
+				color: rgba(0, 0, 0, 0);
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: calc-size(auto, size + 2px);
+				min-width: 100%;
+				border-right: 2px solid black;
+				z-index: -1;
+				pointer-events: none;
 			}
 
 			.expandable_Element
@@ -77,27 +123,27 @@
 				}
 			}
 
-			.ascending_Column
+			.ascending_Column, .ascending_Column:hover::after
 			{
-				background-color: rgba(100, 150, 255, .9);
+				background-color: rgba(var(--ascending_Column_Base_Red), var(--ascending_Column_Base_Green), var(--ascending_Column_Base_Blue), 1);
 			}
 
-			.descending_Column
+			.descending_Column, .descending_Column:hover::after
 			{
-				background-color: rgba(255, 140, 50, .9);
+				background-color: rgba(var(--descending_Column_Base_Red), var(--descending_Column_Base_Green), var(--descending_Column_Base_Blue), 1);
 			}
 
-			.last_Sorted_Header.ascending_Column
+			.last_Sorted_Header.ascending_Column, .last_Sorted_Header.ascending_Column:hover::after
 			{
-				background-color: rgba(50, 100, 200, 1.0);
+				background-color: rgba(calc(var(--ascending_Column_Base_Red) * var(--last_Sored_Column_Multiplier)), calc(var(--ascending_Column_Base_Green) * var(--last_Sored_Column_Multiplier)), calc(var(--ascending_Column_Base_Blue) * var(--last_Sored_Column_Multiplier)), 1.0);
 			}
 
-			.last_Sorted_Header.descending_Column
+			.last_Sorted_Header.descending_Column, .last_Sorted_Header.descending_Column:hover::after
 			{
-				background-color: rgba(200, 100, 20, 1.0);
+				background-color: rgba(calc(var(--descending_Column_Base_Red) * var(--last_Sored_Column_Multiplier)), calc(var(--descending_Column_Base_Green) * var(--last_Sored_Column_Multiplier)), calc(var(--descending_Column_Base_Blue) * var(--last_Sored_Column_Multiplier)), 1.0);
 			}
 
-			tr
+			tbody tr
 			{
 				height: 38px;
 				border-left: 1px solid black;
@@ -173,6 +219,7 @@
 			{
 				width: 60px;
 				min-width: 60px;
+				max-width: 60px;
 			}
 
 			.numerical_Input_List_Column
@@ -625,6 +672,7 @@
 					let new_Header = document.createElement("TH");
 					new_Header.textContent = column_Properties[i].displayName;
 					new_Header.setAttribute("onclick", "sort_Table(" + i + ")");
+					new_Header.setAttribute("text_Content", new_Header.textContent);
 
 					// Add column type class
 					if(column_Properties[i].type === "Alphabetical")
@@ -1517,6 +1565,7 @@
 				table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");
 				current_Sort_Selection = sort_Selection;
 				table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");
+				await new Promise(resolve => setTimeout(resolve, 1));
 
 				table_Body_Array.sort(generic_Stable_Sort);
 
