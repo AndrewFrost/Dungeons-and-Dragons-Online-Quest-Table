@@ -457,7 +457,7 @@
 		</style>
 	</head>
 	<body>
-		<button onclick = "toggle_Collapse_Target_Element(this, 'table_Options_Holder')" class = "collapse_Toggle_Button">Show Table Options</button><br>
+		<button onclick = "toggle_Collapse_Target_Element(this, 'table_Options_Holder')" class = "collapse_Toggle_Button">Hide Table Options</button><br>
 		<div id = "table_Options_Holder" class = "expandable_Element expanded_Element">
 			<br>
 			<div id = "saving_Buttons_Holder"><button onclick = "save_To_Local_Storage()">Save to Local Storage</button><button onclick = "delete_Local_Storage()">Delete Local Storage</button><a id = "download_JSON_Table_Link" download = "JSON_Table.js" draggable = "false"><button onclick = "download_JSON_Table()">Save to computer</button></a></div>
@@ -1771,7 +1771,7 @@
 							custom_JSON_Table_String = custom_JSON_Table_String + "[";
 							for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
 							{
-								custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
+								custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
 							}
 							custom_JSON_Table_String = custom_JSON_Table_String + "]";
 						}
