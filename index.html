@@ -352,6 +352,19 @@
 				text-align: left;
 			}
 
+			.main_Chest_Properties
+			{
+				max-width: 225px;
+			}
+
+			.item_Single_Entry
+			{
+				max-width: 225px;
+				white-space: nowrap;
+				overflow-x: auto;
+				text-overflow: ellipsis;
+			}
+
 			.experience_Modifier_Single_Entry
 			{
 				display: flex;
@@ -428,14 +441,6 @@
 				width: 1rem;
 				height: 1rem;
 				line-height: 1rem;
-			}
-
-			.item_Single_Entry
-			{
-				max-width: 225px;
-				white-space: nowrap;
-				overflow-x: auto;
-				text-overflow: ellipsis;
 			}
 
 			#table_Options_Holder
@@ -890,6 +895,19 @@
 								console.error(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " does not have a wiki link to the adventure pack.");
 							}
 						}
+						else if(property === "main_Chest_Properties")
+						{
+							new_Table_Data.classList.add("object_List_Table_Data");
+							new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<div class = \"main_Chest_Properties\"><div>Named Item Chance: " + table_Body_Array[i].main_Chest_Properties.base_Named_Item_Chance + "</div><div>Extra Item Chance: " + table_Body_Array[i].main_Chest_Properties.base_Extra_Item_Chance + "</div><div>Rare Item Upgrade Chance: " + table_Body_Array[i].main_Chest_Properties.base_Rare_Item_Upgrade_Chance + "</div><div>Number of Chests: " + table_Body_Array[i].main_Chest_Properties.named_Item_Chest_Quantity + "</div></div>";
+						}
+						else if(property === "available_Items")
+						{
+							new_Table_Data.classList.add("object_List_Table_Data");
+							for(let j = 0; j < table_Body_Array[i].available_Items.length; j++)
+							{
+								new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry\"><span>" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "</span class = \"item_Minimum_Level_Title\"><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span><br>";
+							}
+						}
 						else if(property === "saga_Contribution")
 						{
 							if(table_Body_Array[i].saga_Contribution !== "-")
@@ -953,14 +971,6 @@
 						{
 							set_Available_Favor(i);
 							new_Table_Data.innerText = table_Body_Array[i].available_Favor;
-						}
-						else if(property === "available_Items")
-						{
-							new_Table_Data.classList.add("object_List_Table_Data");
-							for(let j = 0; j < table_Body_Array[i].available_Items.length; j++)
-							{
-								new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry\"><span>" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "</span class = \"item_Minimum_Level_Title\"><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span><br>";
-							}
 						}
 						else if(property === "total_Weight")
 						{
@@ -1748,6 +1758,19 @@
 						{
 							custom_JSON_Table_String = custom_JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
 						}
+						else if(column_Properties[j].name === "main_Chest_Properties")
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "{\"base_Named_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Named_Item_Chance + ", \"base_Extra_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Extra_Item_Chance + ", \"base_Rare_Item_Upgrade_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Rare_Item_Upgrade_Chance + ", \"named_Item_Chest_Quantity\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].named_Item_Chest_Quantity + "}";
+						}
+						else if(column_Properties[j].name === "available_Items")
+						{
+							custom_JSON_Table_String = custom_JSON_Table_String + "[";
+							for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
+							{
+								custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
+							}
+							custom_JSON_Table_String = custom_JSON_Table_String + "]";
+						}
 						else if(column_Properties[j].name === "experience_Modifiers")
 						{
 							custom_JSON_Table_String = custom_JSON_Table_String + "[";
@@ -1763,15 +1786,6 @@
 							for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
 							{
 								custom_JSON_Table_String = custom_JSON_Table_String + "{\"title\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", \"value\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", \"experience\": 0, \"included\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
-							}
-							custom_JSON_Table_String = custom_JSON_Table_String + "]";
-						}
-						else if(column_Properties[j].name === "available_Items")
-						{
-							custom_JSON_Table_String = custom_JSON_Table_String + "[";
-							for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
-							{
-								custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
 							}
 							custom_JSON_Table_String = custom_JSON_Table_String + "]";
 						}
