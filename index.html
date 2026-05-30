@@ -3,6 +3,7 @@
 	<head>
 		<meta charset = "utf-8">
 		<style>
+			/*Variable declarations*/
 			:root
 			{
 				--hovered_Lightness_Multiplier: 0.90;
@@ -22,6 +23,20 @@
 				--last_Sorted_Column_Lightness_Multiplier: 0.75;
 			}
 
+			/*Input styles*/
+			input[type="checkbox"]
+			{
+				cursor: pointer;
+			}
+
+			select, ::picker(select)	/*Utilizes customizable selects*/
+			{
+				appearance: base-select;
+				cursor: pointer;
+			}
+
+
+			/*Button variants styles*/
 			button
 			{
 				width: 190px;
@@ -59,70 +74,8 @@
 				color: rgba(255, 255, 64, 1);
 			}
 
-			input[type="checkbox"]
-			{
-				cursor: pointer;
-			}
 
-			select, ::picker(select)	/*Utilizes customizable selects*/
-			{
-				appearance: base-select;
-				cursor: pointer;
-			}
-
-			table
-			{
-				box-sizing: border-box;
-				border-spacing: 0;
-				border-bottom: 1px solid black;
-			}
-
-			table thead tr
-			{
-				top: 0;
-				margin: 0;
-				padding: 0;
-				border: 1px solid black;
-			}
-
-			table thead th
-			{
-				position: sticky;
-				top: 0;
-				cursor: pointer;
-				border: 1px solid black;
-				max-width: 0;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			table thead th:hover, table thead th:focus
-			{
-				overflow: visible;
-				z-index: 2;
-				outline: none;
-			}
-
-			table thead th:hover::after, table thead th:focus::after
-			{
-				content: attr(data-text_content);
-				position: absolute;
-				color: rgba(0, 0, 0, 0);
-				top: 0;
-				left: 0;
-				bottom: 0;
-				width: calc-size(auto, size + 2px);
-				min-width: 100%;
-				border-right: 2px solid black;
-				z-index: -1;
-				pointer-events: none;
-			}
-
-			table thead th:focus::after
-			{
-				border: 1px solid white;
-			}
-
+			/*Option area styles*/
 			.expandable_Element
 			{
 				display: none;
@@ -157,7 +110,112 @@
 				}
 			}
 
-			/* Ascending column variations */
+			.filter_Title
+			{
+				width: 210px;
+				display: inline-block;
+				white-space: nowrap;
+			}
+
+			.indented_Filter_Title
+			{
+				width: 160px;
+				margin-left: 50px;
+				display: inline-block;
+				white-space: nowrap;
+			}
+
+			.adventure_Pack_Filter_Title
+			{
+				width: 260px;
+				display: inline-block;
+				white-space: nowrap;
+			}
+
+			.filter_Number_Input
+			{
+				width: 70px;
+			}
+
+			.filter_Text_Input
+			{
+				width: 164px;
+			}
+
+			#table_Options_Holder
+			{
+				width: 620px;
+			}
+
+			#saving_Buttons_Holder
+			{
+				display: flex;
+				justify-content: space-between;
+			}
+
+			#autocomplete_Adventures_Error_Message
+			{
+				background-color: rgba(128, 32, 32, 1);
+				color: rgba(255, 255, 128, 1);
+			}
+
+
+			/*Table and descendent styles*/
+			table
+			{
+				box-sizing: border-box;
+				border-spacing: 0;
+				border-bottom: 1px solid black;
+			}
+
+			table thead tr
+			{
+				top: 0;
+				margin: 0;
+				padding: 0;
+				border: 1px solid black;
+			}
+
+			table thead th
+			{
+				position: sticky;
+				top: 0;
+				cursor: pointer;
+				border: 1px solid black;
+				max-width: 0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			table thead th:hover, table thead th:focus
+			{
+				overflow: visible;
+				z-index: 2;
+				outline: none;
+			}
+
+			/*Used to expand column names on hover or when tabbed to without interfering with the rest of the layout*/
+			table thead th:hover::after, table thead th:focus::after
+			{
+				content: attr(data-text_content);
+				position: absolute;
+				color: rgba(0, 0, 0, 0);
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: calc-size(auto, size + 2px);
+				min-width: 100%;
+				border-right: 2px solid black;
+				z-index: -1;
+				pointer-events: none;
+			}
+
+			table thead th:focus::after
+			{
+				border: 1px solid white;
+			}
+
+			/*Ascending column variations*/
 			.ascending_Column
 			{
 				background-color: hsl(var(--ascending_Column_Base_Hue), var(--ascending_Column_Base_Saturation), var(--ascending_Column_Base_Lightness));
@@ -183,7 +241,7 @@
 				background-color: hsl(var(--ascending_Column_Base_Hue), var(--ascending_Column_Base_Saturation), calc(var(--ascending_Column_Base_Lightness) * var(--active_Lightness_Multiplier)));
 			}
 
-			/* Descending column variations */
+			/*Descending column variations*/
 			.descending_Column
 			{
 				background-color: hsl(var(--descending_Column_Base_Hue), var(--descending_Column_Base_Saturation), var(--descending_Column_Base_Lightness));
@@ -209,7 +267,7 @@
 				background-color: hsl(var(--descending_Column_Base_Hue), var(--descending_Column_Base_Saturation), calc(var(--descending_Column_Base_Lightness) * var(--active_Lightness_Multiplier)));
 			}
 
-			/* Last-sorted ascending column variations */
+			/*Last-sorted ascending column variations*/
 			.last_Sorted_Header.ascending_Column, .last_Sorted_Header.ascending_Column::after
 			{
 				background-color: hsl(var(--ascending_Column_Base_Hue), var(--ascending_Column_Base_Saturation), calc(var(--ascending_Column_Base_Lightness) * var(--last_Sorted_Column_Lightness_Multiplier)));
@@ -235,7 +293,7 @@
 				background-color: hsl(var(--ascending_Column_Base_Hue), var(--ascending_Column_Base_Saturation), calc(var(--ascending_Column_Base_Lightness) * var(--last_Sorted_Column_Lightness_Multiplier) * var(--active_Lightness_Multiplier)));
 			}
 
-			/* Last-sorted descending column variations */
+			/*Last-sorted descending column variations*/
 			.last_Sorted_Header.descending_Column, .last_Sorted_Header.descending_Column::after
 			{
 				background-color: hsl(var(--descending_Column_Base_Hue), var(--descending_Column_Base_Saturation), calc(var(--descending_Column_Base_Lightness) * var(--last_Sorted_Column_Lightness_Multiplier)));
@@ -261,6 +319,7 @@
 				background-color: hsl(var(--descending_Column_Base_Hue), var(--descending_Column_Base_Saturation), calc(var(--descending_Column_Base_Lightness) * var(--last_Sorted_Column_Lightness_Multiplier) * var(--active_Lightness_Multiplier)));
 			}
 
+			/*Table body styles*/
 			table tbody tr
 			{
 				height: 38px;
@@ -295,38 +354,6 @@
 				border-right: 1px solid black;
 			}
 
-			.filter_Title
-			{
-				width: 210px;
-				display: inline-block;
-				white-space: nowrap;
-			}
-
-			.indented_Filter_Title
-			{
-				width: 160px;
-				margin-left: 50px;
-				display: inline-block;
-				white-space: nowrap;
-			}
-
-			.adventure_Pack_Filter_Title
-			{
-				width: 260px;
-				display: inline-block;
-				white-space: nowrap;
-			}
-
-			.filter_Number_Input
-			{
-				width: 70px;
-			}
-
-			.filter_Text_Input
-			{
-				width: 164px;
-			}
-
 			.alphabetical_Column
 			{
 				width: 110px;
@@ -352,11 +379,14 @@
 				text-align: left;
 			}
 
+			/*Chest styles*/
 			.main_Chest_Properties
 			{
 				max-width: 225px;
 			}
 
+
+			/*Item list styles*/
 			.item_Single_Entry
 			{
 				max-width: 225px;
@@ -365,6 +395,7 @@
 				text-overflow: ellipsis;
 			}
 
+			/*Experience Modifiers styles*/
 			.experience_Modifier_Single_Entry
 			{
 				display: flex;
@@ -388,6 +419,7 @@
 				padding: 0px;
 			}
 
+			/*Optional Objectives styles*/
 			.optional_Objective_Single_Entry
 			{
 				width: 225px;
@@ -441,23 +473,6 @@
 				width: 1rem;
 				height: 1rem;
 				line-height: 1rem;
-			}
-
-			#table_Options_Holder
-			{
-				width: 620px;
-			}
-
-			#saving_Buttons_Holder
-			{
-				display: flex;
-				justify-content: space-between;
-			}
-
-			#autocomplete_Adventures_Error_Message
-			{
-				background-color: rgba(128, 32, 32, 1);
-				color: rgba(255, 255, 128, 1);
 			}
 		</style>
 	</head>
