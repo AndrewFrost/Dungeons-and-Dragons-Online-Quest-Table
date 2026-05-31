@@ -189,7 +189,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 				new_Table_Data.classList.add("object_List_Table_Data");
 				for(let j = 0; j < table_Body_Array[i].available_Items.length; j++)
 				{
-					new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry\"><span>" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "</span class = \"item_Minimum_Level_Title\"><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span><br>";
+					new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry\"><span>" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "</span class = \"item_Minimum_Level_Title\"><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span>";
 				}
 			}
 			else if(property === "saga_Contribution")

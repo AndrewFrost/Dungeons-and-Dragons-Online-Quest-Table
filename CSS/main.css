@@ -385,10 +385,17 @@ table tbody tr td:last-child
 /*Item list styles*/
 .item_Single_Entry
 {
+	display: flex;
+	flex-wrap: nowrap;
 	max-width: 225px;
 	white-space: nowrap;
-	overflow-x: auto;
+	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.item_Single_Entry:hover
+{
+	overflow: visible;
 }
 
 /*Experience Modifiers styles*/

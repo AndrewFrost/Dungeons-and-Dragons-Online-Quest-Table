@@ -71,3 +71,15 @@ for(let i = 0; i < column_Properties.length; i++)
 }
 console.log("Column Display HTML Section:");
 console.log(column_Display_Options_Section_Text);
+
+let initial_Page_Load_View_Table_Text = "			<thead>\n"
++ "				" + table_Header_Row_Element.outerHTML + "\n"
++ "			</thead>\n"
++ "			<tbody id=\"table_Body\" style=\"display: table-row-group\">\n";
+for(let i = 0; i < 10; i++)
+{
+	initial_Page_Load_View_Table_Text = initial_Page_Load_View_Table_Text + "				" + table_Body_Element.children[i].outerHTML + "\n";
+}
+initial_Page_Load_View_Table_Text = initial_Page_Load_View_Table_Text + "			</tbody>";
+console.log("Initial Display-only Table:");
+console.log(initial_Page_Load_View_Table_Text);
