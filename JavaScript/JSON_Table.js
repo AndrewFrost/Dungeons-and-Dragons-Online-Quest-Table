@@ -1,7 +1,7 @@
 let column_Properties = [
 {
 	name: "completed",
-	displayName: "Completed",
+	display_Name: "Completed",
 	type: "Checkbox",
 	calculated: false,
 	visible: true,
@@ -9,7 +9,7 @@ let column_Properties = [
 },
 {
 	name: "level",
-	displayName: "Level",
+	display_Name: "Level",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -17,7 +17,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Tier",
-	displayName: "Tier",
+	display_Name: "Tier",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -25,7 +25,7 @@ let column_Properties = [
 },
 {
 	name: "available_Adventure_Tiers",
-	displayName: "Available Tiers",
+	display_Name: "Available Tiers",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -33,7 +33,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Name",
-	displayName: "Adventure Name",
+	display_Name: "Adventure Name",
 	type: "Alphabetical",
 	calculated: false,
 	visible: true,
@@ -41,7 +41,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Link",
-	displayName: "Adventure Link",
+	display_Name: "Adventure Link",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -49,7 +49,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Type",
-	displayName: "Type",
+	display_Name: "Type",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -57,7 +57,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Length",
-	displayName: "Length",
+	display_Name: "Length",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -65,7 +65,7 @@ let column_Properties = [
 },
 {
 	name: "location",
-	displayName: "Location",
+	display_Name: "Location",
 	type: "Alphabetical",
 	calculated: false,
 	visible: true,
@@ -73,7 +73,7 @@ let column_Properties = [
 },
 {
 	name: "location_Link",
-	displayName: "Location Link",
+	display_Name: "Location Link",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -81,7 +81,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Pack",
-	displayName: "Adventure Pack",
+	display_Name: "Adventure Pack",
 	type: "Alphabetical",
 	calculated: false,
 	visible: true,
@@ -89,7 +89,7 @@ let column_Properties = [
 },
 {
 	name: "adventure_Pack_Link",
-	displayName: "Adventure Pack Link",
+	display_Name: "Adventure Pack Link",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -97,7 +97,7 @@ let column_Properties = [
 },
 {
 	name: "main_Chest_Properties",
-	displayName: "Main Chest Properties",
+	display_Name: "Main Chest Properties",
 	type: "Object List",
 	calculated: false,
 	visible: true,
@@ -105,7 +105,7 @@ let column_Properties = [
 },
 {
 	name: "available_Items",
-	displayName: "Available Items",
+	display_Name: "Available Items",
 	type: "Object List",
 	calculated: false,
 	visible: true,
@@ -113,7 +113,7 @@ let column_Properties = [
 },
 {
 	name: "saga_Contribution",
-	displayName: "Saga",
+	display_Name: "Saga",
 	type: "Alphabetical",
 	calculated: false,
 	visible: true,
@@ -121,7 +121,7 @@ let column_Properties = [
 },
 {
 	name: "saga_Link",
-	displayName: "Saga Link",
+	display_Name: "Saga Link",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -129,7 +129,7 @@ let column_Properties = [
 },
 {
 	name: "saga_Experience",
-	displayName: "Saga Experience",
+	display_Name: "Saga Experience",
 	type: "Numerical",
 	calculated: false,
 	visible: false,
@@ -137,7 +137,7 @@ let column_Properties = [
 },
 {
 	name: "base_Experience",
-	displayName: "Base Experience",
+	display_Name: "Base Experience",
 	type: "Numerical",
 	calculated: false,
 	visible: false,
@@ -145,7 +145,7 @@ let column_Properties = [
 },
 {
 	name: "experience_Modifiers",
-	displayName: "Experience Modifiers",
+	display_Name: "Experience Modifiers",
 	type: "Object List",
 	calculated: false,
 	visible: true,
@@ -153,7 +153,7 @@ let column_Properties = [
 },
 {
 	name: "optional_Objectives",
-	displayName: "Optionals",
+	display_Name: "Optionals",
 	type: "Object List",
 	calculated: false,
 	visible: true,
@@ -161,7 +161,7 @@ let column_Properties = [
 },
 {
 	name: "total_Experience",
-	displayName: "Total Experience",
+	display_Name: "Total Experience",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -169,7 +169,7 @@ let column_Properties = [
 },
 {
 	name: "reaper_Experience",
-	displayName: "Reaper Experience",
+	display_Name: "Reaper Experience",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -177,7 +177,7 @@ let column_Properties = [
 },
 {
 	name: "total_Favor",
-	displayName: "Total Favor",
+	display_Name: "Total Favor",
 	type: "Numerical",
 	calculated: false,
 	visible: false,
@@ -185,7 +185,7 @@ let column_Properties = [
 },
 {
 	name: "available_Favor",
-	displayName: "Available Favor",
+	display_Name: "Available Favor",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -193,7 +193,7 @@ let column_Properties = [
 },
 {
 	name: "collectables",
-	displayName: "Collectables",
+	display_Name: "Collectables",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -201,7 +201,7 @@ let column_Properties = [
 },
 {
 	name: "average_Sentient_Experience",
-	displayName: "Sentient Experience",
+	display_Name: "Sentient Experience",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -209,7 +209,7 @@ let column_Properties = [
 },
 {
 	name: "average_Reaper_Fragments",
-	displayName: "Reaper Fragments",
+	display_Name: "Reaper Fragments",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -217,7 +217,7 @@ let column_Properties = [
 },
 {
 	name: "custom_Weight",
-	displayName: "Custom Weight",
+	display_Name: "Custom Weight",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -225,7 +225,7 @@ let column_Properties = [
 },
 {
 	name: "total_Weight",
-	displayName: "Total Weight",
+	display_Name: "Total Weight",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -233,7 +233,7 @@ let column_Properties = [
 },
 {
 	name: "base_Time",
-	displayName: "Base Time",
+	display_Name: "Base Time",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -241,7 +241,7 @@ let column_Properties = [
 },
 {
 	name: "travel_Time",
-	displayName: "Travel Time",
+	display_Name: "Travel Time",
 	type: "Numerical",
 	calculated: false,
 	visible: true,
@@ -249,7 +249,7 @@ let column_Properties = [
 },
 {
 	name: "total_Time",
-	displayName: "Total Time",
+	display_Name: "Total Time",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -257,7 +257,7 @@ let column_Properties = [
 },
 {
 	name: "total_Weight_Over_Time",
-	displayName: "Weight / Time",
+	display_Name: "Weight / Time",
 	type: "Numerical",
 	calculated: true,
 	visible: true,
@@ -265,7 +265,7 @@ let column_Properties = [
 },
 {
 	name: "damage_Reduction_Information",
-	displayName: "Damage Reduction Information",
+	display_Name: "Damage Reduction Information",
 	type: "Alphabetical",
 	calculated: false,
 	visible: false,
@@ -273,7 +273,7 @@ let column_Properties = [
 },
 {
 	name: "notes",
-	displayName: "Notes",
+	display_Name: "Notes",
 	type: "Alphabetical",
 	calculated: false,
 	visible: true,
