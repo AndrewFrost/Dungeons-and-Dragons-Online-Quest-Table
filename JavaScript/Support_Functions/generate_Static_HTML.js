@@ -76,7 +76,7 @@ let initial_Page_Load_View_Table_Text = "			<thead>\n"
 + "				" + table_Header_Row_Element.outerHTML + "\n"
 + "			</thead>\n"
 + "			<tbody id=\"table_Body\" style=\"display: table-row-group\">\n";
-for(let i = 0; i < 10; i++)
+for(let i = 0; i < table_Body_Array.length; i++)
 {
 	initial_Page_Load_View_Table_Text = initial_Page_Load_View_Table_Text + "				" + table_Body_Element.children[i].outerHTML + "\n";
 }

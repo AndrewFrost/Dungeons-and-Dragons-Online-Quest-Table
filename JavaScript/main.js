@@ -86,14 +86,16 @@ let highest_Level_Of_Group_Members = 1;
 
 function generate_Table_Headers()
 {
+	table_Header_Row_Element.replaceChildren();	//Clear the temporary Table Headers
 	for(let i = 0; i < column_Properties.length; i++)
 	{
 		let new_Header = document.createElement("TH");
+		table_Header_Row_Element.appendChild(new_Header);	//outerHTML requires the element to have a proper parent and is the simplest way to get each Table Header to have actual text for onclick and onkeydown in the element
+		new_Header.outerHTML = "<th onclick = \"if(typeof table_Body_Loaded !== 'undefined' && table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}\" onkeydown = \"if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); if(typeof table_Body_Loaded !== 'undefined' && table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}}\"></th>";
+		new_Header = table_Header_Row_Element.lastChild;	//Setting outerHTML removes the reference, so it's readded
 		new_Header.textContent = column_Properties[i].display_Name;
 		new_Header.dataset.text_content = new_Header.textContent;
 		new_Header.tabIndex = 0;
-		new_Header.onclick = function(){sort_Table(i)};
-		new_Header.onkeydown = function(){if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); sort_Table(i);}};
 
 		// Add column type class
 		if(column_Properties[i].type === "Alphabetical")
@@ -129,9 +131,7 @@ function generate_Table_Headers()
 		{
 			new_Header.style.display = "none";
 		}
-		placeholder_Table_Fragment.appendChild(new_Header);
 	}
-	table_Header_Row_Element.replaceChildren(placeholder_Table_Fragment);
 }
 
 let table_Body_Loaded = false;
@@ -163,7 +163,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 				else
 				{
 					new_Table_Data.innerHTML = table_Body_Array[i].adventure_Name;
-					console.error(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " does not have a wiki link to the quest.");
+					console.warn(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " does not have a wiki link to the quest.");
 				}
 				adventure_Name_To_Table_Index_Map.set((table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name), i);
 			}
@@ -176,7 +176,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 				else
 				{
 					new_Table_Data.innerHTML = table_Body_Array[i].adventure_Pack;
-					console.error(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " does not have a wiki link to the adventure pack.");
+					console.warn(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " does not have a wiki link to the adventure pack.");
 				}
 			}
 			else if(property === "main_Chest_Properties")
@@ -201,7 +201,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 					if(saga_Names.length !== saga_Links.length)
 					{
 						new_Table_Data.innerText = table_Body_Array[i].saga_Contribution;
-						console.error("Saga Link error for " + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + ", entry " + i);
+						console.warn("Saga Link error for " + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + ", entry " + i);
 					}
 					else
 					{
@@ -242,7 +242,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 					//new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><span oninput = \"set_Optional_Objective_Parameter((this.closest('tr').rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
 					//new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><span class =  \"optional_Objective_Title\">" + table_Body_Array[i].optional_Objectives[j].title + ":</span><input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.closest('tr').rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
 					new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"optional_Objective_Single_Entry\"><input type = \"text\" onchange = \"set_Optional_Objective_Parameter((this.closest('tr').rowIndex - 1), " + j + ", 'title', this.value)\" class =  \"optional_Objective_Title\" value = \"" + table_Body_Array[i].optional_Objectives[j].title + "\">:<input type = \"number\" onchange = \"set_Optional_Objective_Parameter((this.closest('tr').rowIndex - 1), " + j + ", 'value', this.value)\" class = \"optional_Objective_Value\" id = \"" + table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name + " Optional " + j + "\" value = \"" + table_Body_Array[i].optional_Objectives[j].value + "\" step = \".05\"" + "><span class = \"optional_Objective_Experience\"></span><input type = \"checkbox\" onchange = \"set_Optional_Objective_Parameter((this.closest('tr').rowIndex - 1), " + j + ", 'included', this.checked)\" class = \"optional_Objective_Checkbox\" " + (table_Body_Array[i].optional_Objectives[j].included === true ? "checked" : "") + "></span>";
-					
+
 					set_Optional_Objective_Parameter(i, j, 'experience');
 					new_Table_Data.children[j].children[2].innerText = table_Body_Array[i].optional_Objectives[j].experience;
 				}
@@ -848,7 +848,7 @@ function set_Reaper_Experience(adventure_Index)
 			adventure_Length_Multplier = 1.4;
 			break;
 		default:
-			console.error(table_Body_Array[adventure_Index].adventure_Tier + " " + table_Body_Array[adventure_Index].adventure_Name + " has an unrecognized adventure_Length.");
+			console.warn(table_Body_Array[adventure_Index].adventure_Tier + " " + table_Body_Array[adventure_Index].adventure_Name + " has an unrecognized adventure_Length.");
 			break;
 	}
 	let legendary_Adventure_Multiplier = table_Body_Array[adventure_Index].level >= 30 ? 2 : 1;
