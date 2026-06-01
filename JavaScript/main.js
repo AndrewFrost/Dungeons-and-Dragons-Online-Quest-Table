@@ -476,11 +476,17 @@ function reset_All_Completions()
 }
 
 let experience_Modifier_Names = ["Delving Bonus","First-time Difficulty", "Tome of Learning", "Daily Bonus", "Persistence", "Flawless Victory", "Kills", "Traps", "Secret Doors", "Breakables", "Quest Ransack", "Over-level Penalty", "Power-leveling Penalty", "Reentry", "Late Entry", "Other"];
+let experience_Modifier_Names_To_Array_Index = {};
+for(let i = 0; i < column_Properties.length; i++)
+{
+	experience_Modifier_Names_To_Array_Index[experience_Modifier_Names[i]] = i;
+}
+
 function set_Experience_Modifier(adventure_Index, modifier_Index, new_Value)
 {
 	table_Body_Array[adventure_Index].experience_Modifiers[modifier_Index] = new_Value;
 	table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.experience_Modifiers].children[modifier_Index].children[1].value = new_Value;
-	if(modifier_Index === 2 || modifier_Index === 11 || modifier_Index === 12 || modifier_Index === 13 || modifier_Index === 14)
+	if(modifier_Index === experience_Modifier_Names_To_Array_Index["Tome of Learning"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Over-level Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Reentry"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Late Entry"])	//Experience Modifiers that impact Optional Objective experience
 	{
 		for(let i = 0; i < table_Body_Array[adventure_Index].optional_Objectives.length; i++)
 		{
@@ -499,11 +505,11 @@ function reset_All_Daily_Bonuses()
 	{
 		if(table_Body_Array[i].adventure_Tier === "Heroic")
 		{
-			set_Experience_Modifier(i, 3, .25);
+			set_Experience_Modifier(i, experience_Modifier_Names_To_Array_Index["Daily Bonus"], .25);	//Heroic Daily Bonus is 25%
 		}
 		else
 		{
-			set_Experience_Modifier(i, 3, .4);
+			set_Experience_Modifier(i, experience_Modifier_Names_To_Array_Index["Daily Bonus"], .4);	//Epic and Legendary Daily Bonus is 40%
 		}
 	}
 }
@@ -512,27 +518,27 @@ function set_Delving_Bonus(adventure_Index)
 {
 	if(table_Body_Array[adventure_Index].completed === true)
 	{
-		set_Experience_Modifier(adventure_Index, 0, 0);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], 0);
 		return;
 	}
 	switch(table_Body_Array[adventure_Index].adventure_Type)
 	{
 		case "Solo Quest":
 		case "Challenge":
-			set_Experience_Modifier(adventure_Index, 0, 0);	//No Delving Bonus available
+			set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], 0);	//No Delving Bonus available
 			break;
 		case "Reaper Unavailable":
 		if(table_Body_Array[adventure_Index].adventure_Tier === "Heroic" && highest_Level_Of_Group_Members - 2 > table_Body_Array[adventure_Index].level)
 		{
-			set_Experience_Modifier(adventure_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Heroic
+			set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .5);	//Elite Delving Bonus, halved for overlevel in Heroic
 		}
 		else if(table_Body_Array[adventure_Index].adventure_Tier !== "Heroic" && highest_Level_Of_Group_Members - 4 > table_Body_Array[adventure_Index].level)
 		{
-			set_Experience_Modifier(adventure_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
+			set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
 		}
 		else
 		{
-			set_Experience_Modifier(adventure_Index, 0, 1);	//Elite Delving Bonus
+			set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], 1);	//Elite Delving Bonus
 		}
 		break;
 		case "Standard":
@@ -541,30 +547,30 @@ function set_Delving_Bonus(adventure_Index)
 		{
 			if(highest_Level_Of_Group_Members - 4 > table_Body_Array[adventure_Index].level)
 			{
-				set_Experience_Modifier(adventure_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Heroic
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .5);	//Elite Delving Bonus, halved for overlevel in Heroic
 			}
 			else if(highest_Level_Of_Group_Members - 2 > table_Body_Array[adventure_Index].level)
 			{
-				set_Experience_Modifier(adventure_Index, 0, .75);	//Reaper Delving Bonus, halved for overlevel in Heroic
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .75);	//Reaper Delving Bonus, halved for overlevel in Heroic
 			}
 			else
 			{
-				set_Experience_Modifier(adventure_Index, 0, 1.5);	//Reaper Delving Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], 1.5);	//Reaper Delving Bonus
 			}
 		}
 		else
 		{
 			if(highest_Level_Of_Group_Members - 6 > table_Body_Array[adventure_Index].level)
 			{
-				set_Experience_Modifier(adventure_Index, 0, .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .5);	//Elite Delving Bonus, halved for overlevel in Epic/Legendary
 			}
 			else if(highest_Level_Of_Group_Members - 4 > table_Body_Array[adventure_Index].level)
 			{
-				set_Experience_Modifier(adventure_Index, 0, .75);	//Reaper Delving Bonus, halved for overlevel in Epic/Legendary
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], .75);	//Reaper Delving Bonus, halved for overlevel in Epic/Legendary
 			}
 			else
 			{
-				set_Experience_Modifier(adventure_Index, 0, 1.5);	//Reaper Delving Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Delving Bonus"], 1.5);	//Reaper Delving Bonus
 			}
 		}
 	}
@@ -578,32 +584,32 @@ function set_Tome_Of_Learning_Bonus(adventure_Index)
 		{
 			if(table_Body_Array[adventure_Index].completed === false)
 			{
-				set_Experience_Modifier(adventure_Index, 2, .5);	//First Time Greater Heroic Tome of Learning Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], .5);	//First Time Greater Heroic Tome of Learning Bonus
 			}
 			else
 			{
-				set_Experience_Modifier(adventure_Index, 2, .2);	//Repeat Greater Heroic Tome of Learning Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], .2);	//Repeat Greater Heroic Tome of Learning Bonus
 			}
 		}
 		else if((current_Character_Level >= 20 && current_Character_Level < 30) || ((current_Character_Level < 20 && table_Body_Array[adventure_Index].adventure_Tier !== "Heroic")))
 		{
 			if(table_Body_Array[adventure_Index].completed === false)
 			{
-				set_Experience_Modifier(adventure_Index, 2, .25);	//First Time Greater Epic Tome of Learning Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], .25);	//First Time Greater Epic Tome of Learning Bonus
 			}
 			else
 			{
-				set_Experience_Modifier(adventure_Index, 2, .1);	//Repeat Greater Epic Tome of Learning Bonus
+				set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], .1);	//Repeat Greater Epic Tome of Learning Bonus
 			}
 		}
 		else if(current_Character_Level >= 30)
 		{
-			set_Experience_Modifier(adventure_Index, 2, 0);	//No Legendary Tomes of Learning currently available
+			set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], 0);	//No Legendary Tomes of Learning currently available
 		}
 	}
 	else
 	{
-		set_Experience_Modifier(adventure_Index, 2, 0);	//Challenges will be handled later
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Tome of Learning"], 0);	//Challenges will be handled later
 	}
 }
 
@@ -612,7 +618,7 @@ function set_Over_Level_Penalty(adventure_Index)
 {
 	if(current_Character_Level >= 30 && table_Body_Array[adventure_Index].adventure_Tier !== "Legendary")
 	{
-		set_Experience_Modifier(adventure_Index, 11, -1);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Over-level Penalty"], -1);
 		return;
 	}
 	let effective_Adventure_Level = table_Body_Array[adventure_Index].level;
@@ -630,12 +636,12 @@ function set_Over_Level_Penalty(adventure_Index)
 	}
 	if(effective_Adventure_Level >= 20)
 	{
-		set_Experience_Modifier(adventure_Index, 11, 0);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Over-level Penalty"], 0);
 		return;
 	}
 	else
 	{
-		set_Experience_Modifier(adventure_Index, 11, over_Level_Penalties[Math.max(0, Math.min(7, highest_Level_Of_Group_Members - effective_Adventure_Level))]);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Over-level Penalty"], over_Level_Penalties[Math.max(0, Math.min(7, highest_Level_Of_Group_Members - effective_Adventure_Level))]);
 		return;
 	}
 }
@@ -644,7 +650,7 @@ function set_Power_Leveling_Penalty(adventure_Index)
 {
 	if(current_Character_Level >= 20)
 	{
-		set_Experience_Modifier(adventure_Index, 12, 0);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"], 0);
 	}
 	else
 	{
@@ -653,7 +659,7 @@ function set_Power_Leveling_Penalty(adventure_Index)
 		{
 			current_Multiplier = current_Multiplier * .5;
 		}
-		set_Experience_Modifier(adventure_Index, 12, current_Multiplier - 1);
+		set_Experience_Modifier(adventure_Index, experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"], current_Multiplier - 1);
 	}
 }
 
@@ -687,11 +693,11 @@ function set_Optional_Objective_Parameter(adventure_Index, optional_Objective_In
 				*
 				(
 					table_Body_Array[adventure_Index].base_Experience
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[2]))
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[11]))
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[12]))
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[13]))
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[14]))
+					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Tome of Learning"]]))
+					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Over-level Penalty"]]))
+					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"]]))
+					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Reentry"]]))
+					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Late Entry"]]))
 					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(server_Modifier_Input_Box_Element.value))
 				)
 			)
@@ -720,7 +726,7 @@ function set_Optional_Objective_Parameter(adventure_Index, optional_Objective_In
 
 function set_Total_Experience(adventure_Index)
 {
-	if(table_Body_Array[adventure_Index].experience_Modifiers[11] + table_Body_Array[adventure_Index].experience_Modifiers[12] <= -1)
+	if(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Over-level Penalty"]] + table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"]] <= -1)
 	{
 		table_Body_Array[adventure_Index].total_Experience = 0;
 		if(table_Body_Loaded === true)
@@ -765,7 +771,7 @@ function set_Total_Experience(adventure_Index)
 
 function set_Reaper_Experience(adventure_Index)
 {
-	if(table_Body_Array[adventure_Index].experience_Modifiers[11] + table_Body_Array[adventure_Index].experience_Modifiers[12] <= -1)	//Also indirectly handles Legendary Characters not receiving Reaper Experience in Epic or Heroic content
+	if(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Over-level Penalty"]] + table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"]] <= -1)	//Also indirectly handles Legendary Characters not receiving Reaper Experience in Epic or Heroic content
 	{
 		table_Body_Array[adventure_Index].reaper_Experience = 0;
 		if(table_Body_Loaded === true)
@@ -850,18 +856,21 @@ function set_Reaper_Experience(adventure_Index)
 	let reaper_Level = Number(assumed_Reaper_Level_Input_Box_Element.value);
 	let base_Reaper_Experience = Math.trunc((50 + table_Body_Array[adventure_Index].level * 3 * reaper_Level) * adventure_Length_Multplier) * legendary_Adventure_Multiplier;
 	let total_Reaper_Experience = Math.trunc(base_Reaper_Experience * Math.fround(first_Time_Reaper_Completion_Multiplier));
-	for(let i = 3; i <= 11; i++)
+	for(let i = 0; i < experience_Modifier_Names.length; i++)	//Most experience modifiers affect Reaper Experience
 	{
-		if(i === 11)
+		if(i !== experience_Modifier_Names_To_Array_Index["Delving Bonus"] && i !== experience_Modifier_Names_To_Array_Index["First-time Difficulty"] && i !== experience_Modifier_Names_To_Array_Index["Tome of Learning"] && i !== experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"] && i !== experience_Modifier_Names_To_Array_Index["Reentry"])	//Exceptions that do not impact experience or cannot be anything but 0 in normal circumstances
 		{
-			for(let j = 0; j < first_Time_Reaper_Completion_Multiplier; j++)
+			if(i === experience_Modifier_Names_To_Array_Index["Over-level Penalty"])	//Penalties seem to be impacted by the First Time Reaper multiplier in steps- test Late Entry and if it behaves the same handle it here as well
+			{
+				for(let j = 0; j < first_Time_Reaper_Completion_Multiplier; j++)
+				{
+					total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[i]));
+				}
+			}
+			else
 			{
 				total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[i]));
 			}
-		}
-		else
-		{
-			total_Reaper_Experience = total_Reaper_Experience + Math.trunc(base_Reaper_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[i]));
 		}
 	}
 	total_Reaper_Experience = Math.trunc(total_Reaper_Experience * Math.fround(personal_Experience_Multiplier_Input_Box_Element.value));

@@ -15,6 +15,26 @@
 				<br>
 				<span class = "filter_Title">Filter Completed: </span><input type = "checkbox" onchange = "filter_Table_Rows()" id = "filter_Completed_Checkbox"><br>
 				<br>
+				Minimum and Maximum Filters:<br>
+				<span class = "indented_Filter_Title">Level: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1" min = "1"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37" min = "1"><br>
+				<span class = "indented_Filter_Title">Total Experience: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Experience_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Experience_Upper_Limit_Input_Box" value = "1000000" min = "0"><br>
+				<span class = "indented_Filter_Title">Total Time: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "time_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "time_Upper_Limit_Input_Box" value = "120" min = "0"><br>
+				<span class = "indented_Filter_Title">Available Favor: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "available_Favor_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "available_Favor_Upper_Limit_Input_Box" value = "42" min = "0"><br>
+				<span class = "indented_Filter_Title">Total Favor: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Favor_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Favor_Upper_Limit_Input_Box" value = "42" min = "0"><br>
+				<br>
+				Weight:<br>
+				<span class = "filter_Title">1 / Experience Weight: </span><input type = "number" value = 5000 step = "1000" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "experience_Weight_Input_Box"><br>
+				<span class = "filter_Title">1 / Reaper Experience Weight: </span><input type = "number" value = 500 step = "100" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "reaper_Experience_Weight_Input_Box"><br>
+				<span class = "filter_Title">1 / Favor Weight: </span><input type = "number" value = 4 step = "1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "favor_Weight_Input_Box"><br>
+				<span class = "filter_Title">1 / Collectable Weight: </span><input type = "number" value = 7.5 step = ".5" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "collectable_Weight_Input_Box"><br>
+				<span class = "filter_Title">1 / Sentient Experience Weight: </span><input type = "number" value = 500 step = "100" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "sentient_Experience_Weight_Input_Box"><br>
+				<span class = "filter_Title">Reaper Fragment Weight: </span><input type = "number" value = 10 step = "1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "reaper_Fragment_Weight_Input_Box"><br>
+				<span class = "filter_Title">Custom Weight Multiplier: </span><input type = "number" value = 1 step = ".1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "custom_Weight_Multiplier_Input_Box"><br>
+				<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" value = 0 step = ".05" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "weight_Over_Time_Lower_Limit_Input_Box"><br>
+				<br>
+				<span class = "filter_Title">Show only if contains phrases: </span><input type = "text" onchange = "filter_Table_Rows()" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
+				<span class = "filter_Title">Show only if does not contain: </span><input type = "text" onchange = "filter_Table_Rows()" class = "filter_Text_Input" id = "does_Not_Contain_Phrases_Input_Box"><br>
+				<br>
 				<button onclick = "toggle_Collapse_Target_Element(this, 'adventure_Types_Selection_Section')" class = "collapse_Toggle_Button">Show Adventure Types</button><br>
 				<div onchange = "filter_Table_Rows()" id = "adventure_Types_Selection_Section" class = "expandable_Element">
 					<br>
@@ -139,26 +159,6 @@
 					<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/Magic_of_Myth_Drannor_(Legendary)">Magic of Myth Drannor (Legendary)</a>: </span><input type = "checkbox" class = "saga_Checkbox" value = "Magic of Myth Drannor (Legendary)"><br>
 					<span class = "adventure_Pack_Filter_Title"><a href = "https://ddowiki.com/page/The_Chill_of_Ravenloft_(Legendary)">The Chill of Ravenloft (Legendary)</a>: </span><input type = "checkbox" class = "saga_Checkbox" value = "The Chill of Ravenloft (Legendary)"><br>
 				</div><br>
-				Minimum and Maximum Filters:<br>
-				<span class = "indented_Filter_Title">Level: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "level_Lower_Limit_Input_Box" value = "1" min = "1"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "level_Upper_Limit_Input_Box" value = "37" min = "1"><br>
-				<span class = "indented_Filter_Title">Total Experience: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Experience_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Experience_Upper_Limit_Input_Box" value = "1000000" min = "0"><br>
-				<span class = "indented_Filter_Title">Total Time: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "time_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "time_Upper_Limit_Input_Box" value = "120" min = "0"><br>
-				<span class = "indented_Filter_Title">Available Favor: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "available_Favor_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "available_Favor_Upper_Limit_Input_Box" value = "42" min = "0"><br>
-				<span class = "indented_Filter_Title">Total Favor: </span><input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Favor_Lower_Limit_Input_Box" value = "0" min = "0"> to <input type = "number" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "total_Favor_Upper_Limit_Input_Box" value = "42" min = "0"><br>
-				<br>
-				Weight:<br>
-				<span class = "filter_Title">1 / Experience Weight: </span><input type = "number" value = 5000 step = "1000" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "experience_Weight_Input_Box"><br>
-				<span class = "filter_Title">1 / Reaper Experience Weight: </span><input type = "number" value = 500 step = "100" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "reaper_Experience_Weight_Input_Box"><br>
-				<span class = "filter_Title">1 / Favor Weight: </span><input type = "number" value = 4 step = "1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "favor_Weight_Input_Box"><br>
-				<span class = "filter_Title">1 / Collectable Weight: </span><input type = "number" value = 7.5 step = ".5" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "collectable_Weight_Input_Box"><br>
-				<span class = "filter_Title">1 / Sentient Experience Weight: </span><input type = "number" value = 500 step = "100" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "sentient_Experience_Weight_Input_Box"><br>
-				<span class = "filter_Title">Reaper Fragment Weight: </span><input type = "number" value = 10 step = "1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "reaper_Fragment_Weight_Input_Box"><br>
-				<span class = "filter_Title">Custom Weight Multiplier: </span><input type = "number" value = 1 step = ".1" onchange = "update_Table_Columns('total_Weight, total_Weight_Over_Time')" class = "filter_Number_Input" id = "custom_Weight_Multiplier_Input_Box"><br>
-				<span class = "filter_Title">Minimum Weight / Time: </span><input type = "number" value = 0 step = ".05" onchange = "filter_Table_Rows()" class = "filter_Number_Input" id = "weight_Over_Time_Lower_Limit_Input_Box"><br>
-				<br>
-				<span class = "filter_Title">Show only if contains phrases: </span><input type = "text" onchange = "filter_Table_Rows()" class = "filter_Text_Input" id = "contains_Phrases_Input_Box"><br>
-				<span class = "filter_Title">Show only if does not contain: </span><input type = "text" onchange = "filter_Table_Rows()" class = "filter_Text_Input" id = "does_Not_Contain_Phrases_Input_Box"><br>
-				<br>
 				<span class = "filter_Title"><button onclick = "toggle_Collapse_Target_Element(this, 'column_Display_Options')" class = "collapse_Toggle_Button">Show Column Options</button></span><br>
 				<div id = "column_Display_Options" class = "expandable_Element">
 					<br>
