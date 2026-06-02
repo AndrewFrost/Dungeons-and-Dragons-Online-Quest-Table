@@ -946,450 +946,6 @@ function set_Total_Weight_Over_Time(adventure_Index)	//Sets the total weight ove
 	}
 }
 
-function update_Table_Columns(column_Names)
-{
-	let columns_To_Update = column_Names.split(", ");
-	for(let i = 0; i < columns_To_Update.length; i++)
-	{
-		switch(columns_To_Update[i])
-		{
-			case "optional_Objectives":
-				for(let j = 0; j < table_Body_Array.length; j++)
-				{
-					for(let k = 0; k < table_Body_Array[j].optional_Objectives.length; k++)
-					{
-						set_Optional_Objective_Parameter(j, k, 'experience');
-					}
-				}
-				break;
-			case "total_Experience":
-				for(let j = 0; j < table_Body_Array.length; j++)
-				{
-					set_Total_Experience(j);
-				}
-				break;
-			case "reaper_Experience":
-				for(let j = 0; j < table_Body_Array.length; j++)
-				{
-					set_Reaper_Experience(j);
-				}
-				break;
-			case "total_Weight":
-				for(let j = 0; j < table_Body_Array.length; j++)
-				{
-					set_Total_Weight(j);
-				}
-				break;
-			case "total_Weight_Over_Time":
-				for(let j = 0; j < table_Body_Array.length; j++)
-				{
-					set_Total_Weight_Over_Time(j);
-				}
-				break;
-		}
-	}
-}
-
-function generic_Stable_Sort(item_1, item_2)
-{
-	const value_1 = item_1[index_To_Column_Name_Array[current_Sort_Selection]];
-	const value_2 = item_2[index_To_Column_Name_Array[current_Sort_Selection]];
-	if(value_1 < value_2)
-	{
-		return -1 * column_Properties[current_Sort_Selection].ascending;
-	}
-	else if(value_1 > value_2)
-	{
-		return 1 * column_Properties[current_Sort_Selection].ascending;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-function update_Table_Header_View(header_Index)
-{
-	table_Header_Row_Element.children[header_Index].classList.remove("ascending_Column", "descending_Column");
-	if(column_Properties[header_Index].ascending === 1)
-	{
-		table_Header_Row_Element.children[header_Index].classList.add("ascending_Column");
-	}
-	else
-	{
-		table_Header_Row_Element.children[header_Index].classList.add("descending_Column");
-	}
-}
-
-async function sort_Table(sort_Selection)    //Orders the table by a column
-{
-	if(sort_Selection === current_Sort_Selection)    //Flip from ascending to/from descending if the user clicks on the already selected category to sort
-	{
-		column_Properties[sort_Selection].ascending = column_Properties[sort_Selection].ascending * -1;
-		update_Table_Header_View(sort_Selection);
-	}
-	table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");
-	current_Sort_Selection = sort_Selection;
-	table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");
-	await new Promise(resolve => setTimeout(resolve, 1));
-
-	table_Body_Array.sort(generic_Stable_Sort);
-
-	let old_Table_Body_Element_Child_Index = 0;
-	let element_1 = null;
-	let element_2 = null;
-	let visible_Elements = 0;
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		//Swap rows and update the adventure_Name_To_Table_Index_Map accordingly
-		if((table_Body_Array[i].adventure_Tier + table_Body_Array[i].adventure_Name) !== table_Body_Element.children[i].children[column_Name_To_Array_Index.adventure_Tier].textContent + table_Body_Element.children[i].children[column_Name_To_Array_Index.adventure_Name].textContent)
-		{
-			old_Table_Body_Element_Child_Index = adventure_Name_To_Table_Index_Map.get(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name);
-			element_1 = table_Body_Element.children[i];
-			element_2 = table_Body_Element.children[old_Table_Body_Element_Child_Index];
-			table_Body_Element.moveBefore(placeholder_Element, element_1);
-			table_Body_Element.moveBefore(element_1, element_2);
-			table_Body_Element.moveBefore(element_2, placeholder_Element);
-			document.body.append(placeholder_Element);
-			adventure_Name_To_Table_Index_Map.set(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name, i);
-			adventure_Name_To_Table_Index_Map.set(table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.adventure_Tier].textContent + " " + table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.adventure_Name].textContent, old_Table_Body_Element_Child_Index);
-		}
-		if(table_Body_Element.children[i].style.display !== "none")
-		{
-			visible_Elements = visible_Elements + 1;
-			if(visible_Elements === 5)	//Allow the UI to update the first 5 visible adventures to display quickly
-			{
-				await new Promise(resolve => setTimeout(resolve, 1));
-			}
-		}
-	}
-}
-
-function convert_Table_Body_Array_To_Custom_JSON()
-{
-	let custom_JSON_Table_String = "[\n";
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		custom_JSON_Table_String = custom_JSON_Table_String + "{\n";
-		for(let j = 0; j < column_Properties.length; j++)
-		{
-			custom_JSON_Table_String = custom_JSON_Table_String + "\t\"" +index_To_Column_Name_Array[j] + "\": ";
-			if(column_Properties[j].type === "Alphabetical")
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
-			}
-			else if(column_Properties[j].name === "main_Chest_Properties")
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "{\"base_Named_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Named_Item_Chance + ", \"base_Extra_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Extra_Item_Chance + ", \"base_Rare_Item_Upgrade_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Rare_Item_Upgrade_Chance + ", \"named_Item_Chest_Quantity\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].named_Item_Chest_Quantity + "}";
-			}
-			else if(column_Properties[j].name === "available_Items")
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "[";
-				for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
-				{
-					custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
-				}
-				custom_JSON_Table_String = custom_JSON_Table_String + "]";
-			}
-			else if(column_Properties[j].name === "experience_Modifiers")
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "[";
-				for(let k = 0; k < table_Body_Array[i].experience_Modifiers.length; k++)
-				{
-					custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].experience_Modifiers.length - 1 ? "" : ", ");
-				}
-				custom_JSON_Table_String = custom_JSON_Table_String + "]";
-			}
-			else if(column_Properties[j].name === "optional_Objectives")
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "[";
-				for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
-				{
-					custom_JSON_Table_String = custom_JSON_Table_String + "{\"title\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", \"value\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", \"experience\": 0, \"included\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
-				}
-				custom_JSON_Table_String = custom_JSON_Table_String + "]";
-			}
-			else if(column_Properties[j].calculated === true)
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "0";
-			}
-			else
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]];
-			}
-			if(j !== column_Properties.length - 1)
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + ",\n";
-			}
-			else
-			{
-				custom_JSON_Table_String = custom_JSON_Table_String + "\n";
-			}
-		}
-		if(i !== table_Body_Array.length - 1)
-		{
-			custom_JSON_Table_String = custom_JSON_Table_String + "},\n";
-		}
-		else
-		{
-			custom_JSON_Table_String = custom_JSON_Table_String + "}\n";
-		}
-	}
-	custom_JSON_Table_String = custom_JSON_Table_String + "]";
-
-	return custom_JSON_Table_String;
-}
-
-function save_To_Local_Storage()
-{
-	window.localStorage.setItem("table_Body_Data", convert_Table_Body_Array_To_Custom_JSON());
-
-	window.localStorage.setItem("table_Filter_Level_Lower_Limit", level_Lower_Limit_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Level_Upper_Limit", level_Upper_Limit_Input_Box_Element.value);
-
-	window.localStorage.setItem("table_Filter_Experience_Lower_Limit", total_Experience_Lower_Limit_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Experience_Upper_Limit", total_Experience_Upper_Limit_Input_Box_Element.value);
-
-	window.localStorage.setItem("table_Filter_Time_Lower_Limit", time_Lower_Limit_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Time_Upper_Limit", time_Upper_Limit_Input_Box_Element.value);
-
-	window.localStorage.setItem("table_Filter_Favor_Lower_Limit", total_Favor_Lower_Limit_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Favor_Upper_Limit", total_Favor_Upper_Limit_Input_Box_Element.value);
-
-	window.localStorage.setItem("table_Filter_Experience_Weight", experience_Weight_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Reaper_Experience_Weight", reaper_Experience_Weight_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Favor_Weight", favor_Weight_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Custom_Weight_Multiplier", custom_Weight_Multiplier_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_weight_Over_Time_Lower_Limit_Input_Box", weight_Over_Time_Lower_Limit_Input_Box_Element.value);
-
-	window.localStorage.setItem("filter_Completed_Checkbox", filter_Completed_Checkbox_Element.checked);
-
-	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
-	{
-		window.localStorage.setItem(map_Entry[0] + " Filter Checkbox", map_Entry[1].checked);
-	}
-
-	window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
-	window.localStorage.setItem("table_Filter_Does_Not_Contain_Phrases_Input_Box", does_Not_Contain_Phrases_Input_Box_Element.value);
-
-	window.localStorage.setItem("last_Sort_Selection_Ascending_State_Array", JSON.stringify(column_Properties.map(column => column.ascending)));
-	window.localStorage.setItem("last_Sort_Selection", current_Sort_Selection);
-
-	window.localStorage.setItem("character_Name_Input_Box_Element", character_Name_Input_Box_Element.value);
-	window.localStorage.setItem("server_Dropdown_Menu_Element", server_Dropdown_Menu_Element.value);
-	window.localStorage.setItem("autocomplete_Adventures_On_Exit_Checkbox_Element", autocomplete_Adventures_On_Exit_Checkbox_Element.checked);
-
-	window.onbeforeunload = null;
-}
-
-function delete_Local_Storage()
-{
-	if(window.confirm("If local storage is empty, the program will use raw_Table_String.js to build the table the next time the page is loaded, and may be necessary for updates. It is recommended to keep your own copy of raw_Table_String.js as a back-up. Click 'OK' to delete local storage."))
-	{
-		window.localStorage.clear();
-		window.onbeforeunload = null;
-	}
-}
-
-function download_JSON_Table()
-{
-	let JSON_Table_String = "let column_Properties = [\n";
-	for(let i = 0; i < column_Properties.length; i++)
-	{
-		JSON_Table_String = JSON_Table_String + "{\n";
-		let keys = Object.keys(column_Properties[i]);
-		for(let k = 0; k < keys.length; k++)
-		{
-			let value = column_Properties[i][keys[k]];
-			value = (typeof value === 'string') ? "\"" + value + "\"" : value;
-			JSON_Table_String = JSON_Table_String + "\t" + keys[k] + ": " + value;
-			if (k < keys.length - 1)
-			{
-				JSON_Table_String = JSON_Table_String + ",";
-			}
-			JSON_Table_String = JSON_Table_String + "\n";
-		}
-		if(i !== column_Properties.length - 1)
-		{
-			JSON_Table_String = JSON_Table_String + "},\n";
-		}
-		else
-		{
-			JSON_Table_String = JSON_Table_String + "}\n";
-		}
-	}
-	JSON_Table_String = JSON_Table_String + "];\n\n"
-	+ "let column_Name_To_Array_Index = {};\n"
-	+ "let index_To_Column_Name_Array = [];\n\n"
-	+ "for(let i = 0; i < column_Properties.length; i++)\n{\n"
-	+ "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n"
-	+ "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n"
-	+ "let table_Body_Array = ";
-//		JSON_Table_String = JSON_Table_String + JSON.stringify(table_Body_Array, [...index_To_Column_Name_Array, "title", "value", "experience", "included"], '\t');	//Not used because it expands sub-objects, uses calculated fields, and doesn't format as preferred, so a manual string building method is used. Also out of date if ever re-enabled- include all sub-object title names in appropriate order
-	JSON_Table_String = JSON_Table_String + convert_Table_Body_Array_To_Custom_JSON();
-	JSON_Table_String = JSON_Table_String + ";";
-
-	window.URL.revokeObjectURL(download_JSON_Table_Link_Element.href);
-	let table_Blob = new Blob
-	(
-		[JSON_Table_String],
-		{
-			type: 'text/javascript'
-		}
-	);
-	download_JSON_Table_Link_Element.href = window.URL.createObjectURL(table_Blob);
-}
-
-function table_Data_Changed(table_Row, table_Column)
-{
-	if(table_Column === column_Name_To_Array_Index.completed)
-	{
-		if(table_Body_Array[table_Row].completed === true)
-		{
-			table_Body_Array[table_Row].completed = false;
-			table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to off to match the data change
-			set_Delving_Bonus(table_Row);
-			set_Tome_Of_Learning_Bonus(table_Row);
-			if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
-			{
-				set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
-				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
-				{
-					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
-				}
-				else
-				{
-					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
-				}
-			}
-			else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
-			{
-				set_Experience_Modifier(table_Row, 1, .2);	//First Time Solo Completion is available
-				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
-				{
-					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
-				}
-				else
-				{
-					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
-				}
-				
-			}
-			else if(table_Body_Array[table_Row].adventure_Type === "Challenge")
-			{
-				//Handled specially for now
-			}
-			else	//Standard and Raid
-			{
-				set_Experience_Modifier(table_Row, 1, .45);	//First Time Reaper Completion is assumed to be up next
-				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
-				{
-					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
-				}
-				else
-				{
-					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
-				}
-				
-			}
-		}
-		else
-		{
-			table_Body_Array[table_Row].completed = true;
-			table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
-			set_Delving_Bonus(table_Row);
-			set_Tome_Of_Learning_Bonus(table_Row);
-			if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
-			{
-				set_Experience_Modifier(table_Row, 1, .2);	//First Time Hard Completion is assumed to be up next
-				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
-			}
-			else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
-			{
-				set_Experience_Modifier(table_Row, 1, 0);	//First Time Solo Completion is used up
-				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
-			}
-			else if(table_Body_Array[table_Row].adventure_Type === "Challenge")
-			{
-				//Handled specially for now
-			}
-			else	//Standard and Raid
-			{
-				set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
-				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
-			}
-		}
-
-		set_Total_Experience(table_Row);
-		set_Reaper_Experience(table_Row);
-		let available_Difficulties = table_Body_Array[table_Row].available_Adventure_Tiers.split(", ");
-		for(let i = 0; i < available_Difficulties.length; i++)
-		{
-			let current_Entry_Index = adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[table_Row].adventure_Name);
-			if(current_Entry_Index !== undefined)
-			{
-				set_Available_Favor(current_Entry_Index);
-				set_Total_Weight(current_Entry_Index);
-				set_Total_Weight_Over_Time(current_Entry_Index);
-			}
-		}
-
-	}
-	else if(table_Column === column_Name_To_Array_Index.experience_Modifiers)
-	{
-		//Do nothing but ensure it is caught here, handled by onchange handlers with set_Experience_Modifier on each of the input boxes in generate_Initial_Table's experience_Modifiers section
-	}
-	else if(table_Column === column_Name_To_Array_Index.optional_Objectives)
-	{
-		//Do nothing but ensure it is caught here, handled by onchange handlers with set_Optional_Objective_Parameter on each of the editable sections in generate_Initial_Table's optional_Objectives section
-	}
-	else if(table_Column === column_Name_To_Array_Index.collectables || table_Column === column_Name_To_Array_Index.average_Sentient_Experience || table_Column === column_Name_To_Array_Index.average_Reaper_Fragments || table_Column === column_Name_To_Array_Index.custom_Weight)
-	{
-		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
-		set_Total_Weight(table_Row);
-		set_Total_Weight_Over_Time(table_Row);
-	}
-	else if(table_Column === column_Name_To_Array_Index.base_Time || table_Column === column_Name_To_Array_Index.travel_Time)
-	{
-		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
-		set_Total_Time(table_Row);
-		set_Total_Weight_Over_Time(table_Row);
-	}
-	else
-	{
-		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = table_Body_Element.children[table_Row].children[table_Column].textContent;
-	}
-	filter_Table_Rows();
-	window.onbeforeunload = function(){return true};	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
-}
-
-function reset_Filters()
-{
-	level_Lower_Limit_Input_Box_Element.value = level_Lower_Limit_Input_Box_Element.getAttribute("value");	//Gets the initial value that the element began with rather than current value
-	level_Upper_Limit_Input_Box_Element.value = level_Upper_Limit_Input_Box_Element.getAttribute("value");
-	total_Experience_Lower_Limit_Input_Box_Element.value = total_Experience_Lower_Limit_Input_Box_Element.getAttribute("value");
-	total_Experience_Upper_Limit_Input_Box_Element.value = total_Experience_Upper_Limit_Input_Box_Element.getAttribute("value");
-	time_Lower_Limit_Input_Box_Element.value = time_Lower_Limit_Input_Box_Element.getAttribute("value");
-	time_Upper_Limit_Input_Box_Element.value = time_Upper_Limit_Input_Box_Element.getAttribute("value");
-	total_Favor_Lower_Limit_Input_Box_Element.value = total_Favor_Lower_Limit_Input_Box_Element.getAttribute("value");
-	total_Favor_Upper_Limit_Input_Box_Element.value = total_Favor_Upper_Limit_Input_Box_Element.getAttribute("value");
-	experience_Weight_Input_Box_Element.value = experience_Weight_Input_Box_Element.getAttribute("value");
-	reaper_Experience_Weight_Input_Box_Element.value = reaper_Experience_Weight_Input_Box_Element.getAttribute("value");
-	favor_Weight_Input_Box_Element.value = favor_Weight_Input_Box_Element.getAttribute("value");
-	custom_Weight_Multiplier_Input_Box_Element.value = custom_Weight_Multiplier_Input_Box_Element.getAttribute("value");
-	weight_Over_Time_Lower_Limit_Input_Box_Element.value = weight_Over_Time_Lower_Limit_Input_Box_Element.getAttribute("value");
-	filter_Completed_Checkbox_Element.checked = false;
-	
-	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
-	{
-		map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
-	}
-
-	contains_Phrases_Input_Box_Element.value = contains_Phrases_Input_Box_Element.getAttribute("value");
-	does_Not_Contain_Phrases_Input_Box_Element.value = does_Not_Contain_Phrases_Input_Box_Element.getAttribute("value");
-	filter_Table_Rows();
-}
-
 function character_Or_Group_Level_Changed()
 {
 	for(let i = 0; i < table_Body_Array.length; i++)
@@ -1851,6 +1407,449 @@ async function retrieve_Character_Location()
 			}
 		}
 	}
+}
+
+//Used to apply global changes to all columns. Speed can be improved by updating all changes on an entry at once in one loop rather than a loop for each column sequentially
+function update_Table_Columns(column_Names)
+{
+	let columns_To_Update = column_Names.split(", ");
+	for(let i = 0; i < columns_To_Update.length; i++)
+	{
+		switch(columns_To_Update[i])
+		{
+			case "optional_Objectives":
+				for(let j = 0; j < table_Body_Array.length; j++)
+				{
+					for(let k = 0; k < table_Body_Array[j].optional_Objectives.length; k++)
+					{
+						set_Optional_Objective_Parameter(j, k, 'experience');
+					}
+				}
+				break;
+			case "total_Experience":
+				for(let j = 0; j < table_Body_Array.length; j++)
+				{
+					set_Total_Experience(j);
+				}
+				break;
+			case "reaper_Experience":
+				for(let j = 0; j < table_Body_Array.length; j++)
+				{
+					set_Reaper_Experience(j);
+				}
+				break;
+			case "total_Weight":
+				for(let j = 0; j < table_Body_Array.length; j++)
+				{
+					set_Total_Weight(j);
+				}
+				break;
+			case "total_Weight_Over_Time":
+				for(let j = 0; j < table_Body_Array.length; j++)
+				{
+					set_Total_Weight_Over_Time(j);
+				}
+				break;
+		}
+	}
+}
+
+function update_Table_Header_View(header_Index)
+{
+	table_Header_Row_Element.children[header_Index].classList.remove("ascending_Column", "descending_Column");
+	if(column_Properties[header_Index].ascending === 1)
+	{
+		table_Header_Row_Element.children[header_Index].classList.add("ascending_Column");
+	}
+	else
+	{
+		table_Header_Row_Element.children[header_Index].classList.add("descending_Column");
+	}
+}
+
+function generic_Stable_Sort(item_1, item_2)
+{
+	const value_1 = item_1[index_To_Column_Name_Array[current_Sort_Selection]];
+	const value_2 = item_2[index_To_Column_Name_Array[current_Sort_Selection]];
+	if(value_1 < value_2)
+	{
+		return -1 * column_Properties[current_Sort_Selection].ascending;
+	}
+	else if(value_1 > value_2)
+	{
+		return 1 * column_Properties[current_Sort_Selection].ascending;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+async function sort_Table(sort_Selection)    //Orders the table by a column
+{
+	if(sort_Selection === current_Sort_Selection)    //Flip from ascending to/from descending if the user clicks on the already selected category to sort
+	{
+		column_Properties[sort_Selection].ascending = column_Properties[sort_Selection].ascending * -1;
+		update_Table_Header_View(sort_Selection);
+	}
+	table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");
+	current_Sort_Selection = sort_Selection;
+	table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");
+	await new Promise(resolve => setTimeout(resolve, 1));
+
+	table_Body_Array.sort(generic_Stable_Sort);
+
+	let old_Table_Body_Element_Child_Index = 0;
+	let element_1 = null;
+	let element_2 = null;
+	let visible_Elements = 0;
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		//Swap rows and update the adventure_Name_To_Table_Index_Map accordingly
+		if((table_Body_Array[i].adventure_Tier + table_Body_Array[i].adventure_Name) !== table_Body_Element.children[i].children[column_Name_To_Array_Index.adventure_Tier].textContent + table_Body_Element.children[i].children[column_Name_To_Array_Index.adventure_Name].textContent)
+		{
+			old_Table_Body_Element_Child_Index = adventure_Name_To_Table_Index_Map.get(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name);
+			element_1 = table_Body_Element.children[i];
+			element_2 = table_Body_Element.children[old_Table_Body_Element_Child_Index];
+			table_Body_Element.moveBefore(placeholder_Element, element_1);
+			table_Body_Element.moveBefore(element_1, element_2);
+			table_Body_Element.moveBefore(element_2, placeholder_Element);
+			document.body.append(placeholder_Element);
+			adventure_Name_To_Table_Index_Map.set(table_Body_Array[i].adventure_Tier + " " + table_Body_Array[i].adventure_Name, i);
+			adventure_Name_To_Table_Index_Map.set(table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.adventure_Tier].textContent + " " + table_Body_Element.children[old_Table_Body_Element_Child_Index].children[column_Name_To_Array_Index.adventure_Name].textContent, old_Table_Body_Element_Child_Index);
+		}
+		if(table_Body_Element.children[i].style.display !== "none")
+		{
+			visible_Elements = visible_Elements + 1;
+			if(visible_Elements === 5)	//Allow the UI to update the first 5 visible adventures to display quickly
+			{
+				await new Promise(resolve => setTimeout(resolve, 1));
+			}
+		}
+	}
+}
+
+function reset_Filters()
+{
+	level_Lower_Limit_Input_Box_Element.value = level_Lower_Limit_Input_Box_Element.getAttribute("value");	//Gets the initial value that the element began with rather than current value
+	level_Upper_Limit_Input_Box_Element.value = level_Upper_Limit_Input_Box_Element.getAttribute("value");
+	total_Experience_Lower_Limit_Input_Box_Element.value = total_Experience_Lower_Limit_Input_Box_Element.getAttribute("value");
+	total_Experience_Upper_Limit_Input_Box_Element.value = total_Experience_Upper_Limit_Input_Box_Element.getAttribute("value");
+	time_Lower_Limit_Input_Box_Element.value = time_Lower_Limit_Input_Box_Element.getAttribute("value");
+	time_Upper_Limit_Input_Box_Element.value = time_Upper_Limit_Input_Box_Element.getAttribute("value");
+	total_Favor_Lower_Limit_Input_Box_Element.value = total_Favor_Lower_Limit_Input_Box_Element.getAttribute("value");
+	total_Favor_Upper_Limit_Input_Box_Element.value = total_Favor_Upper_Limit_Input_Box_Element.getAttribute("value");
+	experience_Weight_Input_Box_Element.value = experience_Weight_Input_Box_Element.getAttribute("value");
+	reaper_Experience_Weight_Input_Box_Element.value = reaper_Experience_Weight_Input_Box_Element.getAttribute("value");
+	favor_Weight_Input_Box_Element.value = favor_Weight_Input_Box_Element.getAttribute("value");
+	custom_Weight_Multiplier_Input_Box_Element.value = custom_Weight_Multiplier_Input_Box_Element.getAttribute("value");
+	weight_Over_Time_Lower_Limit_Input_Box_Element.value = weight_Over_Time_Lower_Limit_Input_Box_Element.getAttribute("value");
+	filter_Completed_Checkbox_Element.checked = false;
+	
+	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
+	{
+		map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
+	}
+
+	contains_Phrases_Input_Box_Element.value = contains_Phrases_Input_Box_Element.getAttribute("value");
+	does_Not_Contain_Phrases_Input_Box_Element.value = does_Not_Contain_Phrases_Input_Box_Element.getAttribute("value");
+	filter_Table_Rows();
+}
+
+function convert_Table_Body_Array_To_Custom_JSON()
+{
+	let custom_JSON_Table_String = "[\n";
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		custom_JSON_Table_String = custom_JSON_Table_String + "{\n";
+		for(let j = 0; j < column_Properties.length; j++)
+		{
+			custom_JSON_Table_String = custom_JSON_Table_String + "\t\"" +index_To_Column_Name_Array[j] + "\": ";
+			if(column_Properties[j].type === "Alphabetical")
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "\"" + table_Body_Array[i][index_To_Column_Name_Array[j]] + "\"";
+			}
+			else if(column_Properties[j].name === "main_Chest_Properties")
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "{\"base_Named_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Named_Item_Chance + ", \"base_Extra_Item_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Extra_Item_Chance + ", \"base_Rare_Item_Upgrade_Chance\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].base_Rare_Item_Upgrade_Chance + ", \"named_Item_Chest_Quantity\": " + table_Body_Array[i][index_To_Column_Name_Array[j]].named_Item_Chest_Quantity + "}";
+			}
+			else if(column_Properties[j].name === "available_Items")
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "[";
+				for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
+				{
+					custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
+				}
+				custom_JSON_Table_String = custom_JSON_Table_String + "]";
+			}
+			else if(column_Properties[j].name === "experience_Modifiers")
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "[";
+				for(let k = 0; k < table_Body_Array[i].experience_Modifiers.length; k++)
+				{
+					custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]][k] + (k === table_Body_Array[i].experience_Modifiers.length - 1 ? "" : ", ");
+				}
+				custom_JSON_Table_String = custom_JSON_Table_String + "]";
+			}
+			else if(column_Properties[j].name === "optional_Objectives")
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "[";
+				for(let k = 0; k < table_Body_Array[i].optional_Objectives.length; k++)
+				{
+					custom_JSON_Table_String = custom_JSON_Table_String + "{\"title\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].title + "\", \"value\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].value + ", \"experience\": 0, \"included\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].included + "}" + (k === table_Body_Array[i].optional_Objectives.length - 1 ? "" : ", ");
+				}
+				custom_JSON_Table_String = custom_JSON_Table_String + "]";
+			}
+			else if(column_Properties[j].calculated === true)
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "0";
+			}
+			else
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + table_Body_Array[i][index_To_Column_Name_Array[j]];
+			}
+			if(j !== column_Properties.length - 1)
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + ",\n";
+			}
+			else
+			{
+				custom_JSON_Table_String = custom_JSON_Table_String + "\n";
+			}
+		}
+		if(i !== table_Body_Array.length - 1)
+		{
+			custom_JSON_Table_String = custom_JSON_Table_String + "},\n";
+		}
+		else
+		{
+			custom_JSON_Table_String = custom_JSON_Table_String + "}\n";
+		}
+	}
+	custom_JSON_Table_String = custom_JSON_Table_String + "]";
+
+	return custom_JSON_Table_String;
+}
+
+function save_To_Local_Storage()
+{
+	window.localStorage.setItem("table_Body_Data", convert_Table_Body_Array_To_Custom_JSON());
+
+	window.localStorage.setItem("table_Filter_Level_Lower_Limit", level_Lower_Limit_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Level_Upper_Limit", level_Upper_Limit_Input_Box_Element.value);
+
+	window.localStorage.setItem("table_Filter_Experience_Lower_Limit", total_Experience_Lower_Limit_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Experience_Upper_Limit", total_Experience_Upper_Limit_Input_Box_Element.value);
+
+	window.localStorage.setItem("table_Filter_Time_Lower_Limit", time_Lower_Limit_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Time_Upper_Limit", time_Upper_Limit_Input_Box_Element.value);
+
+	window.localStorage.setItem("table_Filter_Favor_Lower_Limit", total_Favor_Lower_Limit_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Favor_Upper_Limit", total_Favor_Upper_Limit_Input_Box_Element.value);
+
+	window.localStorage.setItem("table_Filter_Experience_Weight", experience_Weight_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Reaper_Experience_Weight", reaper_Experience_Weight_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Favor_Weight", favor_Weight_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Custom_Weight_Multiplier", custom_Weight_Multiplier_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_weight_Over_Time_Lower_Limit_Input_Box", weight_Over_Time_Lower_Limit_Input_Box_Element.value);
+
+	window.localStorage.setItem("filter_Completed_Checkbox", filter_Completed_Checkbox_Element.checked);
+
+	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
+	{
+		window.localStorage.setItem(map_Entry[0] + " Filter Checkbox", map_Entry[1].checked);
+	}
+
+	window.localStorage.setItem("table_Filter_Contains_Phrases_Input_Box", contains_Phrases_Input_Box_Element.value);
+	window.localStorage.setItem("table_Filter_Does_Not_Contain_Phrases_Input_Box", does_Not_Contain_Phrases_Input_Box_Element.value);
+
+	window.localStorage.setItem("last_Sort_Selection_Ascending_State_Array", JSON.stringify(column_Properties.map(column => column.ascending)));
+	window.localStorage.setItem("last_Sort_Selection", current_Sort_Selection);
+
+	window.localStorage.setItem("character_Name_Input_Box_Element", character_Name_Input_Box_Element.value);
+	window.localStorage.setItem("server_Dropdown_Menu_Element", server_Dropdown_Menu_Element.value);
+	window.localStorage.setItem("autocomplete_Adventures_On_Exit_Checkbox_Element", autocomplete_Adventures_On_Exit_Checkbox_Element.checked);
+
+	window.onbeforeunload = null;
+}
+
+function delete_Local_Storage()
+{
+	if(window.confirm("If local storage is empty, the program will use raw_Table_String.js to build the table the next time the page is loaded, and may be necessary for updates. It is recommended to keep your own copy of raw_Table_String.js as a back-up if using a self-hosted copy of the page. Click 'OK' to delete local storage."))
+	{
+		window.localStorage.clear();
+		window.onbeforeunload = null;
+	}
+}
+
+function download_JSON_Table()
+{
+	let JSON_Table_String = "let column_Properties = [\n";
+	for(let i = 0; i < column_Properties.length; i++)
+	{
+		JSON_Table_String = JSON_Table_String + "{\n";
+		let keys = Object.keys(column_Properties[i]);
+		for(let k = 0; k < keys.length; k++)
+		{
+			let value = column_Properties[i][keys[k]];
+			value = (typeof value === 'string') ? "\"" + value + "\"" : value;
+			JSON_Table_String = JSON_Table_String + "\t" + keys[k] + ": " + value;
+			if (k < keys.length - 1)
+			{
+				JSON_Table_String = JSON_Table_String + ",";
+			}
+			JSON_Table_String = JSON_Table_String + "\n";
+		}
+		if(i !== column_Properties.length - 1)
+		{
+			JSON_Table_String = JSON_Table_String + "},\n";
+		}
+		else
+		{
+			JSON_Table_String = JSON_Table_String + "}\n";
+		}
+	}
+	JSON_Table_String = JSON_Table_String + "];\n\n"
+	+ "let column_Name_To_Array_Index = {};\n"
+	+ "let index_To_Column_Name_Array = [];\n\n"
+	+ "for(let i = 0; i < column_Properties.length; i++)\n{\n"
+	+ "\tcolumn_Name_To_Array_Index[column_Properties[i].name] = i;\n"
+	+ "\tindex_To_Column_Name_Array.push(column_Properties[i].name);\n}\n\n"
+	+ "let table_Body_Array = ";
+//		JSON_Table_String = JSON_Table_String + JSON.stringify(table_Body_Array, [...index_To_Column_Name_Array, "title", "value", "experience", "included"], '\t');	//Not used because it expands sub-objects, uses calculated fields, and doesn't format as preferred, so a manual string building method is used. Also out of date if ever re-enabled- include all sub-object title names in appropriate order
+	JSON_Table_String = JSON_Table_String + convert_Table_Body_Array_To_Custom_JSON();
+	JSON_Table_String = JSON_Table_String + ";";
+
+	window.URL.revokeObjectURL(download_JSON_Table_Link_Element.href);
+	let table_Blob = new Blob
+	(
+		[JSON_Table_String],
+		{
+			type: 'text/javascript'
+		}
+	);
+	download_JSON_Table_Link_Element.href = window.URL.createObjectURL(table_Blob);
+}
+
+function table_Data_Changed(table_Row, table_Column)
+{
+	if(table_Column === column_Name_To_Array_Index.completed)
+	{
+		if(table_Body_Array[table_Row].completed === true)
+		{
+			table_Body_Array[table_Row].completed = false;
+			table_Body_Element.children[table_Row].children[table_Column].children[0].checked = false;	//Changes the checkbox back to off to match the data change
+			set_Delving_Bonus(table_Row);
+			set_Tome_Of_Learning_Bonus(table_Row);
+			if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
+			{
+				set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
+				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
+				{
+					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+				}
+				else
+				{
+					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+				}
+			}
+			else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
+			{
+				set_Experience_Modifier(table_Row, 1, .2);	//First Time Solo Completion is available
+				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
+				{
+					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+				}
+				else
+				{
+					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+				}
+			}
+			else if(table_Body_Array[table_Row].adventure_Type === "Challenge")
+			{
+				//Handled specially for now
+			}
+			else	//Standard and Raid
+			{
+				set_Experience_Modifier(table_Row, 1, .45);	//First Time Reaper Completion is assumed to be up next
+				if(table_Body_Array[table_Row].adventure_Tier === "Heroic")
+				{
+					set_Experience_Modifier(table_Row, 3, .25);	//Heroic Daily Bonus is available
+				}
+				else
+				{
+					set_Experience_Modifier(table_Row, 3, .4);	//Epic Daily Bonus is available
+				}
+			}
+		}
+		else
+		{
+			table_Body_Array[table_Row].completed = true;
+			table_Body_Element.children[table_Row].children[table_Column].children[0].checked = true;	//Changes the checkbox to match the data change
+			set_Delving_Bonus(table_Row);
+			set_Tome_Of_Learning_Bonus(table_Row);
+			if(table_Body_Array[table_Row].adventure_Type === "Reaper Unavailable")
+			{
+				set_Experience_Modifier(table_Row, 1, .2);	//First Time Hard Completion is assumed to be up next
+				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+			}
+			else if(table_Body_Array[table_Row].adventure_Type === "Solo Quest")
+			{
+				set_Experience_Modifier(table_Row, 1, 0);	//First Time Solo Completion is used up
+				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+			}
+			else if(table_Body_Array[table_Row].adventure_Type === "Challenge")
+			{
+				//Handled specially for now
+			}
+			else	//Standard and Raid
+			{
+				set_Experience_Modifier(table_Row, 1, .45);	//First Time Elite Completion is assumed to be up next
+				set_Experience_Modifier(table_Row, 3, 0);	//Daily Bonus is used up
+			}
+		}
+
+		set_Total_Experience(table_Row);
+		set_Reaper_Experience(table_Row);
+		let available_Difficulties = table_Body_Array[table_Row].available_Adventure_Tiers.split(", ");
+		for(let i = 0; i < available_Difficulties.length; i++)
+		{
+			let current_Entry_Index = adventure_Name_To_Table_Index_Map.get(available_Difficulties[i] + " " + table_Body_Array[table_Row].adventure_Name);
+			if(current_Entry_Index !== undefined)
+			{
+				set_Available_Favor(current_Entry_Index);
+				set_Total_Weight(current_Entry_Index);
+				set_Total_Weight_Over_Time(current_Entry_Index);
+			}
+		}
+
+	}
+	else if(table_Column === column_Name_To_Array_Index.experience_Modifiers)
+	{
+		//Do nothing but ensure it is caught here, handled by onchange handlers with set_Experience_Modifier on each of the input boxes in generate_Initial_Table's experience_Modifiers section
+	}
+	else if(table_Column === column_Name_To_Array_Index.optional_Objectives)
+	{
+		//Do nothing but ensure it is caught here, handled by onchange handlers with set_Optional_Objective_Parameter on each of the editable sections in generate_Initial_Table's optional_Objectives section
+	}
+	else if(table_Column === column_Name_To_Array_Index.collectables || table_Column === column_Name_To_Array_Index.average_Sentient_Experience || table_Column === column_Name_To_Array_Index.average_Reaper_Fragments || table_Column === column_Name_To_Array_Index.custom_Weight)
+	{
+		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
+		set_Total_Weight(table_Row);
+		set_Total_Weight_Over_Time(table_Row);
+	}
+	else if(table_Column === column_Name_To_Array_Index.base_Time || table_Column === column_Name_To_Array_Index.travel_Time)
+	{
+		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
+		set_Total_Time(table_Row);
+		set_Total_Weight_Over_Time(table_Row);
+	}
+	else
+	{
+		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]] = table_Body_Element.children[table_Row].children[table_Column].textContent;
+	}
+	filter_Table_Rows();
+	window.onbeforeunload = function(){return true};	//Sets a warning if the user navigates away after making changes, warning is removed when local storage is saved
 }
 
 generate_Table_Headers();
