@@ -8,11 +8,32 @@ let download_JSON_Table_Link_Element = document.getElementById("download_JSON_Ta
 
 let filter_Completed_Checkbox_Element = document.getElementById("filter_Completed_Checkbox");
 
-let filter_Standard_Checkbox_Element = document.getElementById("filter_Standard_Checkbox");
-let filter_Raid_Checkbox_Element = document.getElementById("filter_Raid_Checkbox");
-let filter_Solo_Quest_Checkbox_Element = document.getElementById("filter_Solo_Quest_Checkbox");
-let filter_Reaper_Unavailable_Checkbox_Element = document.getElementById("filter_Reaper_Unavailable_Checkbox");
-let filter_Challenge_Checkbox_Element = document.getElementById("filter_Challenge_Checkbox");
+let adventure_Tier_Name_To_Checkbox_Element_Map = new Map();
+{
+	let adventure_Tier_Checkbox_Elements = document.getElementById("adventure_Tiers_Selection_Section").getElementsByClassName("adventure_Tier_Checkbox");
+	for(let i = 0; i < adventure_Tier_Checkbox_Elements.length; i++)
+	{
+		adventure_Tier_Name_To_Checkbox_Element_Map.set(adventure_Tier_Checkbox_Elements[i].value, adventure_Tier_Checkbox_Elements[i]);
+	}
+}
+
+let available_Adventure_Tiers_Name_To_Checkbox_Element_Map = new Map();
+{
+	let available_Adventure_Tiers_Checkbox_Elements = document.getElementById("adventure_Tiers_Selection_Section").getElementsByClassName("available_Adventure_Tiers_Checkbox");
+	for(let i = 0; i < available_Adventure_Tiers_Checkbox_Elements.length; i++)
+	{
+		available_Adventure_Tiers_Name_To_Checkbox_Element_Map.set(available_Adventure_Tiers_Checkbox_Elements[i].value, available_Adventure_Tiers_Checkbox_Elements[i]);
+	}
+}
+
+let adventure_Type_Name_To_Checkbox_Element_Map = new Map();
+{
+	let adventure_Type_Checkbox_Elements = document.getElementById("adventure_Types_Selection_Section").getElementsByClassName("adventure_Type_Checkbox");
+	for(let i = 0; i < adventure_Type_Checkbox_Elements.length; i++)
+	{
+		adventure_Type_Name_To_Checkbox_Element_Map.set(adventure_Type_Checkbox_Elements[i].value, adventure_Type_Checkbox_Elements[i]);
+	}
+}
 
 let adventure_Pack_Name_To_Checkbox_Element_Map = new Map();
 {
@@ -91,7 +112,7 @@ function generate_Table_Headers()
 	{
 		let new_Header = document.createElement("TH");
 		table_Header_Row_Element.appendChild(new_Header);	//outerHTML requires the element to have a proper parent and is the simplest way to get each Table Header to have actual text for onclick and onkeydown in the element
-		new_Header.outerHTML = "<th onclick = \"if(typeof table_Body_Loaded !== 'undefined' && table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}\" onkeydown = \"if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); if(typeof table_Body_Loaded !== 'undefined' && table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}}\"></th>";
+		new_Header.outerHTML = "<th onclick = \"if(typeof table_Body_Loaded !== 'undefined' &amp;&amp; table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}\" onkeydown = \"if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); if(typeof table_Body_Loaded !== 'undefined' &amp;&amp; table_Body_Loaded === true){sort_Table(" + i + ");}else{console.warn('Table is not ready for sorting.');}}\"></th>";
 		new_Header = table_Header_Row_Element.lastChild;	//Setting outerHTML removes the reference, so it's readded
 		new_Header.textContent = column_Properties[i].display_Name;
 		new_Header.dataset.text_content = new_Header.textContent;
@@ -325,14 +346,21 @@ function filter_Table_Rows()
 			}
 		}
 
-		if
-		(
-			(filter_Standard_Checkbox_Element.checked === true && table_Body_Array[i].adventure_Type === "Standard")
-			|| (filter_Raid_Checkbox_Element.checked === true && table_Body_Array[i].adventure_Type === "Raid")
-			|| (filter_Solo_Quest_Checkbox_Element.checked === true && table_Body_Array[i].adventure_Type === "Solo Quest")
-			|| (filter_Reaper_Unavailable_Checkbox_Element.checked === true && table_Body_Array[i].adventure_Type === "Reaper Unavailable")
-			|| (filter_Challenge_Checkbox_Element.checked === true && table_Body_Array[i].adventure_Type === "Challenge")
-		)
+		if(adventure_Tier_Name_To_Checkbox_Element_Map.has(table_Body_Array[i].adventure_Tier) && adventure_Tier_Name_To_Checkbox_Element_Map.get(table_Body_Array[i].adventure_Tier).checked === true)
+		{
+			table_Body_Element.children[i].style.display = "none";
+			number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+			continue adventure_Entry_Loop;
+		}
+
+		if(available_Adventure_Tiers_Name_To_Checkbox_Element_Map.has(table_Body_Array[i].available_Adventure_Tiers) && available_Adventure_Tiers_Name_To_Checkbox_Element_Map.get(table_Body_Array[i].available_Adventure_Tiers).checked === true)
+		{
+			table_Body_Element.children[i].style.display = "none";
+			number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
+			continue adventure_Entry_Loop;
+		}
+
+		if(adventure_Type_Name_To_Checkbox_Element_Map.has(table_Body_Array[i].adventure_Type) && adventure_Type_Name_To_Checkbox_Element_Map.get(table_Body_Array[i].adventure_Type).checked === true)
 		{
 			table_Body_Element.children[i].style.display = "none";
 			number_Of_Items_Filtered = number_Of_Items_Filtered + 1;
@@ -1545,6 +1573,21 @@ function reset_Filters()
 	custom_Weight_Multiplier_Input_Box_Element.value = custom_Weight_Multiplier_Input_Box_Element.getAttribute("value");
 	weight_Over_Time_Lower_Limit_Input_Box_Element.value = weight_Over_Time_Lower_Limit_Input_Box_Element.getAttribute("value");
 	filter_Completed_Checkbox_Element.checked = false;
+
+	for(let map_Entry of adventure_Tier_Name_To_Checkbox_Element_Map)
+	{
+		map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
+	}
+
+	for(let map_Entry of available_Adventure_Tiers_Name_To_Checkbox_Element_Map)
+	{
+		map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
+	}
+
+	for(let map_Entry of adventure_Type_Name_To_Checkbox_Element_Map)
+	{
+		map_Entry[1].checked = false;	//map_Entry[1] is the checkbox element that is being set to false
+	}
 	
 	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
 	{
@@ -1654,6 +1697,21 @@ function save_To_Local_Storage()
 	window.localStorage.setItem("table_Filter_weight_Over_Time_Lower_Limit_Input_Box", weight_Over_Time_Lower_Limit_Input_Box_Element.value);
 
 	window.localStorage.setItem("filter_Completed_Checkbox", filter_Completed_Checkbox_Element.checked);
+
+	for(let map_Entry of adventure_Tier_Name_To_Checkbox_Element_Map)
+	{
+		window.localStorage.setItem(map_Entry[0] + " Adventure Tier Filter Checkbox", map_Entry[1].checked);
+	}
+
+	for(let map_Entry of available_Adventure_Tiers_Name_To_Checkbox_Element_Map)
+	{
+		window.localStorage.setItem(map_Entry[0] + " Available Adventure Tiers Filter Checkbox", map_Entry[1].checked);
+	}
+
+	for(let map_Entry of adventure_Type_Name_To_Checkbox_Element_Map)
+	{
+		window.localStorage.setItem(map_Entry[0] + " Adventure Type Filter Checkbox", map_Entry[1].checked);
+	}
 
 	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
 	{
@@ -1878,6 +1936,30 @@ if(window.localStorage.getItem("table_Body_Data") !== null)
 	if(window.localStorage.getItem("filter_Completed_Checkbox") === "true")	//Booleans are stored as text- default for all is false
 	{
 		filter_Completed_Checkbox_Element.checked = true;
+	}
+
+	for(let map_Entry of adventure_Tier_Name_To_Checkbox_Element_Map)
+	{
+		if(window.localStorage.getItem(map_Entry[0] + " Adventure Tier Filter Checkbox") === "true")
+		{
+			map_Entry[1].checked = true;
+		}
+	}
+
+	for(let map_Entry of available_Adventure_Tiers_Name_To_Checkbox_Element_Map)
+	{
+		if(window.localStorage.getItem(map_Entry[0] + " Available Adventure Tiers Filter Checkbox") === "true")
+		{
+			map_Entry[1].checked = true;
+		}
+	}
+
+	for(let map_Entry of adventure_Type_Name_To_Checkbox_Element_Map)
+	{
+		if(window.localStorage.getItem(map_Entry[0] + " Adventure Type Filter Checkbox") === "true")
+		{
+			map_Entry[1].checked = true;
+		}
 	}
 
 	for(let map_Entry of adventure_Pack_Name_To_Checkbox_Element_Map)
