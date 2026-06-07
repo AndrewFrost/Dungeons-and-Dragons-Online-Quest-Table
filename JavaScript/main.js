@@ -86,6 +86,22 @@ let server_Modifier_Input_Box_Element = document.getElementById("server_Modifier
 let assumed_Reaper_Level_Input_Box_Element = document.getElementById("assumed_Reaper_Level_Input_Box");
 let include_Saga_Experience_In_Total_Experience_Checkbox_Element = document.getElementById("include_Saga_Experience_In_Total_Experience_Checkbox");
 
+let timing_Profile_Names = ["Default"];
+let active_Timing_Profile_Name = "Default";
+
+let active_Timing_Profile_Dropdown_Element = document.getElementById("active_Timing_Profile_Dropdown");
+let new_Timing_Profile_Name_Input_Box_Element = document.getElementById("new_Timing_Profile_Name_Input_Box");
+let new_Timing_Profile_Source_Dropdown_Element = document.getElementById("new_Timing_Profile_Source_Dropdown");
+let new_Timing_Profile_Base_Time_Multiplier_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Multiplier_Input_Box");
+let new_Timing_Profile_Base_Time_Addition_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Addition_Input_Box");
+let new_Timing_Profile_Base_Time_Minimum_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Minimum_Input_Box");
+let new_Timing_Profile_Base_Time_Maximum_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Maximum_Input_Box");
+let new_Timing_Profile_Travel_Time_Multiplier_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Multiplier_Input_Box");
+let new_Timing_Profile_Travel_Time_Addition_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Addition_Input_Box");
+let new_Timing_Profile_Travel_Time_Minimum_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Minimum_Input_Box");
+let new_Timing_Profile_Travel_Time_Maximum_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Maximum_Input_Box");
+let rename_Timing_Profile_Name_Input_Box_Element = document.getElementById("rename_Timing_Profile_Name_Input_Box");
+
 let character_Name_Input_Box_Element = document.getElementById("character_Name_Input_Box");
 let server_Dropdown_Menu_Element = document.getElementById("server_Dropdown_Menu");
 let autocomplete_Adventures_On_Exit_Checkbox_Element = document.getElementById("autocomplete_Adventures_On_Exit_Checkbox");
@@ -105,139 +121,6 @@ let current_Sort_Selection = 1;
 let current_Character_Level = 1;
 let highest_Level_Of_Group_Members = 1;
 
-const default_Timing_Profile_Name = "Default";
-let timing_Profile_Names = [default_Timing_Profile_Name];
-let active_Timing_Profile_Name = default_Timing_Profile_Name;
-
-let active_Timing_Profile_Dropdown_Element = document.getElementById("active_Timing_Profile_Dropdown");
-let new_Timing_Profile_Name_Input_Box_Element = document.getElementById("new_Timing_Profile_Name_Input_Box");
-let new_Timing_Profile_Source_Dropdown_Element = document.getElementById("new_Timing_Profile_Source_Dropdown");
-let new_Timing_Profile_Base_Time_Multiplier_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Multiplier_Input_Box");
-let new_Timing_Profile_Base_Time_Addition_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Addition_Input_Box");
-let new_Timing_Profile_Base_Time_Minimum_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Minimum_Input_Box");
-let new_Timing_Profile_Base_Time_Maximum_Input_Box_Element = document.getElementById("new_Timing_Profile_Base_Time_Maximum_Input_Box");
-let new_Timing_Profile_Travel_Time_Multiplier_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Multiplier_Input_Box");
-let new_Timing_Profile_Travel_Time_Addition_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Addition_Input_Box");
-let new_Timing_Profile_Travel_Time_Minimum_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Minimum_Input_Box");
-let new_Timing_Profile_Travel_Time_Maximum_Input_Box_Element = document.getElementById("new_Timing_Profile_Travel_Time_Maximum_Input_Box");
-let rename_Timing_Profile_Name_Input_Box_Element = document.getElementById("rename_Timing_Profile_Name_Input_Box");
-
-function migrate_Timing_Field_To_Profile_Object(timing_Field_Value)
-{
-	if(typeof timing_Field_Value === "number")
-	{
-		return {[default_Timing_Profile_Name]: timing_Field_Value};
-	}
-	if(typeof timing_Field_Value === "string" && timing_Field_Value !== "")
-	{
-		return {[default_Timing_Profile_Name]: Number(timing_Field_Value)};
-	}
-	if(timing_Field_Value === null || timing_Field_Value === undefined || typeof timing_Field_Value !== "object")
-	{
-		return {[default_Timing_Profile_Name]: 0};
-	}
-	return timing_Field_Value;
-}
-
-function apply_Timing_Profile_Formula(source_Value, multiplier, addition, minimum, maximum)
-{
-	let calculated_Value = (Number(source_Value) * Number(multiplier)) + Number(addition);
-	calculated_Value = Math.max(Number(minimum), calculated_Value);
-	calculated_Value = Math.min(Number(maximum), calculated_Value);
-	return Number(calculated_Value.toFixed(3));
-}
-
-function get_Timing_Profile_Value_From_Object(timing_Field_Object, profile_Name)
-{
-	let timing_Object = migrate_Timing_Field_To_Profile_Object(timing_Field_Object);
-	if(timing_Object[profile_Name] !== undefined)
-	{
-		return Number(timing_Object[profile_Name]);
-	}
-	if(timing_Object[default_Timing_Profile_Name] !== undefined)
-	{
-		return Number(timing_Object[default_Timing_Profile_Name]);
-	}
-	let first_Profile_Name = Object.keys(timing_Object)[0];
-	if(first_Profile_Name !== undefined)
-	{
-		return Number(timing_Object[first_Profile_Name]);
-	}
-	return 0;
-}
-
-function get_Active_Timing_Profile_Value(adventure_Index, timing_Field_Name)
-{
-	return get_Timing_Profile_Value_From_Object(table_Body_Array[adventure_Index][timing_Field_Name], active_Timing_Profile_Name);
-}
-
-function set_Active_Timing_Profile_Value(adventure_Index, timing_Field_Name, new_Value)
-{
-	table_Body_Array[adventure_Index][timing_Field_Name] = migrate_Timing_Field_To_Profile_Object(table_Body_Array[adventure_Index][timing_Field_Name]);
-	table_Body_Array[adventure_Index][timing_Field_Name][active_Timing_Profile_Name] = Number(Number(new_Value).toFixed(3));
-}
-
-function ensure_Timing_Profile_Keys_On_Row(adventure_Index)
-{
-	table_Body_Array[adventure_Index].base_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[adventure_Index].base_Time);
-	table_Body_Array[adventure_Index].travel_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[adventure_Index].travel_Time);
-	let fallback_Base_Time = get_Timing_Profile_Value_From_Object(table_Body_Array[adventure_Index].base_Time, default_Timing_Profile_Name);
-	let fallback_Travel_Time = get_Timing_Profile_Value_From_Object(table_Body_Array[adventure_Index].travel_Time, default_Timing_Profile_Name);
-	for(let i = 0; i < timing_Profile_Names.length; i++)
-	{
-		if(table_Body_Array[adventure_Index].base_Time[timing_Profile_Names[i]] === undefined)
-		{
-			table_Body_Array[adventure_Index].base_Time[timing_Profile_Names[i]] = fallback_Base_Time;
-		}
-		if(table_Body_Array[adventure_Index].travel_Time[timing_Profile_Names[i]] === undefined)
-		{
-			table_Body_Array[adventure_Index].travel_Time[timing_Profile_Names[i]] = fallback_Travel_Time;
-		}
-	}
-}
-
-function ensure_All_Timing_Profiles_On_All_Rows()
-{
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		ensure_Timing_Profile_Keys_On_Row(i);
-	}
-}
-
-function migrate_All_Timing_Fields_On_Table()
-{
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		table_Body_Array[i].base_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].base_Time);
-		table_Body_Array[i].travel_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].travel_Time);
-	}
-}
-
-function merge_Timing_Profile_Names_From_Table()
-{
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		for(const profile_Name in table_Body_Array[i].base_Time)
-		{
-			if(timing_Profile_Names.includes(profile_Name) === false)
-			{
-				timing_Profile_Names.push(profile_Name);
-			}
-		}
-		for(const profile_Name in table_Body_Array[i].travel_Time)
-		{
-			if(timing_Profile_Names.includes(profile_Name) === false)
-			{
-				timing_Profile_Names.push(profile_Name);
-			}
-		}
-	}
-	if(timing_Profile_Names.includes(active_Timing_Profile_Name) === false)
-	{
-		active_Timing_Profile_Name = timing_Profile_Names[0];
-	}
-}
-
 function populate_Timing_Profile_Dropdown_Options()
 {
 	active_Timing_Profile_Dropdown_Element.replaceChildren();
@@ -255,163 +138,7 @@ function populate_Timing_Profile_Dropdown_Options()
 		new_Timing_Profile_Source_Dropdown_Element.appendChild(source_Option);
 	}
 	active_Timing_Profile_Dropdown_Element.value = active_Timing_Profile_Name;
-	if(timing_Profile_Names.includes(new_Timing_Profile_Source_Dropdown_Element.value) === false)
-	{
-		new_Timing_Profile_Source_Dropdown_Element.value = active_Timing_Profile_Name;
-	}
 	rename_Timing_Profile_Name_Input_Box_Element.value = active_Timing_Profile_Name;
-}
-
-function refresh_Timing_Columns_For_All_Rows()
-{
-	if(table_Body_Loaded === false)
-	{
-		return;
-	}
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		table_Body_Element.children[i].children[column_Name_To_Array_Index.base_Time].textContent = get_Active_Timing_Profile_Value(i, "base_Time");
-		table_Body_Element.children[i].children[column_Name_To_Array_Index.travel_Time].textContent = get_Active_Timing_Profile_Value(i, "travel_Time");
-		set_Total_Time(i);
-		set_Total_Weight_Over_Time(i);
-	}
-	filter_Table_Rows();
-}
-
-function switch_Active_Timing_Profile()
-{
-	active_Timing_Profile_Name = active_Timing_Profile_Dropdown_Element.value;
-	ensure_All_Timing_Profiles_On_All_Rows();
-	rename_Timing_Profile_Name_Input_Box_Element.value = active_Timing_Profile_Name;
-	refresh_Timing_Columns_For_All_Rows();
-}
-
-function create_Timing_Profile()
-{
-	let new_Profile_Name = new_Timing_Profile_Name_Input_Box_Element.value.trim();
-	if(new_Profile_Name === "")
-	{
-		window.alert("Timing profile name must contain at least one non-space character.");
-		return;
-	}
-	if(timing_Profile_Names.includes(new_Profile_Name) === true)
-	{
-		window.alert("A timing profile with that name already exists.");
-		return;
-	}
-	let source_Profile_Name = new_Timing_Profile_Source_Dropdown_Element.value;
-	if(timing_Profile_Names.includes(source_Profile_Name) === false)
-	{
-		window.alert("Selected source timing profile does not exist.");
-		return;
-	}
-	ensure_All_Timing_Profiles_On_All_Rows();
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		let source_Base_Time = get_Timing_Profile_Value_From_Object(table_Body_Array[i].base_Time, source_Profile_Name);
-		let source_Travel_Time = get_Timing_Profile_Value_From_Object(table_Body_Array[i].travel_Time, source_Profile_Name);
-		table_Body_Array[i].base_Time[new_Profile_Name] = apply_Timing_Profile_Formula(source_Base_Time, new_Timing_Profile_Base_Time_Multiplier_Input_Box_Element.value, new_Timing_Profile_Base_Time_Addition_Input_Box_Element.value, new_Timing_Profile_Base_Time_Minimum_Input_Box_Element.value, new_Timing_Profile_Base_Time_Maximum_Input_Box_Element.value);
-		table_Body_Array[i].travel_Time[new_Profile_Name] = apply_Timing_Profile_Formula(source_Travel_Time, new_Timing_Profile_Travel_Time_Multiplier_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Addition_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Minimum_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Maximum_Input_Box_Element.value);
-	}
-	timing_Profile_Names.push(new_Profile_Name);
-	active_Timing_Profile_Name = new_Profile_Name;
-	populate_Timing_Profile_Dropdown_Options();
-	new_Timing_Profile_Name_Input_Box_Element.value = "";
-	refresh_Timing_Columns_For_All_Rows();
-	window.onbeforeunload = function(){return true};
-}
-
-function rename_Active_Timing_Profile()
-{
-	let new_Profile_Name = rename_Timing_Profile_Name_Input_Box_Element.value.trim();
-	if(new_Profile_Name === "")
-	{
-		window.alert("Timing profile name must contain at least one non-space character.");
-		return;
-	}
-	if(new_Profile_Name === active_Timing_Profile_Name)
-	{
-		return;
-	}
-	if(timing_Profile_Names.includes(new_Profile_Name) === true)
-	{
-		window.alert("A timing profile with that name already exists.");
-		return;
-	}
-	let old_Profile_Name = active_Timing_Profile_Name;
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		table_Body_Array[i].base_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].base_Time);
-		table_Body_Array[i].travel_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].travel_Time);
-		table_Body_Array[i].base_Time[new_Profile_Name] = table_Body_Array[i].base_Time[old_Profile_Name];
-		table_Body_Array[i].travel_Time[new_Profile_Name] = table_Body_Array[i].travel_Time[old_Profile_Name];
-		delete table_Body_Array[i].base_Time[old_Profile_Name];
-		delete table_Body_Array[i].travel_Time[old_Profile_Name];
-	}
-	timing_Profile_Names[timing_Profile_Names.indexOf(old_Profile_Name)] = new_Profile_Name;
-	active_Timing_Profile_Name = new_Profile_Name;
-	populate_Timing_Profile_Dropdown_Options();
-	refresh_Timing_Columns_For_All_Rows();
-	window.onbeforeunload = function(){return true};
-}
-
-function delete_Active_Timing_Profile()
-{
-	if(timing_Profile_Names.length <= 1)
-	{
-		window.alert("At least one timing profile must remain.");
-		return;
-	}
-	let profile_Name_To_Delete = active_Timing_Profile_Name;
-	for(let i = 0; i < table_Body_Array.length; i++)
-	{
-		table_Body_Array[i].base_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].base_Time);
-		table_Body_Array[i].travel_Time = migrate_Timing_Field_To_Profile_Object(table_Body_Array[i].travel_Time);
-		delete table_Body_Array[i].base_Time[profile_Name_To_Delete];
-		delete table_Body_Array[i].travel_Time[profile_Name_To_Delete];
-	}
-	timing_Profile_Names.splice(timing_Profile_Names.indexOf(profile_Name_To_Delete), 1);
-	active_Timing_Profile_Name = timing_Profile_Names[0];
-	populate_Timing_Profile_Dropdown_Options();
-	refresh_Timing_Columns_For_All_Rows();
-	window.onbeforeunload = function(){return true};
-}
-
-function load_Timing_Profile_Settings_From_Local_Storage()
-{
-	const saved_Timing_Profile_Names = window.localStorage.getItem("timing_Profile_Names");
-	if(saved_Timing_Profile_Names !== null)
-	{
-		const parsed_Timing_Profile_Names = JSON.parse(saved_Timing_Profile_Names);
-		if(Array.isArray(parsed_Timing_Profile_Names) === true && parsed_Timing_Profile_Names.length >= 1)
-		{
-			timing_Profile_Names = parsed_Timing_Profile_Names;
-		}
-	}
-	const saved_Active_Timing_Profile_Name = window.localStorage.getItem("active_Timing_Profile_Name");
-	if(saved_Active_Timing_Profile_Name !== null && timing_Profile_Names.includes(saved_Active_Timing_Profile_Name) === true)
-	{
-		active_Timing_Profile_Name = saved_Active_Timing_Profile_Name;
-	}
-	else
-	{
-		active_Timing_Profile_Name = timing_Profile_Names[0];
-	}
-}
-
-function save_Timing_Profile_Settings_To_Local_Storage()
-{
-	window.localStorage.setItem("timing_Profile_Names", JSON.stringify(timing_Profile_Names));
-	window.localStorage.setItem("active_Timing_Profile_Name", active_Timing_Profile_Name);
-}
-
-function get_Sort_Column_Value(row_Data, column_Name)
-{
-	if(column_Name === "base_Time" || column_Name === "travel_Time")
-	{
-		return get_Timing_Profile_Value_From_Object(row_Data[column_Name], active_Timing_Profile_Name);
-	}
-	return row_Data[column_Name];
 }
 
 function generate_Table_Headers()
@@ -592,10 +319,18 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 				set_Total_Weight(i);
 				new_Table_Data.innerText = table_Body_Array[i].total_Weight;
 			}
-			else if(property === "base_Time" || property === "travel_Time")
+			else if(property === "base_Time")
+			{
+				new_Table_Data.innerText = table_Body_Array[i].base_Time[active_Timing_Profile_Name];
+			}
+			else if(property === "travel_Time")
+			{
+				new_Table_Data.innerText = table_Body_Array[i].travel_Time[active_Timing_Profile_Name];
+			}
+			else if(property === "total_Time")
 			{
 				set_Total_Time(i);
-				new_Table_Data.innerText = get_Active_Timing_Profile_Value(i, property);
+				new_Table_Data.innerText = table_Body_Array[i].total_Time;
 			}
 			else if(property === "total_Weight_Over_Time")
 			{
@@ -1265,9 +1000,25 @@ function set_Total_Weight(adventure_Index)	//Sets the total weight in the array 
 	}
 }
 
+function update_Base_Time_To_Active_Timing_Profile(adventure_Index)
+{
+	if(table_Body_Loaded === true)
+	{
+		table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.base_Time].textContent = table_Body_Array[adventure_Index].base_Time[active_Timing_Profile_Name];
+	}
+}
+
+function update_Travel_Time_To_Active_Timing_Profile(adventure_Index)
+{
+	if(table_Body_Loaded === true)
+	{
+		table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.travel_Time].textContent = table_Body_Array[adventure_Index].travel_Time[active_Timing_Profile_Name];
+	}
+}
+
 function set_Total_Time(adventure_Index)
 {
-	table_Body_Array[adventure_Index].total_Time = Number((get_Active_Timing_Profile_Value(adventure_Index, "base_Time") + get_Active_Timing_Profile_Value(adventure_Index, "travel_Time")).toFixed(3));
+	table_Body_Array[adventure_Index].total_Time = Number((table_Body_Array[adventure_Index].base_Time[active_Timing_Profile_Name] + table_Body_Array[adventure_Index].travel_Time[active_Timing_Profile_Name]).toFixed(3));
 	if(table_Body_Loaded === true)
 	{
 		table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Time].textContent = table_Body_Array[adventure_Index].total_Time;
@@ -1280,6 +1031,118 @@ function set_Total_Weight_Over_Time(adventure_Index)	//Sets the total weight ove
 	if(table_Body_Loaded === true)
 	{
 		table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Weight_Over_Time].textContent = table_Body_Array[adventure_Index].total_Weight_Over_Time;
+	}
+}
+
+function refresh_Timing_Columns_For_All_Rows()
+{
+	if(table_Body_Loaded === false)
+	{
+		return;
+	}
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		update_Base_Time_To_Active_Timing_Profile(i);
+		update_Travel_Time_To_Active_Timing_Profile(i);
+		set_Total_Time(i);
+		set_Total_Weight_Over_Time(i);
+	}
+	filter_Table_Rows();
+}
+
+	function switch_Active_Timing_Profile()
+	{
+		active_Timing_Profile_Name = active_Timing_Profile_Dropdown_Element.value;
+		rename_Timing_Profile_Name_Input_Box_Element.value = active_Timing_Profile_Name;
+		refresh_Timing_Columns_For_All_Rows();
+	}
+
+function apply_Timing_Profile_Formula(source_Value, multiplier, addition, minimum, maximum)
+{
+	let calculated_Value = (Number(source_Value) * Number(multiplier)) + Number(addition);
+	calculated_Value = Math.max(Number(minimum), calculated_Value);
+	calculated_Value = Math.min(Number(maximum), calculated_Value);
+	return Number(calculated_Value.toFixed(3));
+}
+
+function create_Timing_Profile()
+{
+	let new_Profile_Name = new_Timing_Profile_Name_Input_Box_Element.value;
+	if(new_Profile_Name.trim() === "")
+	{
+		window.alert("The timing profile name must contain at least one non-space character.");
+		return;
+	}
+	if(timing_Profile_Names.includes(new_Profile_Name) === true)
+	{
+		window.alert("A timing profile with that name already exists- please choose a unique timing profile name.");
+		return;
+	}
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		table_Body_Array[i].base_Time[new_Profile_Name] = apply_Timing_Profile_Formula(table_Body_Array[i].base_Time[new_Timing_Profile_Source_Dropdown_Element.value], new_Timing_Profile_Base_Time_Multiplier_Input_Box_Element.value, new_Timing_Profile_Base_Time_Addition_Input_Box_Element.value, new_Timing_Profile_Base_Time_Minimum_Input_Box_Element.value, new_Timing_Profile_Base_Time_Maximum_Input_Box_Element.value);
+		table_Body_Array[i].travel_Time[new_Profile_Name] = apply_Timing_Profile_Formula(table_Body_Array[i].travel_Time[new_Timing_Profile_Source_Dropdown_Element.value], new_Timing_Profile_Travel_Time_Multiplier_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Addition_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Minimum_Input_Box_Element.value, new_Timing_Profile_Travel_Time_Maximum_Input_Box_Element.value);
+	}
+	timing_Profile_Names.push(new_Profile_Name);
+	active_Timing_Profile_Name = new_Profile_Name;
+	populate_Timing_Profile_Dropdown_Options();
+	new_Timing_Profile_Name_Input_Box_Element.value = "";
+	refresh_Timing_Columns_For_All_Rows();
+	window.onbeforeunload = function(){return true};
+}
+
+function rename_Active_Timing_Profile()
+{
+	let new_Profile_Name = rename_Timing_Profile_Name_Input_Box_Element.value;
+	if(new_Profile_Name.trim() === "")
+	{
+		window.alert("The timing profile name must contain at least one non-space character.");
+		return;
+	}
+	if(new_Profile_Name === active_Timing_Profile_Name)
+	{
+		return;
+	}
+	if(timing_Profile_Names.includes(new_Profile_Name) === true)
+	{
+		window.alert("A timing profile with that name already exists- please choose a unique timing profile name.");
+		return;
+	}
+	let old_Profile_Name = active_Timing_Profile_Name;
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		table_Body_Array[i].base_Time[new_Profile_Name] = table_Body_Array[i].base_Time[old_Profile_Name];
+		table_Body_Array[i].travel_Time[new_Profile_Name] = table_Body_Array[i].travel_Time[old_Profile_Name];
+		delete table_Body_Array[i].base_Time[old_Profile_Name];
+		delete table_Body_Array[i].travel_Time[old_Profile_Name];
+	}
+	timing_Profile_Names[timing_Profile_Names.indexOf(old_Profile_Name)] = new_Profile_Name;
+	active_Timing_Profile_Name = new_Profile_Name;
+	populate_Timing_Profile_Dropdown_Options();
+	refresh_Timing_Columns_For_All_Rows();
+	window.onbeforeunload = function(){return true};
+}
+
+function delete_Active_Timing_Profile()
+{
+	if(timing_Profile_Names.length <= 1)
+	{
+		window.alert("At least one timing profile must remain.");
+		return;
+	}
+	if(window.confirm("Click 'Okay' to confirm you would like to delete all Base Times and Travel Times associated with " + active_Timing_Profile_Name + ".") === true)
+	{
+		let profile_Name_To_Delete = active_Timing_Profile_Name;
+		for(let i = 0; i < table_Body_Array.length; i++)
+		{
+			delete table_Body_Array[i].base_Time[profile_Name_To_Delete];
+			delete table_Body_Array[i].travel_Time[profile_Name_To_Delete];
+		}
+		timing_Profile_Names.splice(timing_Profile_Names.indexOf(profile_Name_To_Delete), 1);
+		active_Timing_Profile_Name = timing_Profile_Names[0];
+		populate_Timing_Profile_Dropdown_Options();
+		refresh_Timing_Columns_For_All_Rows();
+		window.onbeforeunload = function(){return true};
 	}
 }
 
@@ -1392,14 +1255,12 @@ async function retrieve_Character_Location()
 						//table_Data_Changed is used to update the checkbox
 						table_Data_Changed(row_Index, column_Name_To_Array_Index.completed);
 					}
-					if(get_Active_Timing_Profile_Value(row_Index, "base_Time") > last_Adventure_Time_In_Minutes)
+					if(table_Body_Array[row_Index].base_Time[active_Timing_Profile_Name] > last_Adventure_Time_In_Minutes)
 					{
 						table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent = table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent + " Time changed from " + table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.base_Time].textContent + " to " + last_Adventure_Time_In_Minutes + ".";
 						table_Data_Changed(row_Index, column_Name_To_Array_Index.notes);
 						table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.base_Time].textContent = last_Adventure_Time_In_Minutes;
-						set_Active_Timing_Profile_Value(row_Index, "base_Time", last_Adventure_Time_In_Minutes);
-						set_Total_Time(row_Index);
-						set_Total_Weight_Over_Time(row_Index);
+						table_Data_Changed(row_Index, column_Name_To_Array_Index.base_Time);
 					}
 					table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent = table_Body_Element.children[row_Index].children[column_Name_To_Array_Index.notes].textContent + " Completed at level " + current_Character_Level + ". Session order: " + adventure_Completion_Order + ".";
 					table_Data_Changed(row_Index, column_Name_To_Array_Index.notes);
@@ -1806,6 +1667,18 @@ function update_Table_Header_View(header_Index)
 	}
 }
 
+function get_Sort_Column_Value(row_Data, column_Name)
+{
+	if(column_Name === "base_Time" || column_Name === "travel_Time")
+	{
+		return row_Data[column_Name][active_Timing_Profile_Name];
+	}
+	else
+	{
+		return row_Data[column_Name];
+	}
+}
+
 function generic_Stable_Sort(item_1, item_2)
 {
 	const column_Name = index_To_Column_Name_Array[current_Sort_Selection];
@@ -1957,7 +1830,7 @@ function convert_Table_Body_Array_To_Custom_JSON()
 			}
 			else if(column_Properties[j].name === "base_Time" || column_Properties[j].name === "travel_Time")
 			{
-				custom_JSON_Table_String = custom_JSON_Table_String + JSON.stringify(migrate_Timing_Field_To_Profile_Object(table_Body_Array[i][index_To_Column_Name_Array[j]]));
+				custom_JSON_Table_String = custom_JSON_Table_String + JSON.stringify(table_Body_Array[i][index_To_Column_Name_Array[j]]);
 			}
 			else if(column_Properties[j].calculated === true)
 			{
@@ -2040,11 +1913,12 @@ function save_To_Local_Storage()
 	window.localStorage.setItem("last_Sort_Selection_Ascending_State_Array", JSON.stringify(column_Properties.map(column => column.ascending)));
 	window.localStorage.setItem("last_Sort_Selection", current_Sort_Selection);
 
+	window.localStorage.setItem("timing_Profile_Names", JSON.stringify(timing_Profile_Names));
+	window.localStorage.setItem("active_Timing_Profile_Name", active_Timing_Profile_Name);
+
 	window.localStorage.setItem("character_Name_Input_Box_Element", character_Name_Input_Box_Element.value);
 	window.localStorage.setItem("server_Dropdown_Menu_Element", server_Dropdown_Menu_Element.value);
 	window.localStorage.setItem("autocomplete_Adventures_On_Exit_Checkbox_Element", autocomplete_Adventures_On_Exit_Checkbox_Element.checked);
-
-	save_Timing_Profile_Settings_To_Local_Storage();
 
 	window.onbeforeunload = null;
 }
@@ -2216,7 +2090,7 @@ function table_Data_Changed(table_Row, table_Column)
 	}
 	else if(table_Column === column_Name_To_Array_Index.base_Time || table_Column === column_Name_To_Array_Index.travel_Time)
 	{
-		set_Active_Timing_Profile_Value(table_Row, index_To_Column_Name_Array[table_Column], table_Body_Element.children[table_Row].children[table_Column].textContent);
+		table_Body_Array[table_Row][index_To_Column_Name_Array[table_Column]][active_Timing_Profile_Name] = Number(table_Body_Element.children[table_Row].children[table_Column].textContent);
 		set_Total_Time(table_Row);
 		set_Total_Weight_Over_Time(table_Row);
 	}
@@ -2229,18 +2103,9 @@ function table_Data_Changed(table_Row, table_Column)
 }
 
 generate_Table_Headers();
-load_Timing_Profile_Settings_From_Local_Storage();
-migrate_All_Timing_Fields_On_Table();
-merge_Timing_Profile_Names_From_Table();
-ensure_All_Timing_Profiles_On_All_Rows();
-populate_Timing_Profile_Dropdown_Options();
 if(window.localStorage.getItem("table_Body_Data") !== null)
 {
 	table_Body_Array = JSON.parse(window.localStorage.getItem("table_Body_Data"));
-	migrate_All_Timing_Fields_On_Table();
-	merge_Timing_Profile_Names_From_Table();
-	ensure_All_Timing_Profiles_On_All_Rows();
-	populate_Timing_Profile_Dropdown_Options();
 
 	level_Lower_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Level_Lower_Limit");
 	level_Upper_Limit_Input_Box_Element.value = window.localStorage.getItem("table_Filter_Level_Upper_Limit");
@@ -2313,6 +2178,10 @@ if(window.localStorage.getItem("table_Body_Data") !== null)
 	table_Header_Row_Element.children[current_Sort_Selection].classList.remove("last_Sorted_Header");
 	current_Sort_Selection = Number(window.localStorage.getItem("last_Sort_Selection"));
 	table_Header_Row_Element.children[current_Sort_Selection].classList.add("last_Sorted_Header");
+
+	timing_Profile_Names = JSON.parse(window.localStorage.getItem("timing_Profile_Names"));
+	active_Timing_Profile_Name = window.localStorage.getItem("active_Timing_Profile_Name");
+	populate_Timing_Profile_Dropdown_Options();
 
 	character_Name_Input_Box_Element.value = window.localStorage.getItem("character_Name_Input_Box_Element");
 	server_Dropdown_Menu_Element.value = window.localStorage.getItem("server_Dropdown_Menu_Element");
