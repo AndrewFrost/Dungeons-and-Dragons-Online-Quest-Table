@@ -84,6 +84,7 @@ let number_Of_Items_Sorted_Element = document.getElementById("number_Of_Items_So
 let personal_Experience_Multiplier_Input_Box_Element = document.getElementById("personal_Experience_Multiplier_Input_Box");
 let server_Modifier_Input_Box_Element = document.getElementById("server_Modifier_Input_Box");
 let assumed_Reaper_Level_Input_Box_Element = document.getElementById("assumed_Reaper_Level_Input_Box");
+let named_Item_Chance_Increase_Input_Box_Element = document.getElementById("named_Item_Chance_Increase_Input_Box");
 let include_Saga_Experience_In_Total_Experience_Checkbox_Element = document.getElementById("include_Saga_Experience_In_Total_Experience_Checkbox");
 
 let timing_Profile_Names = ["Default"];
@@ -246,7 +247,7 @@ function generate_Initial_Table()	//Converts the contents of the array into HTML
 				new_Table_Data.classList.add("object_List_Table_Data");
 				for(let j = 0; j < table_Body_Array[i].available_Items.length; j++)
 				{
-					new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry\"><span>" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "</span class = \"item_Minimum_Level_Title\"><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span>";
+					new_Table_Data.innerHTML = new_Table_Data.innerHTML + "<span class = \"item_Single_Entry " + table_Body_Array[i].available_Items[j].item_Type + "\" data-text_content = \"" + table_Body_Array[i].available_Items[j].item_Minimum_Level + " " + table_Body_Array[i].available_Items[j].item_Name + "\"><span class = \"item_Minimum_Level_Title\">" + table_Body_Array[i].available_Items[j].item_Minimum_Level + "&nbsp;" + "</span><a href = " + table_Body_Array[i].available_Items[j].item_Link + "><span class = \"item_Name_Title\">" + table_Body_Array[i].available_Items[j].item_Name + "</span></a></span>";
 				}
 			}
 			else if(property === "saga_Contribution")
@@ -549,7 +550,7 @@ function reset_All_Completions()
 
 let experience_Modifier_Names = ["Delving Bonus","First-time Difficulty", "Tome of Learning", "Daily Bonus", "Persistence", "Flawless Victory", "Kills", "Traps", "Secret Doors", "Breakables", "Quest Ransack", "Over-level Penalty", "Power-leveling Penalty", "Reentry", "Late Entry", "Other"];
 let experience_Modifier_Names_To_Array_Index = {};
-for(let i = 0; i < column_Properties.length; i++)
+for(let i = 0; i < experience_Modifier_Names.length; i++)
 {
 	experience_Modifier_Names_To_Array_Index[experience_Modifier_Names[i]] = i;
 }
@@ -558,7 +559,7 @@ function set_Experience_Modifier(adventure_Index, modifier_Index, new_Value)
 {
 	table_Body_Array[adventure_Index].experience_Modifiers[modifier_Index] = new_Value;
 	table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.experience_Modifiers].children[modifier_Index].children[1].value = new_Value;
-	if(modifier_Index === experience_Modifier_Names_To_Array_Index["Tome of Learning"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Over-level Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Reentry"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Late Entry"])	//Experience Modifiers that impact Optional Objective experience
+	if(modifier_Index === experience_Modifier_Names_To_Array_Index["Over-level Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Reentry"] || modifier_Index === experience_Modifier_Names_To_Array_Index["Late Entry"])	//Experience Modifiers that impact Optional Objective experience
 	{
 		for(let i = 0; i < table_Body_Array[adventure_Index].optional_Objectives.length; i++)
 		{
@@ -760,12 +761,11 @@ function set_Optional_Objective_Parameter(adventure_Index, optional_Objective_In
 		table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].experience = 
 		Math.trunc
 		(
-			(
+			Math.max(0,
 				Math.fround(table_Body_Array[adventure_Index].optional_Objectives[optional_Objective_Index].value)
 				*
 				(
 					table_Body_Array[adventure_Index].base_Experience
-					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Tome of Learning"]]))
 					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Over-level Penalty"]]))
 					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Power-leveling Penalty"]]))
 					+ Math.trunc(table_Body_Array[adventure_Index].base_Experience * Math.fround(table_Body_Array[adventure_Index].experience_Modifiers[experience_Modifier_Names_To_Array_Index["Reentry"]]))
@@ -1018,7 +1018,7 @@ function update_Travel_Time_To_Active_Timing_Profile(adventure_Index)
 
 function set_Total_Time(adventure_Index)
 {
-	table_Body_Array[adventure_Index].total_Time = Number((table_Body_Array[adventure_Index].base_Time[active_Timing_Profile_Name] + table_Body_Array[adventure_Index].travel_Time[active_Timing_Profile_Name]).toFixed(3));
+	table_Body_Array[adventure_Index].total_Time = Math.max(Number((table_Body_Array[adventure_Index].base_Time[active_Timing_Profile_Name] + table_Body_Array[adventure_Index].travel_Time[active_Timing_Profile_Name]).toFixed(3)), .001);
 	if(table_Body_Loaded === true)
 	{
 		table_Body_Element.children[adventure_Index].children[column_Name_To_Array_Index.total_Time].textContent = table_Body_Array[adventure_Index].total_Time;
@@ -1050,12 +1050,12 @@ function refresh_Timing_Columns_For_All_Rows()
 	filter_Table_Rows();
 }
 
-	function switch_Active_Timing_Profile()
-	{
-		active_Timing_Profile_Name = active_Timing_Profile_Dropdown_Element.value;
-		rename_Timing_Profile_Name_Input_Box_Element.value = active_Timing_Profile_Name;
-		refresh_Timing_Columns_For_All_Rows();
-	}
+function switch_Active_Timing_Profile()
+{
+	active_Timing_Profile_Name = active_Timing_Profile_Dropdown_Element.value;
+	rename_Timing_Profile_Name_Input_Box_Element.value = active_Timing_Profile_Name;
+	refresh_Timing_Columns_For_All_Rows();
+}
 
 function apply_Timing_Profile_Formula(source_Value, multiplier, addition, minimum, maximum)
 {
@@ -1293,16 +1293,25 @@ async function retrieve_Character_Location()
 
 						//The Catacombs
 						case "The Friar's Niece":
+						case "Return to the Sanctuary":
 							if(current_Character_Level < 20)
 							{
-								if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Friar's Niece")].completed === true)
+								if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Friar's Niece")].completed === false)
+								{
+									current_Adventure_Entered_String = "The Friar's Niece";
+								}
+								else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Return to the Sanctuary")].completed === false)
 								{
 									current_Adventure_Entered_String = "Return to the Sanctuary";
 								}
 							}
 							else
 							{
-								if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic The Friar's Niece")].completed === true)
+								if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic The Friar's Niece")].completed === false)
+								{
+									current_Adventure_Entered_String = "The Friar's Niece";
+								}
+								else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Epic Return to the Sanctuary")].completed === false)
 								{
 									current_Adventure_Entered_String = "Return to the Sanctuary";
 								}
@@ -1326,6 +1335,12 @@ async function retrieve_Character_Location()
 							break;
 
 						//Tangleroot Gorge / Splinterskull
+						case "First Strike":
+						case "The Hobgoblins' Captives":
+						case "Yarkuch's War-plans":
+						case "Whisperdoom's Spawn":
+						case "The Deadly Package: The Stronghold Key":
+						case "Doom of the Witch-doctor: The Way to Zulkash":
 						case "The Last Move: The Way to Yarkuch":
 							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic First Strike")].completed === false)
 							{
@@ -1351,7 +1366,13 @@ async function retrieve_Character_Location()
 							{
 								current_Adventure_Entered_String = "Doom of the Witch-doctor: The Way to Zulkash";
 							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Last Move: The Way to Yarkuch")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Last Move: The Way to Yarkuch";
+							}
 							break;
+						case "The Deadly Package: Agent of the Darguul":
+						case "Doom of the Witch-doctor: Zulkash, Herald of Woe":
 						case "The Last Move: Yarkuch's Last Stand":
 							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Deadly Package: Agent of the Darguul")].completed === false)
 							{
@@ -1361,15 +1382,24 @@ async function retrieve_Character_Location()
 							{
 								current_Adventure_Entered_String = "Doom of the Witch-doctor: Zulkash, Herald of Woe";
 							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Last Move: Yarkuch's Last Stand")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Last Move: Yarkuch's Last Stand";
+							}
 							break;
 
 						//Three-Barrel Cove
+						case "The Troglodytes' Get":
 						case "Old Grey Garl":
 							if(current_Character_Level < 20)
 							{
 								if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Troglodytes' Get")].completed === false)
 								{
 									current_Adventure_Entered_String = "The Troglodytes' Get";
+								}
+								else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Old Grey Garl")].completed === false)
+								{
+									current_Adventure_Entered_String = "Old Grey Garl";
 								}
 							}
 							else
@@ -1380,10 +1410,15 @@ async function retrieve_Character_Location()
 								}
 							}
 							break;
+						case "The Stones Run Red":
 						case "Brood of Flame":
 							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Stones Run Red")].completed === false || table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Brood of Flame")].completed === true)
 							{
 								current_Adventure_Entered_String = "The Stones Run Red";
+							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic Brood of Flame")].completed === false)
+							{
+								current_Adventure_Entered_String = "Brood of Flame";
 							}
 							break;
 
@@ -1407,31 +1442,56 @@ async function retrieve_Character_Location()
 
 						//Sorrowdusk
 						case "The Iron Mines: Freeing Achka":
-							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Iron Mines: Freeing Achka")].completed === true)
+						case "The Iron Mines: Justice for Grust":
+							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Iron Mines: Freeing Achka")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Iron Mines: Freeing Achka";
+							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Iron Mines: Justice for Grust")].completed === false)
 							{
 								current_Adventure_Entered_String = "The Iron Mines: Justice for Grust";
 							}
 							break;
 						case "The Grey Moon's Den: The Trollish Scourge":
-							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Grey Moon's Den: The Trollish Scourge")].completed === true)
+						case "The Grey Moon's Den: Extermination":
+							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Grey Moon's Den: The Trollish Scourge")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Grey Moon's Den: The Trollish Scourge";
+							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Grey Moon's Den: Extermination")].completed === false)
 							{
 								current_Adventure_Entered_String = "The Grey Moon's Den: Extermination";
 							}
 							break;
+						case "The Temple Outpost: Captives of the Cult":
 						case "The Temple Outpost: The Libram of the Six":
 							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Temple Outpost: Captives of the Cult")].completed === false)
 							{
 								current_Adventure_Entered_String = "The Temple Outpost: Captives of the Cult";
 							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Temple Outpost: The Libram of the Six")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Temple Outpost: The Libram of the Six";
+							}
 							break;
+						case "The Fane of the Six: Cleansing the Temple":
 						case "The Fane of the Six: Fall of the Prelate":
 							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Fane of the Six: Cleansing the Temple")].completed === false)
 							{
 								current_Adventure_Entered_String = "The Fane of the Six: Cleansing the Temple";
 							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Fane of the Six: Fall of the Prelate")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Fane of the Six: Fall of the Prelate";
+							}
 							break;
 						case "The Sanctum: Quench the Flames":
-							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Sanctum: Quench the Flames")].completed === true)
+						case "The Sanctum: Church of the Fury":
+							if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Sanctum: Quench the Flames")].completed === false)
+							{
+								current_Adventure_Entered_String = "The Sanctum: Quench the Flames";
+							}
+							else if(table_Body_Array[adventure_Name_To_Table_Index_Map.get("Heroic The Sanctum: Church of the Fury")].completed === false)
 							{
 								current_Adventure_Entered_String = "The Sanctum: Church of the Fury";
 							}
@@ -1806,7 +1866,7 @@ function convert_Table_Body_Array_To_Custom_JSON()
 				custom_JSON_Table_String = custom_JSON_Table_String + "[";
 				for(let k = 0; k < table_Body_Array[i].available_Items.length; k++)
 				{
-					custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
+					custom_JSON_Table_String = custom_JSON_Table_String + "{\"item_Name\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Name + "\", \"item_Type\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Type + "\", \"item_Minimum_Level\": " + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Minimum_Level + ", \"item_Link\": \"" + table_Body_Array[i][index_To_Column_Name_Array[j]][k].item_Link + "\"}" + (k === table_Body_Array[i].available_Items.length - 1 ? "" : ", ");
 				}
 				custom_JSON_Table_String = custom_JSON_Table_String + "]";
 			}
@@ -2192,3 +2252,42 @@ if(window.localStorage.getItem("table_Body_Data") !== null)
 	}
 }
 generate_Initial_Table();
+
+function set_Total_Sentient_Experience_For_All_Rows()
+{
+	for(let i = 0; i < table_Body_Array.length; i++)
+	{
+		let total_Sentient_Experience = 0;
+		let total_Item_Count = 0;
+		for(let j = 0; j < table_Body_Array[i].available_Items.length; j++)
+		{
+			if(table_Body_Array[i].available_Items[j].item_Type === "Named_Item")
+			{
+				table_Body_Array[i].available_Items[j].item_Type = "Named_Item";
+				if(table_Body_Array[i].available_Items[j].item_Minimum_Level <= 20)
+				{
+					total_Sentient_Experience = total_Sentient_Experience + table_Body_Array[i].available_Items[j].item_Minimum_Level;
+				}
+				else if(table_Body_Array[i].available_Items[j].item_Minimum_Level <=27)
+				{
+					total_Sentient_Experience = total_Sentient_Experience + (table_Body_Array[i].available_Items[j].item_Minimum_Level * 5);
+				}
+				else
+				{
+					total_Sentient_Experience = total_Sentient_Experience + (table_Body_Array[i].available_Items[j].item_Minimum_Level * 10);
+				}
+				total_Item_Count = total_Item_Count + 1;
+			}
+		}
+		if(total_Item_Count > 0)
+		{
+			table_Body_Array[i].average_Sentient_Experience = Number(((total_Sentient_Experience / total_Item_Count) * Math.min(1, (table_Body_Array[i].main_Chest_Properties.base_Named_Item_Chance + Number(named_Item_Chance_Increase_Input_Box_Element.value)))).toFixed(3));
+		}
+		else
+		{
+			table_Body_Array[i].average_Sentient_Experience = 0;
+		}
+		table_Body_Element.children[i].children[column_Name_To_Array_Index.average_Sentient_Experience].innerText = table_Body_Array[i].average_Sentient_Experience;
+	}
+}
+set_Total_Sentient_Experience_For_All_Rows();

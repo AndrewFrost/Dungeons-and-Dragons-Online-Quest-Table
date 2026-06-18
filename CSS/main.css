@@ -396,6 +396,32 @@ table tbody tr td:last-child
 .item_Single_Entry:hover
 {
 	overflow: visible;
+	position: relative;
+	z-index: 2;
+}
+
+.Augment, .Augment:hover::after
+{
+	background-color: yellow;
+}
+
+.Named_Item, .Named_Item:hover::after
+{
+	background-color: cyan;
+}
+
+.Augment:hover::after, .Named_Item:hover::after
+{
+	content: attr(data-text_content);
+	position: absolute;
+	color: rgba(0, 0, 0, 0);
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: calc-size(auto, size + 2px);
+	min-width: 100%;
+	z-index: -1;
+	pointer-events: none;
 }
 
 /*Experience Modifiers styles*/
